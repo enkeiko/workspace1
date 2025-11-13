@@ -23,7 +23,9 @@
       "Bash(git add:*)",
       "Bash(git commit -m \"$(cat <<''EOF''\nchore: pre-consolidation snapshot\n\n워크스페이스 정리 전 현재 상태 스냅샷:\n- V1+V2 통합 작업 완료 (SPEC.md, app.html)\n- 워크스페이스 분석 및 정리 계획 수립\n- docs/ops 문서화 완료\n\n다음 단계: 중복 파일 정리 및 폴더 구조 통합\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(if [ -f \"NUL\" ])",
-      "Bash(then rm -f NUL)"
+      "Bash(then rm -f NUL)",
+      "Bash(powershell -ExecutionPolicy Bypass -File cleanup-duplicates.ps1)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
