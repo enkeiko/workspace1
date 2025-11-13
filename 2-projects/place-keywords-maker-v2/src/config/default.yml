@@ -1,0 +1,56 @@
+# Place Keywords Maker V2 - Default Configuration
+
+# Crawler Settings
+crawler:
+  timeout: 30000  # 30 seconds
+  headless: true
+  headlessNew: true  # use new headless mode
+  userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  retryAttempts: 3
+  retryDelay: 2000  # 2 seconds
+  # Set local Chrome/Edge path to avoid antivirus/fileless blocking. Example:
+  # executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe"
+  executablePath: ""
+
+# Parser Settings
+parser:
+  minReviewLength: 10
+  maxKeywordsPerCategory: 5
+  completenessWeights:
+    basicInfo: 20
+    menu: 15
+    photos: 15
+    reviews: 25
+    hours: 10
+    description: 15
+
+# AI Settings
+ai:
+  model: "gpt-4"
+  temperature: 0.7
+  maxTokens: 500
+  systemPrompt: "You are an SEO expert specializing in Korean Naver Place optimization."
+
+# API Settings
+api:
+  naver:
+    baseUrl: "https://openapi.naver.com/v1"
+    maxRetries: 3
+    timeout: 10000
+
+# Pipeline Settings
+pipeline:
+  l1:
+    batchSize: 10
+    outputDir: "./data/output/l1"
+  l2:
+    outputDir: "./data/output/l2"
+  l3:
+    outputDir: "./data/output/l3"
+
+# Logging
+logging:
+  level: "info"  # debug, info, warn, error
+  file: "./logs/app.log"
+  maxSize: "10m"
+  maxFiles: 5

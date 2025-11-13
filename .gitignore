@@ -185,3 +185,14 @@ env/
 *.seed
 *.pid.lock
 .npm
+
+# Standard ignores
+node_modules/
+dist/
+logs/
+*.log
+.cache/
+coverage/
+tmp/
+.DS_Store
+

@@ -1,0 +1,149 @@
+{
+  "meta": {
+    "schema_version": "0.5.0",
+    "generated_at": "2025-11-13T16:38:54.297Z"
+  },
+  "client": {
+    "brand": "jobtest",
+    "place_id": "1265317185",
+    "business": {
+      "name": "????",
+      "phone": "02-000-0000",
+      "address": {
+        "raw": "?? ??? ???? 1"
+      },
+      "category": {
+        "primary": "???",
+        "subcategories": []
+      },
+      "web": {
+        "website": "",
+        "sns": {}
+      },
+      "ops": {}
+    }
+  },
+  "keywords": {
+    "core": [],
+    "region": [
+      "1"
+    ],
+    "attributes": [],
+    "details": [
+      {
+        "facet": "region",
+        "canonical": "1",
+        "confidence": "medium",
+        "evidence": {
+          "rule": "token-address",
+          "source": "address.raw",
+          "text": "1"
+        }
+      }
+    ]
+  },
+  "assets": {
+    "photos": [],
+    "menus": []
+  },
+  "analysis": {
+    "issues": [],
+    "missing": [
+      "assets.photos"
+    ],
+    "relevance": {
+      "score": "unknown",
+      "basis": []
+    },
+    "popularity": {
+      "score": "unknown",
+      "basis": []
+    },
+    "trust": {
+      "score": "unknown",
+      "basis": []
+    },
+    "nap_mismatch": {
+      "name": false,
+      "phone": false,
+      "address": false,
+      "details": {
+        "intake": {
+          "name": "????",
+          "phone": "02-000-0000",
+          "address": "?? ??? ???? 1"
+        },
+        "collected": {
+          "name": "????",
+          "phone": "02-000-0000",
+          "address": "?? ??? ???? 1"
+        }
+      }
+    }
+  },
+  "improvements": {
+    "keyword_proposals": [],
+    "intro_text": "????는(은) ??? 카테고리의 매장입니다. 고객 경험을 개선하기 위한 소개문은 브랜드 톤앤매너에 맞게 검토 후 배포하세요.",
+    "news_calendar": [
+      {
+        "week": 1,
+        "theme": "로컬 SEO",
+        "ideas": [
+          "메뉴 소개",
+          "이벤트 공지",
+          "후기 리포스트"
+        ]
+      },
+      {
+        "week": 2,
+        "theme": "로컬 SEO",
+        "ideas": [
+          "메뉴 소개",
+          "이벤트 공지",
+          "후기 리포스트"
+        ]
+      },
+      {
+        "week": 3,
+        "theme": "로컬 SEO",
+        "ideas": [
+          "메뉴 소개",
+          "이벤트 공지",
+          "후기 리포스트"
+        ]
+      },
+      {
+        "week": 4,
+        "theme": "로컬 SEO",
+        "ideas": [
+          "메뉴 소개",
+          "이벤트 공지",
+          "후기 리포스트"
+        ]
+      }
+    ],
+    "review_templates": [
+      {
+        "type": "short",
+        "content": "방문 감사합니다! 어떤 점이 가장 만족스러우셨나요?"
+      },
+      {
+        "type": "detail",
+        "content": "메뉴/서비스/분위기 중 특히 좋았던 점을 알려주세요."
+      }
+    ],
+    "visual_suggestions": [
+      "대표 사진 5장 이상 업로드",
+      "메뉴판/실내 전경/시그니처 메뉴 사진 보강"
+    ],
+    "nap_corrections": []
+  },
+  "provenance": {
+    "collector": {
+      "source": "naver_place"
+    },
+    "analyzer": {},
+    "improver": {},
+    "generator": {}
+  }
+}

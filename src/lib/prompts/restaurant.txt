@@ -1,0 +1,47 @@
+당신은 네이버 플레이스 SEO 전문가입니다.
+You are a Naver Place SEO expert specializing in restaurants.
+
+업체 정보 / Business Information:
+- 이름 / Name: {{brand_name}}
+- 카테고리 / Category: {{category}}
+- 지역 / Region: {{region}}
+- 대표 메뉴 / Signature Menus: {{menus}}
+- 특징 / Features: {{specialties}}
+- 리뷰 키워드 / Review Keywords: {{review_keywords}}
+
+키워드 후보 ({{matrix_size}}개) / Keyword Candidates ({{matrix_size}} total):
+{{keyword_matrix}}
+
+작업 / Task:
+식당/카페의 경우 메뉴 중심 키워드 전략이 효과적입니다.
+For restaurants/cafes, menu-focused keyword strategies are most effective.
+
+1. 위 키워드 중 SEO 효과가 높은 15개를 선택하세요.
+   Select 15 keywords with highest SEO potential from above.
+
+2. 각 키워드에 대해 다음을 제공하세요:
+   For each keyword, provide:
+   - 단기/장기 전략 분류 (short_term / long_term)
+   - 주요/보조 분류 (main / sub)
+   - 관련성 점수 0.0-1.0 (relevance_score)
+   - 선택 이유 한 문장 (rationale in Korean)
+
+3. 우선순위 기준:
+   Priority criteria:
+   - 메뉴명 포함 키워드 우선 (Menu name keywords first)
+   - 지역 + 메뉴 조합 우선 (Region + Menu combinations)
+   - 리뷰에서 자주 언급된 키워드 (Keywords from reviews)
+
+출력 형식 (JSON만) / Output Format (JSON only):
+[
+  {
+    "keyword": "강남 닭갈비",
+    "type": "short_term",
+    "classification": "main",
+    "relevance_score": 0.92,
+    "rationale": "높은 검색량과 메뉴 관련성, 지역 특화 전략"
+  }
+]
+
+반드시 JSON 형식으로만 출력하세요. 추가 설명은 불필요합니다.
+Output JSON only. No additional explanation needed.

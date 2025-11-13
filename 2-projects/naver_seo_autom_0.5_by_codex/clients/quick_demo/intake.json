@@ -1,0 +1,20 @@
+{
+  "brand": "quick_demo",
+  "place_id": "999999999",
+  "business": {
+    "name": "퀵데모",
+    "phone": "02-111-2222",
+    "address": {
+      "raw": "서울특별시 중구 세종대로 110"
+    },
+    "category": {
+      "primary": "카페",
+      "subcategories": []
+    },
+    "web": {
+      "website": "",
+      "sns": {}
+    },
+    "ops": {}
+  }
+}

@@ -1,0 +1,219 @@
+{
+  "meta": {
+    "schema_version": "0.5.0",
+    "generated_at": "2025-11-13T17:35:40.411Z"
+  },
+  "client": {
+    "brand": "sample_brand",
+    "place_id": "1265317185",
+    "business": {
+      "name": "샘플가게",
+      "phone": "02-000-0000",
+      "address": {
+        "raw": "서울특별시 강남구 테헤란로 1"
+      },
+      "category": {
+        "primary": "음식점",
+        "subcategories": [
+          "한식"
+        ]
+      },
+      "web": {
+        "website": "",
+        "sns": {}
+      },
+      "ops": {}
+    }
+  },
+  "keywords": {
+    "core": [
+      "음식점"
+    ],
+    "region": [
+      "서울특별시",
+      "강남구",
+      "테헤란로",
+      "1"
+    ],
+    "attributes": [],
+    "details": [
+      {
+        "facet": "core",
+        "canonical": "음식점",
+        "confidence": "medium",
+        "evidence": {
+          "rule": "fallback-category",
+          "source": "collected.category",
+          "text": "음식점"
+        }
+      },
+      {
+        "facet": "core",
+        "canonical": "음식점",
+        "confidence": "medium",
+        "evidence": {
+          "rule": "fallback-category",
+          "source": "intake.category",
+          "text": "음식점"
+        }
+      },
+      {
+        "facet": "region",
+        "canonical": "서울특별시",
+        "confidence": "medium",
+        "evidence": {
+          "rule": "token-address",
+          "source": "address.raw",
+          "text": "서울특별시"
+        }
+      },
+      {
+        "facet": "region",
+        "canonical": "강남구",
+        "confidence": "medium",
+        "evidence": {
+          "rule": "token-address",
+          "source": "address.raw",
+          "text": "강남구"
+        }
+      },
+      {
+        "facet": "region",
+        "canonical": "테헤란로",
+        "confidence": "medium",
+        "evidence": {
+          "rule": "token-address",
+          "source": "address.raw",
+          "text": "테헤란로"
+        }
+      },
+      {
+        "facet": "region",
+        "canonical": "1",
+        "confidence": "medium",
+        "evidence": {
+          "rule": "token-address",
+          "source": "address.raw",
+          "text": "1"
+        }
+      }
+    ]
+  },
+  "assets": {
+    "photos": [],
+    "menus": []
+  },
+  "analysis": {
+    "issues": [],
+    "missing": [
+      "assets.photos"
+    ],
+    "relevance": {
+      "score": "unknown",
+      "basis": []
+    },
+    "popularity": {
+      "score": "unknown",
+      "basis": []
+    },
+    "trust": {
+      "score": "unknown",
+      "basis": []
+    },
+    "nap_mismatch": {
+      "name": false,
+      "phone": false,
+      "address": false,
+      "details": {
+        "intake": {
+          "name": "샘플가게",
+          "phone": "02-000-0000",
+          "address": "서울특별시 강남구 테헤란로 1"
+        },
+        "collected": {
+          "name": "샘플가게",
+          "phone": "02-000-0000",
+          "address": "서울특별시 강남구 테헤란로 1"
+        }
+      }
+    },
+    "guidebook_compliance": {
+      "ok": true,
+      "issues": []
+    }
+  },
+  "improvements": {
+    "keyword_proposals": [
+      "서울특별시 음식점",
+      "강남구 음식점"
+    ],
+    "intro_text": "샘플가게는(은) 음식점 카테고리의 공간으로, 지역 고객에게 일상 속 작은 만족을 드리기 위해 노력합니다.\n\n대표 서비스/상품은 매장 상황에 따라 달라질 수 있으며, 방문 전 문의 부탁드립니다. 핵심 키워드: 음식점, 서울특별시, 강남구, 테헤란로 메뉴/재료/조리 방식에 대한 안내는 현장 메뉴판과 사진을 함께 확인해 주세요.\n\n예약/이용: 전화(02-000-0000) 또는 현장 접수 가능합니다. 혼잡 시간대에는 대기 안내가 있을 수 있습니다.\n\n운영 정보: 주소 서울특별시 강남구 테헤란로 1. 영업시간/휴무일/결제수단은 현장 안내를 참고해 주세요.\n\n찾아오시는 길: 주변 랜드마크 및 대중교통 정보를 기반으로 편리한 동선을 안내드립니다.\n\n스토리: 고객의 일상에 어울리는 경험을 만들기 위해 세심함을 지향합니다.\n\n마무리: 오늘도 편안한 방문이 되시길 바랍니다.\n추가 안내: 실제 제공 콘텐츠와 운영 정보는 현장과 안내 페이지의 최신 내용을 기준으로 검토하여 반영합니다.\n추가 안내: 실제 제공 콘텐츠와 운영 정보는 현장과 안내 페이지의 최신 내용을 기준으로 검토하여 반영합니다.\n추가 안내: 실제 제공 콘텐츠와 운영 정보는 현장과 안내 페이지의 최신 내용을 기준으로 검토하여 반영합니다.\n추가 안내: 실제 제공 콘텐츠와 운영 정보는 현장과 안내 페이지의 최신 내용을 기준으로 검토하여 반영합니다.\n추가 안내: 실제 제공 콘텐츠와 운영 정보는 현장과 안내 페이지의 최신 내용을 기준으로 검토하여 반영합니다.\n추가 안내: 실제 제공 콘텐츠와 운영 정보는 현장과 안내 페이지의 최신 내용을 기준으로 검토하여 반영합니다.\n추가 안내: 실제 제공 콘텐츠와 운영 정보는 현장과 안내 페이지의 최신 내용을 기준으로 검토하여 반영합니다.\n추가 안내: 실제 제공 콘텐츠와 운영 정보는 현장과 안내 페이지의 최신 내용을 기준으로 검토하여 반영합니다.\n추가 안내: 실제 제공 콘텐츠와 운영 정보는 현장과 안내 페이지의 최신 내용을 기준으로 검토하여 반영합니다.\n추가 안내: 실제 제공 콘텐츠와 운영 정보는 현장과 안내 페이지의 최신 내용을 기준으로 검토하여 반영합니다.\n추가 안내: 실제 제공 콘텐츠와 운영 정보는 현장과 안내 페이지의 최신 내용을 기준으로 검토하여 반영합니다.\n추가 안내: 실제 제공 콘텐츠와 운영 정보는 현장과 안내 페이지의 최신 내용을 기준으로 검토하여 반영합니다.\n추가 안내: 실제 제공 콘텐츠와 운영 정보는 현장과 안내 페이지의 최신 내용을 기준으로 검토하여 반영합니다.",
+    "news_calendar": [
+      {
+        "week": 1,
+        "theme": "지역 소식",
+        "ideas": [
+          "시즌 한정 메뉴 사진과 간단한 소개",
+          "근처 랜드마크와 함께하는 방문 동선 팁",
+          "포장/예약 이용 팁",
+          "고객 후기 1문장 인용(사실 기반)"
+        ]
+      },
+      {
+        "week": 2,
+        "theme": "메뉴 소개",
+        "ideas": [
+          "시즌 한정 메뉴 사진과 간단한 소개",
+          "근처 랜드마크와 함께하는 방문 동선 팁",
+          "포장/예약 이용 팁",
+          "고객 후기 1문장 인용(사실 기반)"
+        ]
+      },
+      {
+        "week": 3,
+        "theme": "이벤트/공지",
+        "ideas": [
+          "시즌 한정 메뉴 사진과 간단한 소개",
+          "근처 랜드마크와 함께하는 방문 동선 팁",
+          "포장/예약 이용 팁",
+          "고객 후기 1문장 인용(사실 기반)"
+        ]
+      },
+      {
+        "week": 4,
+        "theme": "후기 하이라이트",
+        "ideas": [
+          "시즌 한정 메뉴 사진과 간단한 소개",
+          "근처 랜드마크와 함께하는 방문 동선 팁",
+          "포장/예약 이용 팁",
+          "고객 후기 1문장 인용(사실 기반)"
+        ]
+      }
+    ],
+    "review_templates": [
+      {
+        "type": "short",
+        "content": "방문 감사합니다! 어떤 점이 가장 만족스러우셨나요?"
+      },
+      {
+        "type": "detail",
+        "content": "메뉴/서비스/분위기 중 특히 좋았던 점을 알려주세요."
+      }
+    ],
+    "visual_suggestions": [
+      "대표 사진 5장 이상 업로드",
+      "메뉴/실내/조리/가격표/비교컷 구분 촬영",
+      "파일명 규칙: 지역_메뉴_속성_번호.jpg (예: 강남_비빔밥_대표_01.jpg)",
+      "중복/저해상도/과도한 보정 사진 제외"
+    ],
+    "nap_corrections": []
+  },
+  "provenance": {
+    "collector": {
+      "source": "naver_place"
+    },
+    "analyzer": {},
+    "improver": {},
+    "generator": {}
+  }
+}

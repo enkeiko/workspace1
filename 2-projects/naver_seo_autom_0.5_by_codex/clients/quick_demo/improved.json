@@ -1,0 +1,207 @@
+{
+  "meta": {
+    "schema_version": "0.5.0",
+    "generated_at": "2025-11-13T16:14:46.793Z"
+  },
+  "client": {
+    "brand": "quick_demo",
+    "place_id": "999999999",
+    "business": {
+      "name": "퀵데모",
+      "phone": "02-111-2222",
+      "address": {
+        "raw": "서울특별시 중구 세종대로 110"
+      },
+      "category": {
+        "primary": "카페",
+        "subcategories": []
+      },
+      "web": {
+        "website": "",
+        "sns": {}
+      },
+      "ops": {}
+    }
+  },
+  "keywords": {
+    "core": [
+      "카페"
+    ],
+    "region": [
+      "서울특별시",
+      "중구",
+      "세종대로",
+      "110"
+    ],
+    "attributes": [],
+    "details": [
+      {
+        "facet": "core",
+        "canonical": "카페",
+        "confidence": "medium",
+        "evidence": {
+          "rule": "fallback-category",
+          "source": "collected.category",
+          "text": "카페"
+        }
+      },
+      {
+        "facet": "core",
+        "canonical": "카페",
+        "confidence": "medium",
+        "evidence": {
+          "rule": "fallback-category",
+          "source": "intake.category",
+          "text": "카페"
+        }
+      },
+      {
+        "facet": "region",
+        "canonical": "서울특별시",
+        "confidence": "medium",
+        "evidence": {
+          "rule": "token-address",
+          "source": "address.raw",
+          "text": "서울특별시"
+        }
+      },
+      {
+        "facet": "region",
+        "canonical": "중구",
+        "confidence": "medium",
+        "evidence": {
+          "rule": "token-address",
+          "source": "address.raw",
+          "text": "중구"
+        }
+      },
+      {
+        "facet": "region",
+        "canonical": "세종대로",
+        "confidence": "medium",
+        "evidence": {
+          "rule": "token-address",
+          "source": "address.raw",
+          "text": "세종대로"
+        }
+      },
+      {
+        "facet": "region",
+        "canonical": "110",
+        "confidence": "medium",
+        "evidence": {
+          "rule": "token-address",
+          "source": "address.raw",
+          "text": "110"
+        }
+      }
+    ]
+  },
+  "assets": {
+    "photos": [],
+    "menus": []
+  },
+  "analysis": {
+    "issues": [],
+    "missing": [
+      "assets.photos"
+    ],
+    "relevance": {
+      "score": "unknown",
+      "basis": []
+    },
+    "popularity": {
+      "score": "unknown",
+      "basis": []
+    },
+    "trust": {
+      "score": "unknown",
+      "basis": []
+    },
+    "nap_mismatch": {
+      "name": false,
+      "phone": false,
+      "address": false,
+      "details": {
+        "intake": {
+          "name": "퀵데모",
+          "phone": "02-111-2222",
+          "address": "서울특별시 중구 세종대로 110"
+        },
+        "collected": {
+          "name": "퀵데모",
+          "phone": "02-111-2222",
+          "address": "서울특별시 중구 세종대로 110"
+        }
+      }
+    }
+  },
+  "improvements": {
+    "keyword_proposals": [
+      "서울특별시 카페",
+      "중구 카페"
+    ],
+    "intro_text": "퀵데모는(은) 카페 카테고리의 매장입니다. 고객 경험을 개선하기 위한 소개문은 브랜드 톤앤매너에 맞게 검토 후 배포하세요.",
+    "news_calendar": [
+      {
+        "week": 1,
+        "theme": "로컬 SEO",
+        "ideas": [
+          "메뉴 소개",
+          "이벤트 공지",
+          "후기 리포스트"
+        ]
+      },
+      {
+        "week": 2,
+        "theme": "로컬 SEO",
+        "ideas": [
+          "메뉴 소개",
+          "이벤트 공지",
+          "후기 리포스트"
+        ]
+      },
+      {
+        "week": 3,
+        "theme": "로컬 SEO",
+        "ideas": [
+          "메뉴 소개",
+          "이벤트 공지",
+          "후기 리포스트"
+        ]
+      },
+      {
+        "week": 4,
+        "theme": "로컬 SEO",
+        "ideas": [
+          "메뉴 소개",
+          "이벤트 공지",
+          "후기 리포스트"
+        ]
+      }
+    ],
+    "review_templates": [
+      {
+        "type": "short",
+        "content": "방문 감사합니다! 어떤 점이 가장 만족스러우셨나요?"
+      },
+      {
+        "type": "detail",
+        "content": "메뉴/서비스/분위기 중 특히 좋았던 점을 알려주세요."
+      }
+    ],
+    "visual_suggestions": [
+      "대표 사진 5장 이상 업로드",
+      "메뉴판/실내 전경/시그니처 메뉴 사진 보강"
+    ],
+    "nap_corrections": []
+  },
+  "provenance": {
+    "collector": {
+      "source": "naver_place"
+    },
+    "analyzer": {},
+    "improver": {},
+    "generator": {}
+  }
+}

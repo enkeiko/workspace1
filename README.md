@@ -1,285 +1,324 @@
-# 🚀 Workspace
+# Workspace: 네이버 플레이스 SEO 자동화
 
-> **네이버 플레이스 관련 프로젝트 통합 워크스페이스**
-
----
-
-## 📁 프로젝트
-
-### 1. [Place_Keywords_maker](Place_Keywords_maker/)
-네이버 플레이스 대표키워드 자동 생성기
-
-```bash
-cd Place_Keywords_maker
-node src/main.js l1
-```
-
-### 2. [Place_Crawler](Place_Crawler/)
-네이버 플레이스 크롤러 (V1)
-
-```bash
-cd Place_Crawler/V1
-node ultimate-scraper.js 1768171911
-```
-
-### 3. [Project Outline](Project%20Outline/)
-프로젝트 개요 자료
+통합 모노레포 워크스페이스 - 네이버 플레이스 검색 최적화 도구 개발 및 관리
 
 ---
 
-## 📚 문서 시스템
-
-이 워크스페이스는 **DocsCode** 아키텍처를 사용합니다.
-
-### 📖 모든 문서 및 AI 시스템
-
-**위치**: [`docscode/`](docscode/)
-
-```
-docscode/
-├── CLAUDE.md              # AI 통합 가이드 (최우선!)
-├── README.md              # DocsCode 사용법
-├── STRUCTURE_EXPLAINED.md # 구조 상세 설명
-│
-├── rules/                 # 개발 규칙
-├── templates/             # 문서 템플릿
-├── workflows/             # 개발 프로세스
-│
-├── backlog/               # 요청사항 관리
-├── issues/                # 실행 가능한 이슈
-├── features/              # 완전한 기능 문서
-├── analysis/              # 영향도 분석
-│
-└── projects/              # 프로젝트 문서
-    ├── place-keywords-maker/
-    └── place-crawler/
-```
-
----
-
-## 🎯 빠른 시작
-
-### AI와 작업하기
-
-```
-1. AI 가이드 읽기
-   cat docscode/CLAUDE.md
-
-2. 프로젝트 이해하기
-   cat docscode/projects/place-keywords-maker/README.md
-
-3. AI에게 요청
-   "Place_Keywords_maker의 L1에 완성도 평가 추가해줘"
-```
-
-### 새 기능 개발
-
-```
-[사용자 요청]
-    ↓
-[Backlog 생성] docscode/backlog/ideas/
-    ↓
-[AI Q&A로 명확화] docscode/backlog/exploring/
-    ↓
-[준비 완료] docscode/backlog/ready/
-    ↓
-[Issues + Features 자동 생성]
-    ├─ docscode/issues/
-    └─ docscode/features/
-    ↓
-[실제 코드 작성] Place_Keywords_maker/src/
-```
-
----
-
-## 📋 주요 문서
-
-### 필수 문서 (꼭 읽기!)
-- **[docscode/CLAUDE.md](docscode/CLAUDE.md)** - AI 통합 가이드 ⭐
-- **[docscode/README.md](docscode/README.md)** - DocsCode 사용법
-- **[docscode/STRUCTURE_EXPLAINED.md](docscode/STRUCTURE_EXPLAINED.md)** - 구조 설명
-
-### 규칙 문서
-- **[docscode/rules/@ARCHITECTURE.md](docscode/rules/@ARCHITECTURE.md)** - 시스템 아키텍처
-- **[docscode/rules/@CONVENTIONS.md](docscode/rules/@CONVENTIONS.md)** - 코딩 컨벤션
-- **[docscode/rules/@ERROR_CODES.md](docscode/rules/@ERROR_CODES.md)** - 에러 코드
-
-### 프로젝트 문서
-- **[docscode/projects/place-keywords-maker/README.md](docscode/projects/place-keywords-maker/README.md)**
-- **[docscode/projects/place-crawler/README.md](docscode/projects/place-crawler/README.md)**
-
----
-
-## 🛠️ 개발 명령어
-
-### Place_Keywords_maker
-
-```bash
-cd Place_Keywords_maker
-
-# L1: 데이터 수집
-node src/main.js l1
-
-# L1 + 크롤링
-node src/main.js l1 1768171911
-
-# L2: AI 분석
-node src/main.js l2
-
-# L3: 최종 조합
-node src/main.js l3
-
-# 전체 파이프라인
-node src/main.js start
-
-# GUI 서버
-node src/gui-server.js
-```
-
-### Place_Crawler
-
-```bash
-cd Place_Crawler/V1
-
-# 단일 크롤링
-node ultimate-scraper.js 1768171911
-
-# 배치 크롤링
-node batch-scraper.js
-```
-
----
-
-## ⚙️ 설정
-
-### 환경 변수
-
-```bash
-# Windows PowerShell
-$env:OPENAI_API_KEY="sk-..."
-$env:ANTHROPIC_API_KEY="sk-ant-..."
-$env:NAVER_CLIENT_ID="your_id"
-$env:NAVER_CLIENT_SECRET="your_secret"
-```
-
-### 설정 파일
-
-**[local.config.yml](local.config.yml)** - 프로젝트 경로 및 API 키 설정
-
----
-
-## 📊 워크스페이스 구조
+## 📁 프로젝트 구조 (번호순 정렬)
 
 ```
 workspace/
 │
-├── Place_Keywords_maker/      ← 실제 프로젝트 코드
-├── Place_Crawler/             ← 실제 프로젝트 코드
-├── Project Outline/           ← 프로젝트 개요
+├── .claude/                    # Claude Code 설정 (루트)
+├── .specify/                   # SpecKit 설정 (루트)
 │
-├── docscode/                  ← DocsCode 문서 시스템
-│   ├── CLAUDE.md              ← AI 가이드 (시작점!)
-│   ├── rules/                 ← 개발 규칙
-│   ├── templates/             ← 문서 템플릿
-│   ├── backlog/               ← AI 생성 결과물
-│   ├── issues/                ← 실행 가능한 이슈
-│   ├── features/              ← 완전한 기능 문서
-│   └── projects/              ← 프로젝트 문서
+├── 0-workspace/                # ⚙️ 공통 리소스 및 도구
+│   ├── shared/                 # 공통 리소스
+│   │   ├── configs/
+│   │   ├── templates/
+│   │   └── utils/
+│   │
+│   └── tools/                  # 개발 도구
+│       └── scripts/
 │
-├── data/                      ← 공용 데이터
-├── local.config.yml           ← 설정 파일
-└── .gitignore                 ← Git 제외 설정
+├── 1-planning/                 # 📋 기획 및 설계
+│   ├── ideas/                  # 💡 IdeaKit - 아이디어 구체화
+│   │   ├── exploring/          # AI 대화 진행 중 (30-70%)
+│   │   ├── ready/              # SpecKit 전환 준비 (70%+)
+│   │   ├── _completed/         # 전환 완료
+│   │   └── _templates/         # 템플릿
+│   │
+│   ├── specs/                  # 🔧 SpecKit - 스펙 문서
+│   │   └── 001-v1-quick-start/
+│   │       ├── spec.md
+│   │       ├── plan.md
+│   │       └── tasks.md
+│   │
+│   └── docs/                   # 📚 아키텍처 문서
+│       ├── architecture/
+│       ├── api/
+│       └── guides/
+│
+├── 2-projects/                 # 🚀 실행 코드
+│   ├── place-keywords-maker-v1/  # ✅ v1.0.0
+│   ├── place-keywords-maker-v2/  # 🔨 dev
+│   └── place-crawler/            # ✅ stable
+│
+├── 9-archive/                  # 📦 과거 시스템 보관
+│   ├── docscode/
+│   ├── notes/
+│   └── src/
+│
+├── .git/                       # Git 저장소
+├── .gitignore
+└── README.md                   # 이 파일
 ```
 
 ---
 
-## 🎓 학습 경로
+## 🎯 번호별 용도
 
-### 1단계: 기본 이해 (30분)
-1. 이 README 읽기 (5분)
-2. [docscode/CLAUDE.md](docscode/CLAUDE.md) 읽기 (15분)
-3. [docscode/STRUCTURE_EXPLAINED.md](docscode/STRUCTURE_EXPLAINED.md) 읽기 (10분)
-
-### 2단계: 실습 (1시간)
-1. 프로젝트 실행해보기 (20분)
-2. 간단한 기능으로 Backlog 체험 (30분)
-3. AI와 대화하며 문서 생성 (10분)
-
-### 3단계: 실전 (계속)
-1. 실제 기능 개발
-2. 워크플로우 학습
-3. 템플릿 커스터마이징
+| 번호 | 폴더 | 목적 | 우선순위 |
+|------|------|------|----------|
+| **0** | workspace | 설정/리소스 (개발 환경) | ⭐⭐⭐⭐ 최우선 |
+| **1** | planning | 기획/설계 (코드 작성 전) | ⭐⭐⭐ 높음 |
+| **2** | projects | 실행 코드 (실제 개발) | ⭐⭐ 중요 |
+| **9** | archive | 과거 시스템 (참고) | 참고용 |
 
 ---
 
-## 💡 주요 특징
+## 💡 개발 워크플로우
 
-### ✨ AI-First 개발
-- AI가 완전한 문서 자동 생성 (5-10분)
-- 자연어 요청 → 실행 가능한 코드
-- 매번 프로젝트 설명 불필요
+### 순서대로 진행
 
-### 📝 Document-Driven
-- 코드 작성 전 문서 먼저
-- 템플릿 기반 일관된 품질
-- 완전한 코드 (TODO 없음)
+```
+0️⃣ 0-workspace/
+   설정, 공통 리소스 준비 (개발 환경)
+   ↓
+1️⃣ 1-planning/
+   불명확한 아이디어 → IdeaKit
+   명확한 요구사항 → SpecKit
+   ↓
+2️⃣ 2-projects/
+   spec에 따라 코드 작성
+```
 
-### 🔄 Progressive Refinement
-- IDEAS (10-30%) → EXPLORING (30-90%) → READY (90%+)
-- AI Q&A로 점진적 명확화
-- 불완전한 요구사항 방지
+### 상세 워크플로우
 
----
-
-## 🚀 신규 프로젝트 추가
-
+#### A. 불명확한 아이디어 → IdeaKit
 ```bash
-# 1. 프로젝트 폴더 생성 (워크스페이스 루트)
-mkdir New_Project
-
-# 2. 프로젝트 코드 작성
-cd New_Project
-# ... 개발 ...
-
-# 3. 프로젝트 문서 생성
-mkdir docscode/projects/new-project
-cat > docscode/projects/new-project/README.md <<EOF
-# New_Project
-**실제 코드 위치**: ../../New_Project/
-EOF
-
-# 4. local.config.yml 업데이트
-# projects 섹션에 추가
-
-# 5. 즉시 사용 가능!
+사용자: "경쟁업체 분석 기능이 필요해"
+   ↓
+AI: 1-planning/ideas/exploring/competitor-analysis.md 생성
+   ↓
+AI & 사용자: Q&A 대화 (30% → 70%)
+   ↓
+AI: 1-planning/ideas/ready/로 이동
+   ↓
+사용자: /speckit.specify "네이버 플레이스 경쟁업체 자동 분석"
+   ↓
+AI: 1-planning/specs/002-competitor-analysis/ 생성
 ```
+
+#### B. 명확한 요구사항 → SpecKit 바로
+```bash
+사용자: /speckit.specify "L1 프로세서 재시도 로직 추가"
+   ↓
+AI: 1-planning/specs/003-retry-logic/ 생성
+   ↓
+사용자: /speckit.plan
+   ↓
+사용자: /speckit.implement
+   ↓
+2-projects/place-keywords-maker-v2/에 코드 작성
+```
+
+---
+
+## 🚀 프로젝트 개요
+
+### Place Keywords Maker V1
+**위치**: [2-projects/place-keywords-maker-v1/](2-projects/place-keywords-maker-v1/)
+**상태**: ✅ 완료
+**기술**: JavaScript (Node.js 18+), Playwright, Winston, Express
+
+**기능**:
+- L1: 네이버 플레이스 데이터 크롤링
+- L2: AI 키워드 분석
+- L3: 최종 SEO 전략
+- GUI: Express 웹 서버
+
+**실행**:
+```bash
+cd 2-projects/place-keywords-maker-v1
+node src/main.js l1
+```
+
+---
+
+### Place Keywords Maker V2
+**위치**: [2-projects/place-keywords-maker-v2/](2-projects/place-keywords-maker-v2/)
+**상태**: 🔨 개발 중
+**기술**: JavaScript (Node.js 18+), Playwright, Winston, Jest
+
+**V2 개선사항**:
+1. **모듈화**: crawler/ parsers/ processors/ 분리
+2. **테스트**: Jest + 80% 커버리지
+3. **에러 처리**: Exponential backoff, Circuit breaker
+4. **설정**: YAML + .env
+5. **타입 안전성**: 완전한 JSDoc
+6. **성능**: 병렬 크롤링, Rate limiting
+
+**제거**:
+- 완성도 평가 시스템 (115점) → 필수 필드 검증
+
+**개발**:
+```bash
+cd 2-projects/place-keywords-maker-v2
+npm install
+npm test
+npm run l1
+```
+
+[V2 스펙 →](1-planning/specs/001-v1-quick-start/spec.md)
+
+---
+
+### Place Crawler
+**위치**: [2-projects/place-crawler/](2-projects/place-crawler/)
+**상태**: 독립 프로젝트
+**용도**: 네이버 플레이스 크롤러 단독 사용
+
+---
+
+## 📋 빠른 시작
+
+### 1. 새로운 아이디어 시작
+
+#### 불명확한 경우
+```bash
+# 사용자
+"고객 관리 시스템이 필요해"
+
+# AI가 자동으로
+cd 1-planning/ideas/exploring
+# customer-management.md 생성 및 Q&A 진행
+```
+
+[IdeaKit 가이드 →](1-planning/ideas/README.md)
+
+#### 명확한 경우
+```bash
+/speckit.specify "L1에 재시도 로직 추가"
+/speckit.plan
+/speckit.implement
+```
+
+### 2. V2 개발 환경 설정
+```bash
+cd 2-projects/place-keywords-maker-v2
+npm install
+
+# 설정 파일 복사
+cp ../0-workspace/shared/configs/local.config.example.yml local.config.yml
+
+# 환경 변수
+cp .env.example .env
+# .env 파일에 API 키 입력
+
+# 테스트
+npm test
+
+# 실행
+npm run l1
+```
+
+### 3. 공통 리소스 사용
+```bash
+# 설정 템플릿 복사
+cp 0-workspace/shared/configs/template.yml my-project/
+
+# 유틸리티 사용
+node
+> const retry = require('../0-workspace/shared/utils/retry.js')
+```
+
+---
+
+## 📖 문서
+
+### 기획 문서 (1-planning/)
+- [IdeaKit 가이드](1-planning/ideas/README.md)
+- [SpecKit 001](1-planning/specs/001-v1-quick-start/spec.md)
+- [아키텍처 문서](1-planning/docs/)
+
+### 프로젝트 문서 (2-projects/)
+- [V1 README](2-projects/place-keywords-maker-v1/README.md)
+- [V2 README](2-projects/place-keywords-maker-v2/README.md)
+- [Crawler README](2-projects/place-crawler/README.md)
+
+### 워크스페이스 (0-workspace/)
+- [공통 리소스](0-workspace/shared/)
+- [개발 도구](0-workspace/tools/)
+
+### 아카이브 (9-archive/)
+- [보관 내역](9-archive/README.md)
+
+---
+
+## 🎯 로드맵
+
+### Phase 1: V2 모듈화 (진행 중)
+- [x] V1 코드 분석
+- [x] V2 스펙 문서 작성
+- [x] workspace 정리 (번호순 구조)
+- [x] IdeaKit 구축
+- [ ] V2 프로젝트 구조 생성
+- [ ] 핵심 모듈 구현
+- [ ] 단위 테스트 작성
+
+### Phase 2: V2 기능 완성
+- [ ] L1 데이터 수집
+- [ ] L2 AI 분석
+- [ ] L3 전략 생성
+- [ ] GUI 개선
+
+### Phase 3: 배포
+- [ ] 프로덕션 준비
+- [ ] 사용자 가이드
+- [ ] API 문서
+
+---
+
+## 📊 V1 vs V2 비교
+
+| 항목 | V1 | V2 |
+|------|----|----|
+| **구조** | 단일 파일 (934줄) | 모듈화 (8개 모듈) |
+| **테스트** | 불가능 | Jest + DI |
+| **에러 처리** | 로깅만 | Retry + Circuit Breaker |
+| **설정** | 하드코딩 | YAML + .env |
+| **완성도 평가** | 115점 시스템 | 제거 (필수 필드만) |
+| **타입 안전성** | 불완전 | 완전한 JSDoc |
+| **병렬 처리** | 순차 | Promise.all |
+
+---
+
+## 🤝 기여 가이드
+
+### 코드 스타일
+- ESLint + Prettier
+- JSDoc 타입 주석 필수
+- 단위 테스트 작성 필수
+
+### 커밋 메시지
+```
+feat: Add exponential backoff to crawler
+fix: Handle null address in parser
+docs: Update V2 architecture diagram
+test: Add unit tests for AIClient
+```
+
+### 브랜치 전략
+- `main` - 안정 버전
+- `develop` - 개발
+- `feature/*` - 기능 개발
+- `fix/*` - 버그 수정
+
+---
+
+## 📄 라이선스
+
+MIT License
 
 ---
 
 ## 📞 문의
 
-- **개발자**: Nk Ko
-- **워크스페이스**: C:\Users\Nk Ko\Documents\workspace
-- **문서 시스템**: [docscode/](docscode/)
+프로젝트 관련 문의는 GitHub Issues를 이용해주세요.
 
 ---
 
-## 🎉 시작하기
-
-```bash
-# 1. AI 가이드 읽기
-cat docscode/CLAUDE.md
-
-# 2. 프로젝트 실행
-cd Place_Keywords_maker
-node src/main.js l1
-
-# 3. AI와 대화
-"새로운 기능 추가하고 싶어!"
-```
-
----
-
-**DocsCode로 AI와 함께 효율적인 개발을! 🚀**
-
-**시작점**: [docscode/CLAUDE.md](docscode/CLAUDE.md)
+**Last Updated**: 2025-11-11
+**Version**: V2 Development
+**Structure**: Monorepo (번호순 정렬)

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Naver SEO Autom v0.5 - GUI</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 20px; }
+    label { display: block; margin: 6px 0 2px; }
+    input, select { width: 360px; padding: 6px; }
+    .row { margin-bottom: 10px; }
+    button { padding: 8px 14px; }
+    pre { background:#f4f4f4; padding:10px; white-space: pre-wrap; }
+  </style>
+  </head>
+<body>
+  <h1>Naver SEO Autom v0.5 - GUI</h1>
+  <form id="f">
+    <div class="row"><label>Brand</label><input name="brand" value="sample_gui" /></div>
+    <div class="row"><label>Place ID</label><input name="place" value="1265317185" /></div>
+    <div class="row"><label>상호명</label><input name="name" value="샘플가게" /></div>
+    <div class="row"><label>전화</label><input name="phone" value="02-000-0000" /></div>
+    <div class="row"><label>주소</label><input name="address" value="서울특별시 강남구 테헤란로 1" /></div>
+    <div class="row"><label>카테고리</label><input name="category" value="음식점" /></div>
+    <div class="row"><label><input type="checkbox" name="mock" checked /> 모의 실행(MOCK)</label></div>
+    <div class="row"><button type="submit">파이프라인 실행</button></div>
+  </form>
+  <h3>결과</h3>
+  <div id="result"></div>
+  <h3>로그</h3>
+  <pre id="log"></pre>
+
+  <hr />
+  <h2>L1 실행 목록</h2>
+  <button id="btnList">목록 새로고침</button>
+  <pre id="listOut"></pre>
+
+  <h2>L1 아카이브</h2>
+  <form id="arch">
+    <div class="row"><label>Brand</label><input name="brand" value="sample_brand" /></div>
+    <div class="row"><label>저장 위치(선택)</label><input name="dest" placeholder="미입력 시 clients/{brand}/archives" /></div>
+    <div class="row"><button type="submit">아카이브 생성</button></div>
+  </form>
+  <div id="archOut"></div>
+
+  <script>
+    const f = document.getElementById('f');
+    const resBox = document.getElementById('result');
+    const logBox = document.getElementById('log');
+    f.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      resBox.textContent = '실행 중...'; logBox.textContent = '';
+      const fd = new FormData(f);
+      const payload = Object.fromEntries(fd.entries());
+      payload.mock = fd.get('mock') === 'on';
+      const resp = await fetch('/run', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      const data = await resp.json();
+      resBox.innerHTML = data.ok ? `완료! 산출물: <a href="${data.outputs}" target="_blank">${data.outputs}</a>` : '실패';
+      logBox.textContent = data.log || '';
+    });
+
+    // L1 list
+    async function refreshList() {
+      listOut.textContent = '불러오는 중...';
+      const r = await fetch('/api/l1/list');
+      const j = await r.json();
+      if (!j.ok) { listOut.textContent = '오류: '+(j.error||''); return; }
+      listOut.textContent = JSON.stringify(j.stores, null, 2);
+    }
+    document.getElementById('btnList').addEventListener('click', refreshList);
+    refreshList();
+
+    // Archive
+    const archForm = document.getElementById('arch');
+    const archOut = document.getElementById('archOut');
+    archForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      archOut.textContent = '아카이브 생성 중...';
+      const fd = new FormData(archForm);
+      const payload = Object.fromEntries(fd.entries());
+      const r = await fetch('/api/l1/archive', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      const j = await r.json();
+      archOut.textContent = j.ok ? ('완료: '+j.archive) : ('오류: '+(j.error||''));
+    });
+  </script>
+</body>
+</html>

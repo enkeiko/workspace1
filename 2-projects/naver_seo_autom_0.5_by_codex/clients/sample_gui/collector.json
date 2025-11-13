@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "schema_version": "0.5.0",
+    "generated_at": "2025-11-13T17:22:07.870Z"
+  },
+  "client": {
+    "brand": "sample_gui",
+    "place_id": "1265317185",
+    "business": {
+      "name": "샘플가게",
+      "phone": "02-000-0000",
+      "address": {
+        "raw": "서울특별시 강남구 테헤란로 1"
+      },
+      "category": {
+        "primary": "음식점",
+        "subcategories": []
+      },
+      "web": {
+        "website": "",
+        "sns": {}
+      },
+      "ops": {}
+    }
+  },
+  "keywords": {
+    "core": [],
+    "region": [],
+    "attributes": []
+  },
+  "assets": {
+    "photos": [],
+    "menus": []
+  },
+  "analysis": {
+    "issues": [],
+    "missing": [],
+    "relevance": {},
+    "popularity": {},
+    "trust": {},
+    "nap_mismatch": {
+      "name": true,
+      "phone": false,
+      "address": false,
+      "details": {
+        "intake": {
+          "name": "샘플가게",
+          "phone": "02-000-0000",
+          "address": "서울특별시 강남구 테헤란로 1"
+        },
+        "collected": {
+          "name": "네이버 플레이스",
+          "phone": "",
+          "address": ""
+        }
+      }
+    }
+  },
+  "improvements": {
+    "keyword_proposals": [],
+    "intro_text": "",
+    "news_calendar": [],
+    "review_templates": [],
+    "visual_suggestions": []
+  },
+  "provenance": {
+    "collector": {
+      "source": "naver_place"
+    },
+    "analyzer": {},
+    "improver": {},
+    "generator": {}
+  }
+}

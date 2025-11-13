@@ -1,0 +1,20 @@
+{
+  "brand": "jobtest",
+  "place_id": "1265317185",
+  "business": {
+    "name": "????",
+    "phone": "02-000-0000",
+    "address": {
+      "raw": "?? ??? ???? 1"
+    },
+    "category": {
+      "primary": "???",
+      "subcategories": []
+    },
+    "web": {
+      "website": "",
+      "sns": {}
+    },
+    "ops": {}
+  }
+}

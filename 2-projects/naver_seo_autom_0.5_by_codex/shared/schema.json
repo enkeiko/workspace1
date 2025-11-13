@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/naver_seo_autom.schema.json",
+  "title": "Unified Naver SEO Automation Schema",
+  "type": "object",
+  "properties": {
+    "meta": {
+      "type": "object",
+      "properties": {
+        "schema_version": { "type": "string", "default": "0.5.0" },
+        "generated_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["schema_version"]
+    },
+    "client": {
+      "type": "object",
+      "properties": {
+        "brand": { "type": "string" },
+        "place_id": { "type": "string" },
+        "business": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "phone": { "type": "string" },
+            "address": {
+              "type": "object",
+              "properties": {
+                "raw": { "type": "string" },
+                "road": { "type": "string" },
+                "jibun": { "type": "string" },
+                "city": { "type": "string" },
+                "district": { "type": "string" },
+                "dong": { "type": "string" },
+                "postal_code": { "type": "string" },
+                "geo": {
+                  "type": "object",
+                  "properties": { "lat": {"type":"number"}, "lng": {"type":"number"} },
+                  "required": []
+                }
+              },
+              "required": []
+            },
+            "category": {
+              "type": "object",
+              "properties": {
+                "primary": { "type": "string" },
+                "subcategories": { "type": "array", "items": { "type": "string" } }
+              },
+              "required": []
+            },
+            "hours": { "type": ["object","null"] },
+            "web": { "type": "object", "properties": { "website": {"type":"string"}, "sns": {"type":"object"} } },
+            "ops": { "type": "object" }
+          },
+          "required": []
+        }
+      },
+      "required": ["brand", "place_id"]
+    },
+    "keywords": {
+      "type": "object",
+      "properties": {
+        "core": { "type": "array", "items": {"type":"string"} },
+        "region": { "type": "array", "items": {"type":"string"} },
+        "attributes": { "type": "array", "items": {"type":"string"} },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "facet": { "type": "string" },
+              "canonical": { "type": "string" },
+              "confidence": { "type": "string" },
+              "evidence": {
+                "type": "object",
+                "properties": {
+                  "rule": { "type": "string" },
+                  "source": { "type": "string" },
+                  "text": { "type": "string" }
+                },
+                "required": []
+              }
+            },
+            "required": ["facet","canonical","confidence"]
+          }
+        }
+      },
+      "required": ["core", "region", "attributes"]
+    },
+    "assets": {
+      "type": "object",
+      "properties": {
+        "photos": { "type": "array", "items": {"type":"object","properties":{"url":{"type":"string"},"category":{"type":"string"},"source":{"type":"string"}},"required":[]} },
+        "menus": { "type": "array", "items": {"type":"object","properties":{"name":{"type":"string"},"price":{"type":["number","null","string"]},"description":{"type":"string"},"image":{"type":"string"},"recommended":{"type":["boolean","null"]}},"required":[]} }
+      },
+      "required": ["photos", "menus"]
+    },
+    "ops": { "type": ["object","null"] },
+    "analysis": {
+      "type": "object",
+      "properties": {
+        "relevance": { "type": "object" },
+        "popularity": { "type": "object" },
+        "trust": { "type": "object" },
+        "issues": { "type": "array", "items": {"type":"string"} },
+        "missing": { "type": "array", "items": {"type":"string"} },
+        "nap_mismatch": { "type": "object", "properties": { "name": {"type":"boolean"}, "phone": {"type":"boolean"}, "address": {"type":"boolean"}, "details": {"type":"object"} }, "required": ["name","phone","address"] },
+        "guidebook_compliance": {
+          "type": "object",
+          "properties": {
+            "ok": { "type": "boolean" },
+            "issues": { "type": "array", "items": {"type":"string"} }
+          },
+          "required": ["ok","issues"]
+        }
+      },
+      "required": ["issues","missing"]
+    },
+    "improvements": {
+      "type": "object",
+      "properties": {
+        "keyword_proposals": { "type": "array", "items": {"type":"string"} },
+        "intro_text": { "type": "string" },
+        "news_calendar": { "type": "array", "items": {"type":"object","properties":{"week":{"type":"number"},"theme":{"type":"string"},"ideas":{"type":"array","items":{"type":"string"}}},"required":[]} },
+        "review_templates": { "type": "array", "items": {"type":"object","properties":{"type":{"type":"string"},"content":{"type":"string"}},"required":[]} },
+        "visual_suggestions": { "type": "array", "items": {"type":"string"} }
+      },
+      "required": ["keyword_proposals","intro_text","news_calendar","review_templates","visual_suggestions"]
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "collector": { "type": "object" },
+        "analyzer": { "type": "object" },
+        "improver": { "type": "object" },
+        "generator": { "type": "object" }
+      },
+      "required": []
+    }
+  },
+  "required": ["meta","client","keywords","assets","analysis","improvements","provenance"]
+}

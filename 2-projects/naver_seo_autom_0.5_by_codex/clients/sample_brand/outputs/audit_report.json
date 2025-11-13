@@ -1,0 +1,26 @@
+{
+  "schema_version": "0.5.0",
+  "generated_at": "2025-11-13T17:35:40.834Z",
+  "checks": {
+    "nap_mismatch": {
+      "name": false,
+      "phone": false,
+      "address": false,
+      "details": {
+        "intake": {
+          "name": "샘플가게",
+          "phone": "02-000-0000",
+          "address": "서울특별시 강남구 테헤란로 1"
+        },
+        "collected": {
+          "name": "샘플가게",
+          "phone": "02-000-0000",
+          "address": "서울특별시 강남구 테헤란로 1"
+        }
+      }
+    },
+    "missing": [
+      "assets.photos"
+    ]
+  }
+}

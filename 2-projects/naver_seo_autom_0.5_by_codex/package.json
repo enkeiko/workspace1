@@ -1,0 +1,33 @@
+{
+  "name": "naver_seo_autom_0.5_by_codex",
+  "version": "0.5.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "collector": "node src/collector/index.js sample_brand",
+    "collector:mock": "powershell -Command \"$env:MOCK_COLLECTOR='1'; node src/collector/index.js sample_brand\"",
+    "analyzer": "node src/analyzer/index.js sample_brand",
+    "improver": "node src/improver/index.js sample_brand",
+    "generator": "node src/generator/index.js sample_brand",
+    "pipeline": "node scripts/run-all.js --brand sample_brand",
+    "pipeline:mock": "node scripts/run-all.js --brand sample_brand --mock",
+    "validate": "node scripts/validate.js sample_brand",
+    "taxonomy:normalize": "node scripts/normalize-taxonomy.js",
+    "start": "node scripts/quickstart.js",
+    "start:mock": "node scripts/quickstart.js --mock",
+    "gui": "set HOST=127.0.0.1&& set PORT=3060&& node src/gui/server.js",
+    "report": "node scripts/report.js sample_brand",
+    "l1:list": "node scripts/list-l1.js",
+    "l1:list:json": "node scripts/list-l1.js --json",
+    "l1:archive": "node scripts/archive-l1.js sample_brand",
+    "frontend:build": "cd frontend && npm install && npm run build"
+  },
+  "dependencies": {
+    "ajv": "8.17.1",
+    "dotenv": "^16.3.1",
+    "express": "4.21.2",
+    "js-yaml": "^4.1.0",
+    "puppeteer": "^21.0.0",
+    "playwright-core": "^1.48.2"
+  }
+}
