@@ -25,7 +25,16 @@
       "Bash(if [ -f \"NUL\" ])",
       "Bash(then rm -f NUL)",
       "Bash(powershell -ExecutionPolicy Bypass -File cleanup-duplicates.ps1)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(if [ -d \"specs\" ])",
+      "Bash(then ls -la specs/)",
+      "Bash(if [ -d \"src\" ])",
+      "Bash(then ls -la src/)",
+      "Bash(powershell -ExecutionPolicy Bypass -File consolidate-folders.ps1:*)",
+      "Bash(test:*)",
+      "Bash(if [ -d \"specs/002-42ment-erp\" ])",
+      "Bash(then mv \"specs/002-42ment-erp\" \"1-planning/specs/\")",
+      "Bash(then rmdir specs)"
     ],
     "deny": [],
     "ask": []
