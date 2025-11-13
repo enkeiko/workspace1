@@ -172,9 +172,24 @@ npm run test:coverage
 
 ## 📝 참고 문서
 
-- [V1 README](../place-keywords-maker-v1/README.md)
+### 프로젝트 문서
+- [SPEC.md](SPEC.md) - 통합 스펙 (요약본)
+- [docs/](docs/) - 상세 아키텍처 문서
+  - [시스템 개요](docs/architecture/overview.md) - L1/L2/L3 프로세스 소개
+  - [L1 파이프라인](docs/architecture/l1-pipeline.md) - 데이터 수집 상세 (765줄)
+  - [L2 분석](docs/architecture/l2-analysis.md) - AI 키워드 분석 (750줄)
+  - [L3 전략](docs/architecture/l3-strategy.md) - 최종 전략 수립 (554줄)
+
+### 워크스페이스 문서
+- [워크스페이스 README](../../README.md)
 - [Spec 문서](../../1-planning/specs/001-naver-place-seo-automation/spec.md)
 - [Plan 문서](../../1-planning/specs/001-naver-place-seo-automation/plan.md)
+
+### 통합 이력
+**2025-11-14**: place-crawler 프로젝트 문서 통합
+- place-crawler/Doc/*.md → docs/architecture/*.md
+- 총 2,522줄의 상세 문서 통합
+- place-crawler → 9-archive/place-crawler-* 보관
 
 ## 🤝 기여
 

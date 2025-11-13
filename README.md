@@ -40,8 +40,7 @@ workspace/
 │       └── guides/
 │
 ├── 2-projects/                 # 🚀 실행 코드
-│   ├── place-keywords-maker-v2/  # 🔨 V1+V2 통합 개발 중
-│   ├── place-crawler/            # 📚 Doc 참고용
+│   ├── place-keywords-maker-v2/  # 🔨 V1+V2+Crawler 통합 완료
 │   ├── 42ment-erp/               # ✅ 브랜드스튜디오 ERP
 │   └── naver_seo_autom_0.5_by_codex/  # 🔧 SEO 자동화 v0.5
 │
