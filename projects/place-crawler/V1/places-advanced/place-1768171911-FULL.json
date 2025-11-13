@@ -1,0 +1,784 @@
+{
+  "id": "1768171911",
+  "name": "히도",
+  "category": "돈가스",
+  "roadAddress": "경남 창원시 마산회원구 산호천동길 226 1층",
+  "address": "경남 창원시 마산회원구 양덕동 7-62",
+  "phone": "스마트콜 사용",
+  "virtualPhone": null,
+  "talktalkUrl": "http://talk.naver.com/wtqz6m1?frm=mnmb",
+  "coordinate": {
+    "lat": "35.2348228",
+    "lng": "128.5813429"
+  },
+  "menuSummary": {
+    "total": 23,
+    "recommended": 5,
+    "priceRange": {
+      "min": 3000,
+      "max": 18000
+    },
+    "list": [
+      {
+        "name": "모둠카츠",
+        "price": "15000",
+        "priceFormatted": "15,000원",
+        "description": "로스 +히레+치즈 모두 맛보는 메뉴!",
+        "recommend": true,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20250418_254/17449622872009CRsT_JPEG/IMG_3733.jpeg"
+        ]
+      },
+      {
+        "name": "로스카츠",
+        "price": "12000",
+        "priceFormatted": "12,000원",
+        "description": "",
+        "recommend": true,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20250401_212/1743496966203K7Q6s_JPEG/IMG_3251.jpeg"
+        ]
+      },
+      {
+        "name": "히레카츠",
+        "price": "13000",
+        "priceFormatted": "13,000원",
+        "description": "",
+        "recommend": true,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20230407_61/1680873900181amX8A_JPEG/1679979418460-5.jpg"
+        ]
+      },
+      {
+        "name": "치즈카츠",
+        "price": "12000",
+        "priceFormatted": "12,000원",
+        "description": "",
+        "recommend": true,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20230407_119/1680873916552G2Lev_JPEG/1679979418460-6.jpg"
+        ]
+      },
+      {
+        "name": "특로스카츠",
+        "price": "14000",
+        "priceFormatted": "14,000원",
+        "description": "",
+        "recommend": true,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20230407_269/1680873929652IBN8n_JPEG/1679979418460-4.jpg"
+        ]
+      },
+      {
+        "name": "카츠김치나베",
+        "price": "14000",
+        "priceFormatted": "14,000원",
+        "description": "로스카츠가 올라간 김치나베",
+        "recommend": false,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20231115_8/17000265125696QPDY_JPEG/IMG_0393.jpeg"
+        ]
+      },
+      {
+        "name": "돼지짜글이",
+        "price": "8500",
+        "priceFormatted": "8,500원",
+        "description": "2인이상 주문가능합니다. 라면사리 무한리필!",
+        "recommend": false,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20250603_51/1748920727243YNvuv_JPEG/IMG_5058.jpeg"
+        ]
+      },
+      {
+        "name": "매운돼지짜글이",
+        "price": "9000",
+        "priceFormatted": "9,000원",
+        "description": "2인이상 주문가능합니다. 라면사리 무한리필!",
+        "recommend": false,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20250703_168/1751517444343d7J85_JPEG/IMG_3808.jpeg"
+        ]
+      },
+      {
+        "name": "돼지김치짜글이",
+        "price": "9500",
+        "priceFormatted": "9,500원",
+        "description": "2인이상 주문가능합니다. 라면사리 무한리필!",
+        "recommend": false,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20250603_234/1748920736215JYDkF_JPEG/IMG_5062.jpeg"
+        ]
+      },
+      {
+        "name": "부타동",
+        "price": "12000",
+        "priceFormatted": "12,000원",
+        "description": "일본식 대패삼겹살덮밥",
+        "recommend": false,
+        "images": []
+      },
+      {
+        "name": "간장대패두루치기",
+        "price": "10000",
+        "priceFormatted": "10,000원",
+        "description": "",
+        "recommend": false,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20240323_28/1711186782796vklKd_JPEG/IMG_1692.jpeg"
+        ]
+      },
+      {
+        "name": "김치대패두루치기",
+        "price": "11000",
+        "priceFormatted": "11,000원",
+        "description": "",
+        "recommend": false,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20240323_273/1711186800270XRfxm_JPEG/IMG_1697.jpeg"
+        ]
+      },
+      {
+        "name": "SET1.로스+치즈",
+        "price": "17000",
+        "priceFormatted": "17,000원",
+        "description": "",
+        "recommend": false,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20250401_215/1743496984056os2lA_JPEG/IMG_3250.jpeg"
+        ]
+      },
+      {
+        "name": "SET2.히레+치즈",
+        "price": "18000",
+        "priceFormatted": "18,000원",
+        "description": "",
+        "recommend": false,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20230407_164/16808740503755J8w3_JPEG/1678683026939.jpg"
+        ]
+      },
+      {
+        "name": "카츠+우동세트(천원할인메뉴별변동)",
+        "price": "",
+        "priceFormatted": null,
+        "description": "로스,히레,치즈,특로스 우동세트입니다",
+        "recommend": false,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20250401_119/1743497007390W82qj_JPEG/IMG_3246.jpeg",
+          "https://ldb-phinf.pstatic.net/20241209_96/17337250337630KqCj_JPEG/IMG_1138.jpeg"
+        ]
+      },
+      {
+        "name": "카츠+냉우동세트",
+        "price": "",
+        "priceFormatted": null,
+        "description": "천원 할인된 가격으로 즐기세요!",
+        "recommend": false,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20250401_150/1743497032302WAiQ3_JPEG/IMG_3248.jpeg"
+        ]
+      },
+      {
+        "name": "카츠+냉소바세트",
+        "price": "",
+        "priceFormatted": null,
+        "description": "천원 할인된 가격으로 즐기세요!",
+        "recommend": false,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20250401_272/1743497051954N6NYo_JPEG/IMG_3247.jpeg"
+        ]
+      },
+      {
+        "name": "치즈2pcs",
+        "price": "5500",
+        "priceFormatted": "5,500원",
+        "description": "",
+        "recommend": false,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20241209_235/1733729657107hnPdl_JPEG/IMG_2548.jpeg"
+        ]
+      },
+      {
+        "name": "히레2pcs",
+        "price": "3000",
+        "priceFormatted": "3,000원",
+        "description": "",
+        "recommend": false,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20241209_79/1733729631332N0FdO_JPEG/IMG_1899.jpeg"
+        ]
+      },
+      {
+        "name": "우동",
+        "price": "7000",
+        "priceFormatted": "7,000원",
+        "description": "",
+        "recommend": false,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20250321_276/1742542284956SIIF9_JPEG/IMG_1138.jpeg"
+        ]
+      },
+      {
+        "name": "냉우동",
+        "price": "7000",
+        "priceFormatted": "7,000원",
+        "description": "",
+        "recommend": false,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20250321_141/1742542143398IgEXN_JPEG/3472525463182863948_20231013135032694.jpeg"
+        ]
+      },
+      {
+        "name": "냉소바",
+        "price": "7000",
+        "priceFormatted": "7,000원",
+        "description": "",
+        "recommend": false,
+        "images": []
+      },
+      {
+        "name": "새우튀김",
+        "price": "3000",
+        "priceFormatted": "3,000원",
+        "description": "",
+        "recommend": false,
+        "images": [
+          "https://ldb-phinf.pstatic.net/20230304_262/1677935712062PA8U7_JPEG/1-4.jpg"
+        ]
+      }
+    ]
+  },
+  "menus": [
+    {
+      "name": "모둠카츠",
+      "price": "15000",
+      "priceFormatted": "15,000원",
+      "description": "로스 +히레+치즈 모두 맛보는 메뉴!",
+      "recommend": true,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20250418_254/17449622872009CRsT_JPEG/IMG_3733.jpeg"
+      ]
+    },
+    {
+      "name": "로스카츠",
+      "price": "12000",
+      "priceFormatted": "12,000원",
+      "description": "",
+      "recommend": true,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20250401_212/1743496966203K7Q6s_JPEG/IMG_3251.jpeg"
+      ]
+    },
+    {
+      "name": "히레카츠",
+      "price": "13000",
+      "priceFormatted": "13,000원",
+      "description": "",
+      "recommend": true,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20230407_61/1680873900181amX8A_JPEG/1679979418460-5.jpg"
+      ]
+    },
+    {
+      "name": "치즈카츠",
+      "price": "12000",
+      "priceFormatted": "12,000원",
+      "description": "",
+      "recommend": true,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20230407_119/1680873916552G2Lev_JPEG/1679979418460-6.jpg"
+      ]
+    },
+    {
+      "name": "특로스카츠",
+      "price": "14000",
+      "priceFormatted": "14,000원",
+      "description": "",
+      "recommend": true,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20230407_269/1680873929652IBN8n_JPEG/1679979418460-4.jpg"
+      ]
+    },
+    {
+      "name": "카츠김치나베",
+      "price": "14000",
+      "priceFormatted": "14,000원",
+      "description": "로스카츠가 올라간 김치나베",
+      "recommend": false,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20231115_8/17000265125696QPDY_JPEG/IMG_0393.jpeg"
+      ]
+    },
+    {
+      "name": "돼지짜글이",
+      "price": "8500",
+      "priceFormatted": "8,500원",
+      "description": "2인이상 주문가능합니다. 라면사리 무한리필!",
+      "recommend": false,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20250603_51/1748920727243YNvuv_JPEG/IMG_5058.jpeg"
+      ]
+    },
+    {
+      "name": "매운돼지짜글이",
+      "price": "9000",
+      "priceFormatted": "9,000원",
+      "description": "2인이상 주문가능합니다. 라면사리 무한리필!",
+      "recommend": false,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20250703_168/1751517444343d7J85_JPEG/IMG_3808.jpeg"
+      ]
+    },
+    {
+      "name": "돼지김치짜글이",
+      "price": "9500",
+      "priceFormatted": "9,500원",
+      "description": "2인이상 주문가능합니다. 라면사리 무한리필!",
+      "recommend": false,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20250603_234/1748920736215JYDkF_JPEG/IMG_5062.jpeg"
+      ]
+    },
+    {
+      "name": "부타동",
+      "price": "12000",
+      "priceFormatted": "12,000원",
+      "description": "일본식 대패삼겹살덮밥",
+      "recommend": false,
+      "images": []
+    },
+    {
+      "name": "간장대패두루치기",
+      "price": "10000",
+      "priceFormatted": "10,000원",
+      "description": "",
+      "recommend": false,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20240323_28/1711186782796vklKd_JPEG/IMG_1692.jpeg"
+      ]
+    },
+    {
+      "name": "김치대패두루치기",
+      "price": "11000",
+      "priceFormatted": "11,000원",
+      "description": "",
+      "recommend": false,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20240323_273/1711186800270XRfxm_JPEG/IMG_1697.jpeg"
+      ]
+    },
+    {
+      "name": "SET1.로스+치즈",
+      "price": "17000",
+      "priceFormatted": "17,000원",
+      "description": "",
+      "recommend": false,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20250401_215/1743496984056os2lA_JPEG/IMG_3250.jpeg"
+      ]
+    },
+    {
+      "name": "SET2.히레+치즈",
+      "price": "18000",
+      "priceFormatted": "18,000원",
+      "description": "",
+      "recommend": false,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20230407_164/16808740503755J8w3_JPEG/1678683026939.jpg"
+      ]
+    },
+    {
+      "name": "카츠+우동세트(천원할인메뉴별변동)",
+      "price": "",
+      "priceFormatted": null,
+      "description": "로스,히레,치즈,특로스 우동세트입니다",
+      "recommend": false,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20250401_119/1743497007390W82qj_JPEG/IMG_3246.jpeg",
+        "https://ldb-phinf.pstatic.net/20241209_96/17337250337630KqCj_JPEG/IMG_1138.jpeg"
+      ]
+    },
+    {
+      "name": "카츠+냉우동세트",
+      "price": "",
+      "priceFormatted": null,
+      "description": "천원 할인된 가격으로 즐기세요!",
+      "recommend": false,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20250401_150/1743497032302WAiQ3_JPEG/IMG_3248.jpeg"
+      ]
+    },
+    {
+      "name": "카츠+냉소바세트",
+      "price": "",
+      "priceFormatted": null,
+      "description": "천원 할인된 가격으로 즐기세요!",
+      "recommend": false,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20250401_272/1743497051954N6NYo_JPEG/IMG_3247.jpeg"
+      ]
+    },
+    {
+      "name": "치즈2pcs",
+      "price": "5500",
+      "priceFormatted": "5,500원",
+      "description": "",
+      "recommend": false,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20241209_235/1733729657107hnPdl_JPEG/IMG_2548.jpeg"
+      ]
+    },
+    {
+      "name": "히레2pcs",
+      "price": "3000",
+      "priceFormatted": "3,000원",
+      "description": "",
+      "recommend": false,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20241209_79/1733729631332N0FdO_JPEG/IMG_1899.jpeg"
+      ]
+    },
+    {
+      "name": "우동",
+      "price": "7000",
+      "priceFormatted": "7,000원",
+      "description": "",
+      "recommend": false,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20250321_276/1742542284956SIIF9_JPEG/IMG_1138.jpeg"
+      ]
+    },
+    {
+      "name": "냉우동",
+      "price": "7000",
+      "priceFormatted": "7,000원",
+      "description": "",
+      "recommend": false,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20250321_141/1742542143398IgEXN_JPEG/3472525463182863948_20231013135032694.jpeg"
+      ]
+    },
+    {
+      "name": "냉소바",
+      "price": "7000",
+      "priceFormatted": "7,000원",
+      "description": "",
+      "recommend": false,
+      "images": []
+    },
+    {
+      "name": "새우튀김",
+      "price": "3000",
+      "priceFormatted": "3,000원",
+      "description": "",
+      "recommend": false,
+      "images": [
+        "https://ldb-phinf.pstatic.net/20230304_262/1677935712062PA8U7_JPEG/1-4.jpg"
+      ]
+    }
+  ],
+  "reviewStats": {
+    "total": 708,
+    "textTotal": 623,
+    "score": 0,
+    "microReviews": [
+      "입에서 사르르 녹는 부드러운 히레카츠"
+    ]
+  },
+  "blogReviews": [
+    {
+      "id": "blog_멍석 깔아주면 누워자는 블로그_224037921406_[마산 맛집] 히도: 합성동 돈까스 맛집, 특로스카츠 이거 실화냐?",
+      "title": "[마산 맛집] 히도: 합성동 돈까스 맛집, 특로스카츠 이거 실화냐?",
+      "contents": "마산에서 돈까스 땡길 때는 여기로 가야 합니다. 히도, 이름부터 뭔가 일본 감성 뿜뿜인데 맛은 진짜 제대로예요 인테리어 들어가자마자 느껴지는 건 “깔끔하다.” 전체적으로 우드톤 + 화이트 조명이라 따뜻하면서도 정갈한 느낌이에요. 곳곳에 일본 포스터 및 사진이 있어서 일본이 잘 느껴지고, 테이블 간 간격도 넉넉해서 식사할 때 불편하지 않았어요. 특히 오픈 키친 형태라 돈까스 튀겨지는 소리, 기름 냄새까지 고급스럽게 느껴지는(?!) 그 묘한 만족감이 있음ㅋㅋ 조용하게 식사하기 좋은 분위기라 혼밥 하기도 괜찮고, 데이트 코스로도 무난하게 어울려요 ♀️ 근데... 바닥이 미끄러움ㅋㅋ 진짜 맛있게 먹고 나서 일어나는데 바닥이 엄청 미끄러움. 왜 그런진 모르겠어요ㅋㅋ (기름 때문인가, 물 때문인가…) 다음번엔 조심조심 걸어야겠어요.  우리가 먹은 메뉴 모둠카츠 특로스카츠 두 메뉴 다 인기라 고민했는데 결과적으로 특로스카츠 압승  모둠카츠 모둠은 한 번에 여러 부위를 맛볼 수 있어서 입문자용으로 추천. 등심, 안심, 치즈카츠 조합이라 식감과 맛의 밸런스가 좋아요. 등심은 살짝 탄탄하고 고소한 느낌, 안심은 부드럽고 담백, 치즈 카츠는 뜨거울 때 먹으면 치즈가 쭉~ 늘어나서 진짜 행복함 다만 특로스카츠의 존재감이 너무 강해서 상대적으로 평범하게 느껴질 수는 있어요.  특로스카츠: 이게 바로 진짜다 히도의 시그니처 한입 베자마자 느껴지는 촉촉함 + 부드러움 콤보. 겉은 바삭, 속은 말도 안 되게 부드러워요. 지방도 딱 적당해서 느끼하지 않고, 고기 본연의 맛이 아주 진하게 올라와요. “이건 그냥 밥도둑이 아니라 밥도 살자 수준”ㅋㅋ 모둠카츠도 괜찮았지만, 특로스카츠의 존재감은 진짜 압도적. 부드럽게 씹히면서도 고소함이 꽉 차 있어서 한입 먹고 “와... 이건 좀 다르다” 소리 절로 나왔어요. ✅ 총평 ✔ 특로스카츠는 무조건 드세요 ✔ 지방 적당, 식감 부드러움, 고소함 미쳤음 ✔ 모둠카츠는 무난하게 괜찮음 ✔ 바닥은... 좀 미끄럽지만 맛으로 다 커버됨ㅋㅋ  해시태그 #마산맛집 #히도 #히도돈카츠 #마산히도 #특로스카츠 #모둠카츠 #돈까스맛집 #촉촉한돈까스 #마산밥집 #마산일식맛집 히도 매일 11:00 - 21:00 Last order 20:30 연중무휴",
+      "author": "https://m.blog.naver.com/ssj2151",
+      "date": "3일 전",
+      "url": "https://m.blog.naver.com/ssj2151/224037921406",
+      "images": [],
+      "tags": [],
+      "rank": "1"
+    },
+    {
+      "id": "blog_맛집 세상 정복중 ˚ ༘♡_224037568058_마산 합성동 돈카츠맛집추천 히도",
+      "title": "마산 합성동 돈카츠맛집추천 히도",
+      "contents": "오늘은 합성동에 돈카츠 맛집으로 유명한 히도에 다녀왔다 위치는 삼일교회 맞은편! 입구 앞에 크게 간판이 있어서 찾기 어렵지 않아요 주차장은 따로 없지만 주변 갓길이나 인근 유료 주차장 주차시 1000원 지원! 나는 운좋게 갓길에 주차하고 다녀왔다 내부는 깔끔하고 테이블도 많았다 아기자기한 소품으로 이자카야 분위기 업~ 아기의자도 준비되어 있었다 한켠엔 머리끈, 충전기도 준비되어 있었음 센스 넘치는구만~~~ 자리를 잡고 태블릿으로 주문! 출처 : 네이버 나는 히레카츠 (13,000) 치즈 + 냉우동 세트 (18,000) 주문! 돈카츠는 주문 즉시 조리되어 15~20분 가량 소요됩니다. 양해 부탁드립니다. 돈카츠 소스류는 되도록 덜 자극적인 순서로 드시길 추천드립니다. 레몬> 소금> 와사비> 소스 먹기전 맛있게 먹는법 정독! 먼저 나온 냉우동 시워어어언한 살얼음 가득~! 탱글한 면발이라 씹는맛 제대로~ 뒤이어 나온 치즈카츠와 히레카츠 부드러운 치즈가득 밥, 장국, 소금, 깍두기가 함께 나왔다 치즈 정말 가득이라 넘 부드러움 치즈 폭포 비주얼 굳이죠? 속살 핑크핑크한 히레카츠 구성은 밥+장국+소금+깍두기 똑같음! 첫점은 무조건 소금이쥬? 입안에 가득 퍼지는 고소함! 육즙 가득하고 퍽퍽하지 않아서 맛있었다 와사비 + 소스 조합도 최고~ 부드러워서 넘 좋아요 오늘도 잘먹고 갑니다! 합성동 돈카츠 맛집을 찾는다면 히도 추천합니다~ 월-일 11:00 - 21:00 라스트오더 20:30 주차장 X , 주차지원0 #마산맛집 #창원맛집 #합성동맛집 #마산돈까스 #마산이자카야 #히도 #마산돈가스맛집 #마산맛집추천 #합성동점심",
+      "author": "https://m.blog.naver.com/0nion_ring",
+      "date": "2025.10.11.",
+      "url": "https://m.blog.naver.com/0nion_ring/224037568058",
+      "images": [],
+      "tags": [],
+      "rank": "2"
+    },
+    {
+      "id": "blog_꽃내음 가득한 예쁜 봄_224039410846_마산 합성동 맛집 히도",
+      "title": "마산 합성동 맛집 히도",
+      "contents": "전국에 소문난 마산 돈까스 맛집 맛과 가성비는 물론 분위기까지 잡은 마산 데이트, 창원 데이트 하기에도 좋은 창원 돈까스 맛집! 마산 밥집, 창원 밥집을 찾으신다면 점심, 저녁 식사로 ‘히도’의 히레카츠는 어떠실까요? 마산 합성동 맛집 히도 해니 주소 경남 창원시 마산회원구 산호천동길 226 1층 영업시간 11:00 - 21:00 20:30 라스트오더 전화번호 010-****-**** 주차 합성동 사설주차장 / 가게앞 하천 갓길 주차가능 / 고래주차장이 가장 가까우며 주차권 제시하면 천원 지원 안녕하세요:) 마산 합성동에 위치한 히도 방문해보았습니다 마산 삼일교회 맞은편에 있으며, 주차장은 따로 없어 근처 하천가에 주차했어요 ! 일식당 느낌 낭낭한 외관으로 주기적으로 먹어줘야하는 돈까스 먹으러 왔어요  마산 합성동 맛집 히도 내부 분위기 내부는 분리된 두공간으로 2인•4인의 여럿 좌석들이 있습니다 아기의자도 있어 가족단위로 오셔도 좋을 곳입니다 감각적인 인테리어에 구석구석 보는 즐거움도 있어 데이트 코스로 오셔도 참 좋을 것 같아요 오픈키친으로 요리하시는 모습도 볼 수 있으며, 위생은 걱정 없어요 ^^ 화장실도 내부에 위치해있습니다 마산 합성동 맛집 히도 메뉴 메뉴판 가격 메뉴는 테이블마다 있는 태블릿으로 확인 가능하며, 주문과 결제를 동시에 할 수 있어 편리합니다 다양하게 먹고 싶을때는 세트메뉴를! 메인 돈카츠와 카츠김치나베, 짜글이와 그 외 부타동, 두루치기정식의 식사류도 있어요 우동, 소바, 새우튀김의 사이드류와 하이볼의 주류도 있어 술과 함께 즐기기에도 좋은 곳이랍니다 저희는 히레카츠, 로스+치즈 주문했습니다 테이블에는 수저와 티슈, 물, 컵, 소스가 구비되어 있고, 태블릿 화면에 메뉴마다 간략한 설명이 있어 선택하는데 도움이 많이 되었답니다 ✨✨ 돈카츠는 주문 즉시 조리되어 15~20분 가량 소요되며, 레몬>소금>와사비>소스 순으로 드시는 걸 추천합니다 ⭐️ 영수증 리뷰이벤트 많관부 ~! 연휴때 방문해서 그런지, 점심시간이라 손님들이 정말 많았어요 ! 그래서 음식 나오는데 시간이 꽤 걸렸지만 이렇게 트레이에 예쁘게 한 상 담겨나오는 걸 보면 미소가 .. 메인 돈카츠와 밥, 장국, 소금, 깍두기와 연겨자가 들어있는 그릇에는 돈카츠 소스 넣어 드시면 됩니다 참깨드레싱 뿌려 완성하는 샐러드는 고소한 맛에 맛있게 먹었어요 샐러드는 드레싱이 맛있으면 끝  연겨자가 킥이었던게 보통의 소스들은 먹다보면 물리기 마련인데, 느끼함을 잡아주는 톡 쏘는 맛이 가미되니 끝까지 맛있게... ",
+      "author": "https://m.blog.naver.com/tpseh0612",
+      "date": "2025.10.13.",
+      "url": "https://m.blog.naver.com/tpseh0612/224039410846",
+      "images": [],
+      "tags": [],
+      "rank": "3"
+    }
+  ],
+  "reviewSummaries": [
+    {
+      "author": "https://m.blog.naver.com/ssj2151",
+      "preview": "마산에서 돈까스 땡길 때는 여기로 가야 합니다. 히도, 이름부터 뭔가 일본 감성 뿜뿜인데 맛은 진짜 제대로예요 인테리어 들어가자마자 느껴지는 건 “깔끔하다.” 전체적으로 우드톤 + 화이트 조명이라 따뜻하면서도 정갈한 느낌이에요. 곳곳에 일본 포스터 및 사진이 있어서 일본이 잘 느껴지고, 테이블 간 간격도 넉넉해서 식사할 때 불편하지 않았어요. 특히 오픈 키...",
+      "date": "3일 전"
+    },
+    {
+      "author": "https://m.blog.naver.com/0nion_ring",
+      "preview": "오늘은 합성동에 돈카츠 맛집으로 유명한 히도에 다녀왔다 위치는 삼일교회 맞은편! 입구 앞에 크게 간판이 있어서 찾기 어렵지 않아요 주차장은 따로 없지만 주변 갓길이나 인근 유료 주차장 주차시 1000원 지원! 나는 운좋게 갓길에 주차하고 다녀왔다 내부는 깔끔하고 테이블도 많았다 아기자기한 소품으로 이자카야 분위기 업~ 아기의자도 준비되어 있었다 한켠엔 머리...",
+      "date": "2025.10.11."
+    },
+    {
+      "author": "https://m.blog.naver.com/tpseh0612",
+      "preview": "전국에 소문난 마산 돈까스 맛집 맛과 가성비는 물론 분위기까지 잡은 마산 데이트, 창원 데이트 하기에도 좋은 창원 돈까스 맛집! 마산 밥집, 창원 밥집을 찾으신다면 점심, 저녁 식사로 ‘히도’의 히레카츠는 어떠실까요? 마산 합성동 맛집 히도 해니 주소 경남 창원시 마산회원구 산호천동길 226 1층 영업시간 11:00 - 21:00 20:30 라스트오더 전화...",
+      "date": "2025.10.13."
+    }
+  ],
+  "images": {
+    "menu": [
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250418_254/17449622872009CRsT_JPEG/IMG_3733.jpeg",
+        "description": "모둠카츠",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250401_212/1743496966203K7Q6s_JPEG/IMG_3251.jpeg",
+        "description": "로스카츠",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20230407_61/1680873900181amX8A_JPEG/1679979418460-5.jpg",
+        "description": "히레카츠",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20230407_119/1680873916552G2Lev_JPEG/1679979418460-6.jpg",
+        "description": "치즈카츠",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20230407_269/1680873929652IBN8n_JPEG/1679979418460-4.jpg",
+        "description": "특로스카츠",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20231115_8/17000265125696QPDY_JPEG/IMG_0393.jpeg",
+        "description": "카츠김치나베",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250603_51/1748920727243YNvuv_JPEG/IMG_5058.jpeg",
+        "description": "돼지짜글이",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250703_168/1751517444343d7J85_JPEG/IMG_3808.jpeg",
+        "description": "매운돼지짜글이",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250603_234/1748920736215JYDkF_JPEG/IMG_5062.jpeg",
+        "description": "돼지김치짜글이",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20240323_28/1711186782796vklKd_JPEG/IMG_1692.jpeg",
+        "description": "간장대패두루치기",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20240323_273/1711186800270XRfxm_JPEG/IMG_1697.jpeg",
+        "description": "김치대패두루치기",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250401_215/1743496984056os2lA_JPEG/IMG_3250.jpeg",
+        "description": "SET1.로스+치즈",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20230407_164/16808740503755J8w3_JPEG/1678683026939.jpg",
+        "description": "SET2.히레+치즈",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250401_119/1743497007390W82qj_JPEG/IMG_3246.jpeg",
+        "description": "카츠+우동세트(천원할인메뉴별변동)",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20241209_96/17337250337630KqCj_JPEG/IMG_1138.jpeg",
+        "description": "카츠+우동세트(천원할인메뉴별변동)",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250401_150/1743497032302WAiQ3_JPEG/IMG_3248.jpeg",
+        "description": "카츠+냉우동세트",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250401_272/1743497051954N6NYo_JPEG/IMG_3247.jpeg",
+        "description": "카츠+냉소바세트",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20241209_235/1733729657107hnPdl_JPEG/IMG_2548.jpeg",
+        "description": "치즈2pcs",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20241209_79/1733729631332N0FdO_JPEG/IMG_1899.jpeg",
+        "description": "히레2pcs",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250321_276/1742542284956SIIF9_JPEG/IMG_1138.jpeg",
+        "description": "우동",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250321_141/1742542143398IgEXN_JPEG/3472525463182863948_20231013135032694.jpeg",
+        "description": "냉우동",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20230304_262/1677935712062PA8U7_JPEG/1-4.jpg",
+        "description": "새우튀김",
+        "category": "MENU"
+      }
+    ],
+    "interior": [],
+    "food": [],
+    "all": [
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250418_254/17449622872009CRsT_JPEG/IMG_3733.jpeg",
+        "description": "모둠카츠",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250401_212/1743496966203K7Q6s_JPEG/IMG_3251.jpeg",
+        "description": "로스카츠",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20230407_61/1680873900181amX8A_JPEG/1679979418460-5.jpg",
+        "description": "히레카츠",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20230407_119/1680873916552G2Lev_JPEG/1679979418460-6.jpg",
+        "description": "치즈카츠",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20230407_269/1680873929652IBN8n_JPEG/1679979418460-4.jpg",
+        "description": "특로스카츠",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20231115_8/17000265125696QPDY_JPEG/IMG_0393.jpeg",
+        "description": "카츠김치나베",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250603_51/1748920727243YNvuv_JPEG/IMG_5058.jpeg",
+        "description": "돼지짜글이",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250703_168/1751517444343d7J85_JPEG/IMG_3808.jpeg",
+        "description": "매운돼지짜글이",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250603_234/1748920736215JYDkF_JPEG/IMG_5062.jpeg",
+        "description": "돼지김치짜글이",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20240323_28/1711186782796vklKd_JPEG/IMG_1692.jpeg",
+        "description": "간장대패두루치기",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20240323_273/1711186800270XRfxm_JPEG/IMG_1697.jpeg",
+        "description": "김치대패두루치기",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250401_215/1743496984056os2lA_JPEG/IMG_3250.jpeg",
+        "description": "SET1.로스+치즈",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20230407_164/16808740503755J8w3_JPEG/1678683026939.jpg",
+        "description": "SET2.히레+치즈",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250401_119/1743497007390W82qj_JPEG/IMG_3246.jpeg",
+        "description": "카츠+우동세트(천원할인메뉴별변동)",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20241209_96/17337250337630KqCj_JPEG/IMG_1138.jpeg",
+        "description": "카츠+우동세트(천원할인메뉴별변동)",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250401_150/1743497032302WAiQ3_JPEG/IMG_3248.jpeg",
+        "description": "카츠+냉우동세트",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250401_272/1743497051954N6NYo_JPEG/IMG_3247.jpeg",
+        "description": "카츠+냉소바세트",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20241209_235/1733729657107hnPdl_JPEG/IMG_2548.jpeg",
+        "description": "치즈2pcs",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20241209_79/1733729631332N0FdO_JPEG/IMG_1899.jpeg",
+        "description": "히레2pcs",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250321_276/1742542284956SIIF9_JPEG/IMG_1138.jpeg",
+        "description": "우동",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20250321_141/1742542143398IgEXN_JPEG/3472525463182863948_20231013135032694.jpeg",
+        "description": "냉우동",
+        "category": "MENU"
+      },
+      {
+        "url": "https://ldb-phinf.pstatic.net/20230304_262/1677935712062PA8U7_JPEG/1-4.jpg",
+        "description": "새우튀김",
+        "category": "MENU"
+      }
+    ]
+  },
+  "facilities": {
+    "conveniences": [
+      "포장",
+      "배달",
+      "무선 인터넷",
+      "예약",
+      "유아의자"
+    ],
+    "paymentInfo": [
+      "소비쿠폰(신용·체크카드)",
+      "제로페이"
+    ],
+    "parkingInfo": "마산 삼일교회 맞은편에 있습니다.\n주차장이 따로 없어서 갓길에 주차하시거나\n인근 유료주차장 주차시 주차권 보여주시면 1000원 지원해드립니다~"
+  },
+  "url": "https://map.naver.com/p/entry/place/1768171911",
+  "collectedAt": "2025-10-21T16:37:39.584Z"
+}

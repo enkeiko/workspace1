@@ -1,0 +1,28 @@
+﻿# Dependencies
+node_modules/
+.venv/
+env/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Builds
+dist/
+build/
+out/
+
+# Data
+data/raw/
+data/processed/
+*.csv
+*.parquet
+*.xlsx
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*

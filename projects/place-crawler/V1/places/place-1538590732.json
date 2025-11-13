@@ -1,0 +1,135 @@
+{
+  "id": "1538590732",
+  "name": "통굴통굴 시흥본점",
+  "category": "굴요리",
+  "roadAddress": "경기 시흥시 대골안길 94 1층 통굴통굴",
+  "address": "경기 시흥시 신천동 707-48",
+  "phone": "정보 없음",
+  "rating": 4.62,
+  "reviewCount": 174,
+  "conveniences": [
+    "무선 인터넷",
+    "단체 이용 가능",
+    "포장",
+    "대기공간"
+  ],
+  "paymentInfo": [
+    "소비쿠폰(신용·체크카드)"
+  ],
+  "microReviews": [
+    "오징어숙회로 풍성한 식탁 완성"
+  ],
+  "menus": [
+    {
+      "name": "굴찜(중)",
+      "price": "57,000원",
+      "description": null,
+      "recommend": true
+    },
+    {
+      "name": "조개찜(중)",
+      "price": "67,000원",
+      "description": null,
+      "recommend": true
+    },
+    {
+      "name": "조개찜(소)",
+      "price": "53,000원",
+      "description": null,
+      "recommend": false
+    },
+    {
+      "name": "굴찜(대)",
+      "price": "67,000원",
+      "description": null,
+      "recommend": false
+    },
+    {
+      "name": "조개찜(대)",
+      "price": "77,000원",
+      "description": null,
+      "recommend": false
+    },
+    {
+      "name": "(조개,굴) 찜",
+      "price": "79,000원",
+      "description": null,
+      "recommend": false
+    },
+    {
+      "name": "가리비찜",
+      "price": "63,000원",
+      "description": null,
+      "recommend": false
+    },
+    {
+      "name": "가리비회",
+      "price": "35,000원",
+      "description": null,
+      "recommend": false
+    },
+    {
+      "name": "생굴보쌈",
+      "price": "49,000원",
+      "description": null,
+      "recommend": false
+    },
+    {
+      "name": "생굴회",
+      "price": "32,000원",
+      "description": null,
+      "recommend": false
+    },
+    {
+      "name": "석화회",
+      "price": "35,000원",
+      "description": null,
+      "recommend": false
+    },
+    {
+      "name": "조개탕",
+      "price": "35,000원",
+      "description": null,
+      "recommend": false
+    },
+    {
+      "name": "굴파전",
+      "price": "18,000원",
+      "description": null,
+      "recommend": false
+    },
+    {
+      "name": "굴김치전",
+      "price": "18,000원",
+      "description": null,
+      "recommend": false
+    },
+    {
+      "name": "매생이굴탕",
+      "price": "12,000원",
+      "description": null,
+      "recommend": false
+    },
+    {
+      "name": "바지락칼국수",
+      "price": "8,000원",
+      "description": null,
+      "recommend": false
+    },
+    {
+      "name": "오징어숙회",
+      "price": "12,000원",
+      "description": "통통한 오징어 숙회입니다\n굴찜 기다리시면서 드시기 좋습니다",
+      "recommend": false
+    },
+    {
+      "name": "추가메뉴",
+      "price": "10,000원",
+      "description": "굴찜(10000), 보쌈고기(20000) / 낙지, 가리비, 삐뚤이(소라) - 싯가",
+      "recommend": false
+    }
+  ],
+  "parkingInfo": "신천역1번출구. 문화의거리 쪽으로 쭉 들어오시면 푸르지오5차 아파트 앞에 있습니다",
+  "url": "https://map.naver.com/p/entry/place/1538590732",
+  "collectedAt": "2025-10-21T18:34:09.525Z"
+}

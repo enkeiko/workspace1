@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>네이버 플레이스 수집기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"], textarea {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: 'Consolas', monospace;
+        }
+
+        .button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .button-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .button-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .button-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .button-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .id-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .id-chip {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .id-chip button {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .id-chip button:hover {
+            background: rgba(255,255,255,0.5);
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .status {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .status.active {
+            display: block;
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .log {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .results {
+            margin-top: 20px;
+        }
+
+        .result-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .result-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .result-badge {
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .result-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            gap: 8px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .info-label {
+            font-weight: 600;
+        }
+
+        .help-text {
+            font-size: 13px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .example-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .example-link:hover {
+            text-decoration: underline;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ 네이버 플레이스 수집기</h1>
+            <p>플레이스 ID를 입력하면 자동으로 정보를 수집합니다</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('single')">단일 수집</button>
+            <button class="tab" onclick="switchTab('batch')">배치 수집</button>
+            <button class="tab" onclick="switchTab('l1')">L1 데이터 수집</button>
+            <button class="tab" onclick="switchTab('logs')">디버그 로그</button>
+        </div>
+
+        <div id="single-tab" class="tab-content active">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="placeId">플레이스 ID 입력</label>
+                    <div class="input-wrapper">
+                        <input
+                            type="text"
+                            id="placeId"
+                            placeholder="예: 1768171911"
+                            onkeypress="if(event.key==='Enter') collectSingle()"
+                        >
+                        <button class="button button-primary" onclick="collectSingle()">
+                            🔍 수집하기
+                        </button>
+                    </div>
+                    <div class="help-text">
+                        💡 플레이스 ID는 네이버 지도 URL에서 확인할 수 있습니다<br>
+                        예: https://map.naver.com/p/entry/place/<strong>1768171911</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="batch-tab" class="tab-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="placeIdInput">플레이스 ID 입력</label>
+                    <div class="input-wrapper">
+                        <input
+                            type="text"
+                            id="placeIdInput"
+                            placeholder="ID 입력 후 Enter"
+                            onkeypress="if(event.key==='Enter') addPlaceId()"
+                        >
+                        <button class="button button-secondary" onclick="addPlaceId()">
+                            ➕ 추가
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>또는 여러 개 한 번에 입력 (줄바꿈으로 구분)</label>
+                    <textarea
+                        id="bulkInput"
+                        placeholder="1768171911&#10;1234567890&#10;0987654321"
+                    ></textarea>
+                    <button class="button button-secondary" onclick="addBulkIds()" style="margin-top: 10px;">
+                        📝 일괄 추가
+                    </button>
+                </div>
+
+                <div class="form-group" id="idListContainer" style="display: none;">
+                    <label>수집 목록 (<span id="idCount">0</span>개)</label>
+                    <div class="id-list" id="idList"></div>
+                </div>
+
+                <div class="actions">
+                    <button class="button button-primary" onclick="collectBatch()" id="collectBtn">
+                        🚀 전체 수집 시작
+                    </button>
+                    <button class="button button-secondary" onclick="clearIds()">
+                        🗑️ 목록 지우기
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="status" id="status">
+            <div class="status-header">
+                <div class="spinner" id="spinner"></div>
+                <h3 id="statusTitle">수집 중...</h3>
+            </div>
+            <div class="log" id="log"></div>
+        </div>
+
+        <div id="l1-tab" class="tab-content">
+            <div class="input-section">
+                <h3 style="margin-bottom: 20px;">📊 L1 데이터 수집 및 정렬</h3>
+                <p style="color: #666; margin-bottom: 20px; line-height: 1.6;">
+                    크롤러로 수집한 데이터를 분석 가능한 형태로 정렬하고, 키워드 추출 요소를 체계적으로 분류합니다.
+                </p>
+
+                <div class="form-group">
+                    <label>처리 단계</label>
+                    <ul style="color: #666; font-size: 14px; line-height: 1.8; padding-left: 20px;">
+                        <li>데이터 소스 스캔 및 검증</li>
+                        <li>크롤러 JSON 파일 로딩</li>
+                        <li>주소 파싱 및 지역 정보 추출</li>
+                        <li>키워드 요소 분류 (카테고리, 지역, 메뉴, 속성)</li>
+                        <li>데이터 완성도 평가</li>
+                        <li>우선순위 정렬 및 JSON 저장</li>
+                    </ul>
+                </div>
+
+                <div class="actions">
+                    <button class="button button-primary" onclick="startL1Process()" id="l1Btn">
+                        🚀 L1 처리 시작
+                    </button>
+                </div>
+
+                <div id="l1Results" style="display: none; margin-top: 30px;">
+                    <h4 style="margin-bottom: 15px;">처리 결과</h4>
+                    <div id="l1Summary" style="background: #f8f9fa; padding: 20px; border-radius: 10px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="logs-tab" class="tab-content">
+            <div class="input-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>🔍 디버그 로그</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="button button-secondary" onclick="pauseLogStream()" id="pauseBtn">
+                            ⏸️ 일시정지
+                        </button>
+                        <button class="button button-secondary" onclick="clearLogs()">
+                            🗑️ 로그 지우기
+                        </button>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+                    <label style="display: flex; align-items: center; gap: 5px;">
+                        <input type="checkbox" id="filterDebug" checked onchange="updateLogFilter()">
+                        <span style="font-size: 14px;">🔍 Debug</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px;">
+                        <input type="checkbox" id="filterInfo" checked onchange="updateLogFilter()">
+                        <span style="font-size: 14px;">ℹ️ Info</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px;">
+                        <input type="checkbox" id="filterWarn" checked onchange="updateLogFilter()">
+                        <span style="font-size: 14px;">⚠️ Warn</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px;">
+                        <input type="checkbox" id="filterError" checked onchange="updateLogFilter()">
+                        <span style="font-size: 14px;">❌ Error</span>
+                    </label>
+                </div>
+
+                <div id="debugLog" class="log" style="height: 500px; max-height: 500px;"></div>
+            </div>
+        </div>
+
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        let placeIds = [];
+        let currentResults = [];
+        let logEventSource = null;
+        let logPaused = false;
+        let allLogs = [];
+        let logFilters = {
+            debug: true,
+            info: true,
+            warn: true,
+            error: true
+        };
+
+        // 페이지 로드 시 로그 스트리밍 시작
+        window.addEventListener('load', () => {
+            initLogStream();
+        });
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(tab + '-tab').classList.add('active');
+
+            // 로그 탭으로 전환 시 자동 스크롤
+            if (tab === 'logs') {
+                setTimeout(() => {
+                    const logDiv = document.getElementById('debugLog');
+                    logDiv.scrollTop = logDiv.scrollHeight;
+                }, 100);
+            }
+        }
+
+        // 로그 스트리밍 초기화
+        function initLogStream() {
+            if (logEventSource) {
+                logEventSource.close();
+            }
+
+            logEventSource = new EventSource('http://localhost:3000/logs/stream');
+
+            logEventSource.onmessage = (event) => {
+                if (logPaused) return;
+
+                try {
+                    const log = JSON.parse(event.data);
+                    allLogs.push(log);
+
+                    // 최대 5000개 로그 유지
+                    if (allLogs.length > 5000) {
+                        allLogs.shift();
+                    }
+
+                    appendLogToUI(log);
+                } catch (error) {
+                    console.error('로그 파싱 오류:', error);
+                }
+            };
+
+            logEventSource.onerror = (error) => {
+                console.error('로그 스트리밍 오류:', error);
+            };
+        }
+
+        // UI에 로그 추가
+        function appendLogToUI(log) {
+            if (!logFilters[log.level]) {
+                return;
+            }
+
+            const logDiv = document.getElementById('debugLog');
+            const timestamp = new Date(log.timestamp).toLocaleTimeString('ko-KR');
+
+            const icons = {
+                debug: '🔍',
+                info: 'ℹ️',
+                warn: '⚠️',
+                error: '❌'
+            };
+
+            const colors = {
+                debug: '#6b7280',
+                info: '#10b981',
+                warn: '#f59e0b',
+                error: '#ef4444'
+            };
+
+            const icon = icons[log.level] || '';
+            const color = colors[log.level] || '#e2e8f0';
+
+            let logText = `<span style="color: ${color}">${icon} [${timestamp}] ${log.message}</span>`;
+
+            if (log.data) {
+                logText += `\n<span style="color: #94a3b8">${JSON.stringify(log.data, null, 2)}</span>`;
+            }
+
+            logDiv.innerHTML += logText + '\n';
+
+            // 자동 스크롤 (하단에 있을 때만)
+            if (logDiv.scrollHeight - logDiv.scrollTop - logDiv.clientHeight < 100) {
+                logDiv.scrollTop = logDiv.scrollHeight;
+            }
+        }
+
+        // 로그 필터 업데이트
+        function updateLogFilter() {
+            logFilters.debug = document.getElementById('filterDebug').checked;
+            logFilters.info = document.getElementById('filterInfo').checked;
+            logFilters.warn = document.getElementById('filterWarn').checked;
+            logFilters.error = document.getElementById('filterError').checked;
+
+            // 로그 다시 렌더링
+            const logDiv = document.getElementById('debugLog');
+            logDiv.innerHTML = '';
+
+            allLogs.forEach(log => {
+                appendLogToUI(log);
+            });
+        }
+
+        // 로그 스트림 일시정지/재개
+        function pauseLogStream() {
+            const pauseBtn = document.getElementById('pauseBtn');
+            logPaused = !logPaused;
+
+            if (logPaused) {
+                pauseBtn.innerHTML = '▶️ 재개';
+            } else {
+                pauseBtn.innerHTML = '⏸️ 일시정지';
+            }
+        }
+
+        // 로그 지우기
+        async function clearLogs() {
+            if (!confirm('모든 로그를 지우시겠습니까?')) {
+                return;
+            }
+
+            try {
+                await fetch('http://localhost:3000/logs/clear', { method: 'POST' });
+                allLogs = [];
+                document.getElementById('debugLog').innerHTML = '';
+            } catch (error) {
+                alert('로그 지우기 실패: ' + error.message);
+            }
+        }
+
+        // L1 처리 시작
+        async function startL1Process() {
+            const btn = document.getElementById('l1Btn');
+            btn.disabled = true;
+            btn.innerHTML = '⏳ 처리 중...';
+
+            // 로그 탭으로 자동 전환
+            const logTab = Array.from(document.querySelectorAll('.tab')).find(t => t.textContent.includes('디버그'));
+            if (logTab) {
+                logTab.click();
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/l1/process');
+                const result = await response.json();
+
+                if (result.success) {
+                    // 결과 표시
+                    showL1Results(result);
+                    alert('L1 처리 완료!');
+                } else {
+                    alert('L1 처리 실패: ' + result.error);
+                }
+            } catch (error) {
+                alert('L1 처리 오류: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🚀 L1 처리 시작';
+            }
+        }
+
+        // L1 결과 표시
+        function showL1Results(result) {
+            const resultsDiv = document.getElementById('l1Results');
+            const summaryDiv = document.getElementById('l1Summary');
+
+            const summary = result.summary;
+            const stats = summary.completeness_stats;
+
+            summaryDiv.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 5px;">총 매장 수</div>
+                        <div style="font-size: 24px; color: #667eea;">${summary.total}개</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 5px;">현재 키워드 보유</div>
+                        <div style="font-size: 24px; color: #10b981;">${summary.with_current_keywords}개</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 5px;">평균 완성도</div>
+                        <div style="font-size: 24px; color: #f59e0b;">${summary.avg_completeness.toFixed(1)}점</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 5px;">처리 시간</div>
+                        <div style="font-size: 24px; color: #6b7280;">${summary.elapsed_time}초</div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                    <div style="font-weight: 600; margin-bottom: 10px;">데이터 완성도 분포</div>
+                    <div style="display: flex; gap: 15px;">
+                        <div style="flex: 1; background: #10b981; color: white; padding: 10px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 18px; font-weight: 600;">HIGH</div>
+                            <div>${stats.HIGH}개</div>
+                        </div>
+                        <div style="flex: 1; background: #f59e0b; color: white; padding: 10px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 18px; font-weight: 600;">MEDIUM</div>
+                            <div>${stats.MEDIUM}개</div>
+                        </div>
+                        <div style="flex: 1; background: #ef4444; color: white; padding: 10px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 18px; font-weight: 600;">LOW</div>
+                            <div>${stats.LOW}개</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <a href="#" onclick="viewL1Details(); return false;" class="example-link">
+                        📄 상세 결과 보기 →
+                    </a>
+                </div>
+            `;
+
+            resultsDiv.style.display = 'block';
+        }
+
+        // L1 상세 결과 보기
+        async function viewL1Details() {
+            try {
+                const response = await fetch('http://localhost:3000/l1/results');
+                const result = await response.json();
+
+                if (result.success) {
+                    // 새 창으로 JSON 표시
+                    const win = window.open('', '_blank');
+                    win.document.write('<pre>' + JSON.stringify(result.data, null, 2) + '</pre>');
+                } else {
+                    alert('결과 파일을 찾을 수 없습니다.');
+                }
+            } catch (error) {
+                alert('결과 조회 오류: ' + error.message);
+            }
+        }
+
+        function addPlaceId() {
+            const input = document.getElementById('placeIdInput');
+            const id = input.value.trim();
+
+            if (!id) return;
+
+            if (!/^\d+$/.test(id)) {
+                alert('플레이스 ID는 숫자만 입력 가능합니다.');
+                return;
+            }
+
+            if (placeIds.includes(id)) {
+                alert('이미 추가된 ID입니다.');
+                return;
+            }
+
+            placeIds.push(id);
+            updateIdList();
+            input.value = '';
+        }
+
+        function addBulkIds() {
+            const textarea = document.getElementById('bulkInput');
+            const lines = textarea.value.split('\n');
+
+            let added = 0;
+            lines.forEach(line => {
+                const id = line.trim();
+                if (id && /^\d+$/.test(id) && !placeIds.includes(id)) {
+                    placeIds.push(id);
+                    added++;
+                }
+            });
+
+            if (added > 0) {
+                updateIdList();
+                textarea.value = '';
+                alert(`${added}개의 ID가 추가되었습니다.`);
+            }
+        }
+
+        function removeId(id) {
+            placeIds = placeIds.filter(pid => pid !== id);
+            updateIdList();
+        }
+
+        function updateIdList() {
+            const container = document.getElementById('idListContainer');
+            const list = document.getElementById('idList');
+            const count = document.getElementById('idCount');
+
+            if (placeIds.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'block';
+            count.textContent = placeIds.length;
+
+            list.innerHTML = placeIds.map(id => `
+                <div class="id-chip">
+                    ${id}
+                    <button onclick="removeId('${id}')">×</button>
+                </div>
+            `).join('');
+        }
+
+        function clearIds() {
+            if (placeIds.length === 0) return;
+            if (confirm(`${placeIds.length}개의 ID를 모두 삭제하시겠습니까?`)) {
+                placeIds = [];
+                updateIdList();
+            }
+        }
+
+        function showStatus(title) {
+            const status = document.getElementById('status');
+            const statusTitle = document.getElementById('statusTitle');
+            const spinner = document.getElementById('spinner');
+
+            status.classList.add('active');
+            statusTitle.textContent = title;
+            spinner.style.display = 'block';
+        }
+
+        function hideStatus() {
+            const spinner = document.getElementById('spinner');
+            spinner.style.display = 'none';
+        }
+
+        function addLog(message) {
+            const log = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString('ko-KR');
+            log.textContent += `[${timestamp}] ${message}\n`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function displayResult(data) {
+            const results = document.getElementById('results');
+
+            const card = document.createElement('div');
+            card.className = 'result-card';
+            card.innerHTML = `
+                <div class="result-header">
+                    <div>
+                        <div class="result-title">${data.name}</div>
+                        <div style="color: #666; margin-top: 5px;">${data.category}</div>
+                    </div>
+                    <div class="result-badge">✓ 수집완료</div>
+                </div>
+                <div class="result-info">
+                    <div class="info-item">
+                        <span class="info-label">📍</span>
+                        <span>${data.roadAddress || data.address}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">📞</span>
+                        <span>${data.phone}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">⭐</span>
+                        <span>${data.rating} (리뷰 ${data.reviewCount}개)</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">🍴</span>
+                        <span>메뉴 ${data.menus.length}개</span>
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <a href="${data.url}" target="_blank" class="example-link">
+                        네이버 플레이스에서 보기 →
+                    </a>
+                </div>
+            `;
+
+            results.insertBefore(card, results.firstChild);
+        }
+
+        async function collectSingle() {
+            const id = document.getElementById('placeId').value.trim();
+
+            if (!id) {
+                alert('플레이스 ID를 입력해주세요.');
+                return;
+            }
+
+            if (!/^\d+$/.test(id)) {
+                alert('플레이스 ID는 숫자만 입력 가능합니다.');
+                return;
+            }
+
+            showStatus('수집 중...');
+            document.getElementById('log').textContent = '';
+            addLog(`플레이스 ID ${id} 수집 시작`);
+
+            try {
+                addLog('서버에 요청 중...');
+                const response = await fetch(`http://localhost:3000/scrape/${id}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    addLog('✓ 수집 완료!');
+                    addLog(`파일 저장: ${result.filename}`);
+                    hideStatus();
+                    displayResult(result.data);
+                } else {
+                    addLog(`✗ 오류: ${result.error}`);
+                }
+            } catch (error) {
+                addLog(`✗ 오류: ${error.message}`);
+                addLog('서버가 실행 중인지 확인해주세요.');
+            }
+        }
+
+        async function collectBatch() {
+            if (placeIds.length === 0) {
+                alert('수집할 플레이스 ID를 추가해주세요.');
+                return;
+            }
+
+            showStatus(`배치 수집 중... (0/${placeIds.length})`);
+            document.getElementById('log').textContent = '';
+            document.getElementById('collectBtn').disabled = true;
+
+            for (let i = 0; i < placeIds.length; i++) {
+                const id = placeIds[i];
+                document.getElementById('statusTitle').textContent =
+                    `배치 수집 중... (${i + 1}/${placeIds.length})`;
+
+                addLog(`\n[${i + 1}/${placeIds.length}] ${id} 수집 시작`);
+
+                try {
+                    const response = await fetch(`http://localhost:3000/scrape/${id}`);
+                    const result = await response.json();
+
+                    if (result.success) {
+                        addLog(`✓ ${result.data.name} 수집 완료`);
+                        displayResult(result.data);
+                    } else {
+                        addLog(`✗ 실패: ${result.error}`);
+                    }
+                } catch (error) {
+                    addLog(`✗ 오류: ${error.message}`);
+                }
+
+                // 다음 요청 전 대기
+                if (i < placeIds.length - 1) {
+                    addLog('5초 대기 중...');
+                    await new Promise(resolve => setTimeout(resolve, 5000));
+                }
+            }
+
+            hideStatus();
+            document.getElementById('statusTitle').textContent = '✓ 전체 수집 완료!';
+            addLog('\n✓ 모든 수집 완료!');
+            document.getElementById('collectBtn').disabled = false;
+        }
+    </script>
+</body>
+</html>

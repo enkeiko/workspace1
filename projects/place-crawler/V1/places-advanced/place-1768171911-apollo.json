@@ -1,0 +1,4157 @@
+{
+  "Panorama:7sXvcBzlLULM0GdJeMfXUw==": {
+    "__typename": "Panorama",
+    "id": "7sXvcBzlLULM0GdJeMfXUw==",
+    "pan": "112.26",
+    "tilt": "5.94",
+    "lon": "128.5812812",
+    "lat": "35.2348184",
+    "fov": "62"
+  },
+  "PlaceDetailBase:1768171911": {
+    "__typename": "PlaceDetailBase",
+    "id": "1768171911",
+    "name": "히도",
+    "reviewSettings": {
+      "__typename": "ReviewSettings",
+      "keyword": null,
+      "blog": 1,
+      "cafe": 1,
+      "showVisitorReviewScore": true
+    },
+    "siteId": "sp_fc317f92c5b7c0",
+    "road": "마산 삼일교회 맞은편에 있습니다.\n주차장이 따로 없어서 갓길에 주차하시거나\n인근 유료주차장 주차시 주차권 보여주시면 1000원 지원해드립니다~",
+    "conveniences": [
+      "포장",
+      "배달",
+      "무선 인터넷",
+      "예약",
+      "유아의자"
+    ],
+    "category": "돈가스",
+    "categoryCode": "220812",
+    "categoryCodeList": [
+      "220036",
+      "220038",
+      "220082",
+      "220812",
+      "1004760",
+      "1004380",
+      "1002043",
+      "1005205",
+      "1006737"
+    ],
+    "defaultCategoryCodeList": [
+      "220036",
+      "220038",
+      "220082",
+      "220812"
+    ],
+    "categoryCount": 4,
+    "rcode": "03127105",
+    "roadAddress": "경남 창원시 마산회원구 산호천동길 226 1층",
+    "address": "경남 창원시 마산회원구 양덕동 7-62",
+    "streetPanorama": {
+      "__ref": "Panorama:7sXvcBzlLULM0GdJeMfXUw=="
+    },
+    "isKtis": null,
+    "visitorReviewsTotal": 708,
+    "visitorReviewsScore": 0,
+    "missingInfo": {
+      "__typename": "MissingInfo",
+      "businessType": "restaurant",
+      "isBizHourMissing": true,
+      "isMenuImageMissing": false,
+      "isAccessorMissing": false,
+      "isDescriptionMissing": false,
+      "isConveniencesMissing": false,
+      "needLargeSuggestionBanner": true,
+      "isBoss": false
+    },
+    "hideBusinessHours": false,
+    "hidePrice": false,
+    "microReviews": [
+      "입에서 사르르 녹는 부드러운 히레카츠"
+    ],
+    "paymentInfo": [
+      "소비쿠폰(신용·체크카드)",
+      "제로페이"
+    ],
+    "openingHours": null,
+    "isGoodStore": false,
+    "coordinate": {
+      "__typename": "Coordinate",
+      "x": "128.5813429",
+      "y": "35.2348228",
+      "mapZoomLevel": 12
+    },
+    "poiInfo": {
+      "__typename": "PoiInfo",
+      "polyline": null,
+      "land": null,
+      "polygon": null,
+      "relation": null,
+      "parentRelation": null
+    },
+    "routeUrl": "https://m.search.naver.com/search.naver?where=m&query=%EB%B9%A0%EB%A5%B8%EA%B8%B8%EC%B0%BE%EA%B8%B0&nso_path=placeType%5Eplace%3Bname%5E%3Baddress%5E%3Blatitude%5E%3Blongitude%5E%3Bcode%5E%7Ctype%5Eplace%3Bname%5E%ED%9E%88%EB%8F%84%3Baddress%5E%3Bcode%5E1768171911%3Blongitude%5E128.5813429%3Blatitude%5E35.2348228%7Cobjtype%5Epath%3Bby%5Epubtrans",
+    "virtualPhone": null,
+    "phone": null,
+    "hasMobilePhoneNumber": true,
+    "talktalkUrl": "http://talk.naver.com/wtqz6m1?frm=mnmb",
+    "chatBotUrl": "",
+    "naverBlog": null,
+    "visitorReviewsTextReviewTotal": 623,
+    "beLocalWeek": null,
+    "indoorInfo": null
+  },
+  "Menu:1768171911_0": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "모둠카츠",
+    "price": "15000",
+    "recommend": true,
+    "nameForBlogReview": "모둠카츠",
+    "change": false,
+    "priceType": null,
+    "description": "로스 +히레+치즈 모두 맛보는 메뉴!",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20250418_254/17449622872009CRsT_JPEG/IMG_3733.jpeg"
+    ],
+    "id": "1768171911_0",
+    "index": 0
+  },
+  "Menu:1768171911_1": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "로스카츠",
+    "price": "12000",
+    "recommend": true,
+    "nameForBlogReview": "로스카츠",
+    "change": false,
+    "priceType": null,
+    "description": "",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20250401_212/1743496966203K7Q6s_JPEG/IMG_3251.jpeg"
+    ],
+    "id": "1768171911_1",
+    "index": 1
+  },
+  "Menu:1768171911_2": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "히레카츠",
+    "price": "13000",
+    "recommend": true,
+    "nameForBlogReview": "히레카츠",
+    "change": false,
+    "priceType": null,
+    "description": "",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20230407_61/1680873900181amX8A_JPEG/1679979418460-5.jpg"
+    ],
+    "id": "1768171911_2",
+    "index": 2
+  },
+  "Menu:1768171911_3": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "치즈카츠",
+    "price": "12000",
+    "recommend": true,
+    "nameForBlogReview": "치즈카츠",
+    "change": false,
+    "priceType": null,
+    "description": "",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20230407_119/1680873916552G2Lev_JPEG/1679979418460-6.jpg"
+    ],
+    "id": "1768171911_3",
+    "index": 3
+  },
+  "Menu:1768171911_4": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "특로스카츠",
+    "price": "14000",
+    "recommend": true,
+    "nameForBlogReview": "특로스카츠",
+    "change": false,
+    "priceType": null,
+    "description": "",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20230407_269/1680873929652IBN8n_JPEG/1679979418460-4.jpg"
+    ],
+    "id": "1768171911_4",
+    "index": 4
+  },
+  "Menu:1768171911_5": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "카츠김치나베",
+    "price": "14000",
+    "recommend": false,
+    "nameForBlogReview": "카츠김치나베",
+    "change": false,
+    "priceType": null,
+    "description": "로스카츠가 올라간 김치나베",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20231115_8/17000265125696QPDY_JPEG/IMG_0393.jpeg"
+    ],
+    "id": "1768171911_5",
+    "index": 5
+  },
+  "Menu:1768171911_6": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "돼지짜글이",
+    "price": "8500",
+    "recommend": false,
+    "nameForBlogReview": "돼지짜글이",
+    "change": false,
+    "priceType": null,
+    "description": "2인이상 주문가능합니다. 라면사리 무한리필!",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20250603_51/1748920727243YNvuv_JPEG/IMG_5058.jpeg"
+    ],
+    "id": "1768171911_6",
+    "index": 6
+  },
+  "Menu:1768171911_7": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "매운돼지짜글이",
+    "price": "9000",
+    "recommend": false,
+    "nameForBlogReview": "매운돼지짜글이",
+    "change": false,
+    "priceType": null,
+    "description": "2인이상 주문가능합니다. 라면사리 무한리필!",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20250703_168/1751517444343d7J85_JPEG/IMG_3808.jpeg"
+    ],
+    "id": "1768171911_7",
+    "index": 7
+  },
+  "Menu:1768171911_8": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "돼지김치짜글이",
+    "price": "9500",
+    "recommend": false,
+    "nameForBlogReview": "돼지김치짜글이",
+    "change": false,
+    "priceType": null,
+    "description": "2인이상 주문가능합니다. 라면사리 무한리필!",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20250603_234/1748920736215JYDkF_JPEG/IMG_5062.jpeg"
+    ],
+    "id": "1768171911_8",
+    "index": 8
+  },
+  "Menu:1768171911_9": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "부타동",
+    "price": "12000",
+    "recommend": false,
+    "nameForBlogReview": "부타동",
+    "change": false,
+    "priceType": null,
+    "description": "일본식 대패삼겹살덮밥",
+    "images": [],
+    "id": "1768171911_9",
+    "index": 9
+  },
+  "Menu:1768171911_10": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "간장대패두루치기",
+    "price": "10000",
+    "recommend": false,
+    "nameForBlogReview": "간장대패두루치기",
+    "change": false,
+    "priceType": null,
+    "description": "",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20240323_28/1711186782796vklKd_JPEG/IMG_1692.jpeg"
+    ],
+    "id": "1768171911_10",
+    "index": 10
+  },
+  "Menu:1768171911_11": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "김치대패두루치기",
+    "price": "11000",
+    "recommend": false,
+    "nameForBlogReview": "김치대패두루치기",
+    "change": false,
+    "priceType": null,
+    "description": "",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20240323_273/1711186800270XRfxm_JPEG/IMG_1697.jpeg"
+    ],
+    "id": "1768171911_11",
+    "index": 11
+  },
+  "Menu:1768171911_12": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "SET1.로스+치즈",
+    "price": "17000",
+    "recommend": false,
+    "nameForBlogReview": "SET1.로스+치즈",
+    "change": false,
+    "priceType": null,
+    "description": "",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20250401_215/1743496984056os2lA_JPEG/IMG_3250.jpeg"
+    ],
+    "id": "1768171911_12",
+    "index": 12
+  },
+  "Menu:1768171911_13": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "SET2.히레+치즈",
+    "price": "18000",
+    "recommend": false,
+    "nameForBlogReview": "SET2.히레+치즈",
+    "change": false,
+    "priceType": null,
+    "description": "",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20230407_164/16808740503755J8w3_JPEG/1678683026939.jpg"
+    ],
+    "id": "1768171911_13",
+    "index": 13
+  },
+  "Menu:1768171911_14": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "카츠+우동세트(천원할인메뉴별변동)",
+    "price": "",
+    "recommend": false,
+    "nameForBlogReview": "카츠+우동세트(천원할인메뉴별변동)",
+    "change": true,
+    "priceType": null,
+    "description": "로스,히레,치즈,특로스 우동세트입니다",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20250401_119/1743497007390W82qj_JPEG/IMG_3246.jpeg",
+      "https://ldb-phinf.pstatic.net/20241209_96/17337250337630KqCj_JPEG/IMG_1138.jpeg"
+    ],
+    "id": "1768171911_14",
+    "index": 14
+  },
+  "Menu:1768171911_15": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "카츠+냉우동세트",
+    "price": "",
+    "recommend": false,
+    "nameForBlogReview": "카츠+냉우동세트",
+    "change": true,
+    "priceType": null,
+    "description": "천원 할인된 가격으로 즐기세요!",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20250401_150/1743497032302WAiQ3_JPEG/IMG_3248.jpeg"
+    ],
+    "id": "1768171911_15",
+    "index": 15
+  },
+  "Menu:1768171911_16": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "카츠+냉소바세트",
+    "price": "",
+    "recommend": false,
+    "nameForBlogReview": "카츠+냉소바세트",
+    "change": true,
+    "priceType": null,
+    "description": "천원 할인된 가격으로 즐기세요!",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20250401_272/1743497051954N6NYo_JPEG/IMG_3247.jpeg"
+    ],
+    "id": "1768171911_16",
+    "index": 16
+  },
+  "Menu:1768171911_17": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "치즈2pcs",
+    "price": "5500",
+    "recommend": false,
+    "nameForBlogReview": "치즈2pcs",
+    "change": false,
+    "priceType": null,
+    "description": "",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20241209_235/1733729657107hnPdl_JPEG/IMG_2548.jpeg"
+    ],
+    "id": "1768171911_17",
+    "index": 17
+  },
+  "Menu:1768171911_18": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "히레2pcs",
+    "price": "3000",
+    "recommend": false,
+    "nameForBlogReview": "히레2pcs",
+    "change": false,
+    "priceType": null,
+    "description": "",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20241209_79/1733729631332N0FdO_JPEG/IMG_1899.jpeg"
+    ],
+    "id": "1768171911_18",
+    "index": 18
+  },
+  "Menu:1768171911_19": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "우동",
+    "price": "7000",
+    "recommend": false,
+    "nameForBlogReview": "우동",
+    "change": false,
+    "priceType": null,
+    "description": "",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20250321_276/1742542284956SIIF9_JPEG/IMG_1138.jpeg"
+    ],
+    "id": "1768171911_19",
+    "index": 19
+  },
+  "Menu:1768171911_20": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "냉우동",
+    "price": "7000",
+    "recommend": false,
+    "nameForBlogReview": "냉우동",
+    "change": false,
+    "priceType": null,
+    "description": "",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20250321_141/1742542143398IgEXN_JPEG/3472525463182863948_20231013135032694.jpeg"
+    ],
+    "id": "1768171911_20",
+    "index": 20
+  },
+  "Menu:1768171911_21": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "냉소바",
+    "price": "7000",
+    "recommend": false,
+    "nameForBlogReview": "냉소바",
+    "change": false,
+    "priceType": null,
+    "description": "",
+    "images": [],
+    "id": "1768171911_21",
+    "index": 21
+  },
+  "Menu:1768171911_22": {
+    "__typename": "Menu",
+    "priority": null,
+    "name": "새우튀김",
+    "price": "3000",
+    "recommend": false,
+    "nameForBlogReview": "새우튀김",
+    "change": false,
+    "priceType": null,
+    "description": "",
+    "images": [
+      "https://ldb-phinf.pstatic.net/20230304_262/1677935712062PA8U7_JPEG/1-4.jpg"
+    ],
+    "id": "1768171911_22",
+    "index": 22
+  },
+  "FsasReview:blog_멍석 깔아주면 누워자는 블로그_224037921406_[마산 맛집] 히도: 합성동 돈까스 맛집, 특로스카츠 이거 실화냐?": {
+    "__typename": "FsasReview",
+    "name": "멍석 깔아주면 누워자는 블로그",
+    "type": "blog",
+    "typeName": "블로그",
+    "url": "https://m.blog.naver.com/ssj2151/224037921406",
+    "home": "https://m.blog.naver.com/ssj2151",
+    "id": "blog_멍석 깔아주면 누워자는 블로그_224037921406_[마산 맛집] 히도: 합성동 돈까스 맛집, 특로스카츠 이거 실화냐?",
+    "title": "[마산 맛집] 히도: 합성동 돈까스 맛집, 특로스카츠 이거 실화냐?",
+    "rank": "1",
+    "contents": "마산에서 돈까스 땡길 때는 여기로 가야 합니다. 히도, 이름부터 뭔가 일본 감성 뿜뿜인데 맛은 진짜 제대로예요 인테리어 들어가자마자 느껴지는 건 “깔끔하다.” 전체적으로 우드톤 + 화이트 조명이라 따뜻하면서도 정갈한 느낌이에요. 곳곳에 일본 포스터 및 사진이 있어서 일본이 잘 느껴지고, 테이블 간 간격도 넉넉해서 식사할 때 불편하지 않았어요. 특히 오픈 키친 형태라 돈까스 튀겨지는 소리, 기름 냄새까지 고급스럽게 느껴지는(?!) 그 묘한 만족감이 있음ㅋㅋ 조용하게 식사하기 좋은 분위기라 혼밥 하기도 괜찮고, 데이트 코스로도 무난하게 어울려요 ♀️ 근데... 바닥이 미끄러움ㅋㅋ 진짜 맛있게 먹고 나서 일어나는데 바닥이 엄청 미끄러움. 왜 그런진 모르겠어요ㅋㅋ (기름 때문인가, 물 때문인가…) 다음번엔 조심조심 걸어야겠어요.  우리가 먹은 메뉴 모둠카츠 특로스카츠 두 메뉴 다 인기라 고민했는데 결과적으로 특로스카츠 압승  모둠카츠 모둠은 한 번에 여러 부위를 맛볼 수 있어서 입문자용으로 추천. 등심, 안심, 치즈카츠 조합이라 식감과 맛의 밸런스가 좋아요. 등심은 살짝 탄탄하고 고소한 느낌, 안심은 부드럽고 담백, 치즈 카츠는 뜨거울 때 먹으면 치즈가 쭉~ 늘어나서 진짜 행복함 다만 특로스카츠의 존재감이 너무 강해서 상대적으로 평범하게 느껴질 수는 있어요.  특로스카츠: 이게 바로 진짜다 히도의 시그니처 한입 베자마자 느껴지는 촉촉함 + 부드러움 콤보. 겉은 바삭, 속은 말도 안 되게 부드러워요. 지방도 딱 적당해서 느끼하지 않고, 고기 본연의 맛이 아주 진하게 올라와요. “이건 그냥 밥도둑이 아니라 밥도 살자 수준”ㅋㅋ 모둠카츠도 괜찮았지만, 특로스카츠의 존재감은 진짜 압도적. 부드럽게 씹히면서도 고소함이 꽉 차 있어서 한입 먹고 “와... 이건 좀 다르다” 소리 절로 나왔어요. ✅ 총평 ✔ 특로스카츠는 무조건 드세요 ✔ 지방 적당, 식감 부드러움, 고소함 미쳤음 ✔ 모둠카츠는 무난하게 괜찮음 ✔ 바닥은... 좀 미끄럽지만 맛으로 다 커버됨ㅋㅋ  해시태그 #마산맛집 #히도 #히도돈카츠 #마산히도 #특로스카츠 #모둠카츠 #돈까스맛집 #촉촉한돈까스 #마산밥집 #마산일식맛집 히도 매일 11:00 - 21:00 Last order 20:30 연중무휴",
+    "bySmartEditor3": false,
+    "hasNaverReservation": false,
+    "thumbnailUrl": "http://blogfiles.naver.net/MjAyNTEwMTFfMjYg/MDAxNzYwMTg0NTA4NzM3.XoFnwCUikZq2JTG_m77G0iwi4PEu71VRa7nEX-O99yUg.B_FiiakQz9efKdS0n0ZXiNVBUiJdOPThOpLGDxA1ZWog.JPEG/IMG%A3%DF1732.jpg#900x1200",
+    "thumbnailUrlList": [
+      "http://blogfiles.naver.net/MjAyNTEwMTFfMjYg/MDAxNzYwMTg0NTA4NzM3.XoFnwCUikZq2JTG_m77G0iwi4PEu71VRa7nEX-O99yUg.B_FiiakQz9efKdS0n0ZXiNVBUiJdOPThOpLGDxA1ZWog.JPEG/IMG%A3%DF1732.jpg#900x1200",
+      "http://blogfiles.naver.net/MjAyNTEwMTFfMjk2/MDAxNzYwMTg0NTAyNDE4.NA78u_cwa2WJPma8Z6KK_2A0yLBJIJDQjkjjn20I5H8g.JTfafHSMy7E5_rOqdS_gAWqUH2tK64j3itIHtbzdYAIg.JPEG/IMG%A3%DF1726.jpg#900x676",
+      "http://blogfiles.naver.net/MjAyNTEwMTFfMTc0/MDAxNzYwMTg0NTAzNTA3.LonGP4oigxTmHoPHTKWIJEqCUKOS_vIgXxeyvqdKZ1Ig.FMRxF9C031SKiNlJ-B7BLVtFum3fkTzXlINAE66gPUIg.JPEG/IMG%A3%DF1728.jpg#900x676",
+      "http://blogfiles.naver.net/MjAyNTEwMTFfMTQ0/MDAxNzYwMTg0NTA0ODgz.ebZQOlGDJtmQa-jupBvXJKDdAt-zYfiSCJcmfwCk9NAg.gQIQGSNX8IIgMIpaZd6EL__UfdZCtYwFquCQI9cu3HQg.JPEG/IMG%A3%DF1727.jpg#900x676",
+      "http://blogfiles.naver.net/MjAyNTEwMTFfMjY0/MDAxNzYwMTg0NTA1Nzk2.r1jC1SVtTT33rejDjVd1uC81xLl_I1VVItfRRbXPulwg.akxwEfsXgDi9VeMZ8j3w_qkxruCc_OBH_82HBo6U4eQg.JPEG/IMG%A3%DF1729.jpg#900x676",
+      "http://blogfiles.naver.net/MjAyNTEwMTFfMjcg/MDAxNzYwMTg0NTA2ODEy.bUef5AmEm6Bj9FYvK-plpMxbrGEtW2Mdf-2ZHiReEAcg.Fp-2tUgYjmkXCBZQ4GqgOeCwQFqyV708P4MTQ6T5ulAg.JPEG/IMG%A3%DF1730.jpg#900x676",
+      "http://blogfiles.naver.net/MjAyNTEwMTFfOTgg/MDAxNzYwMTg0NTA3Nzg4.lD7DE2MAVAV7PcGFN8wirDUrAv_t-BpcwLswHqCI5yMg.iSgvDbuDCQRJPsPM-wkvU8ssLJSy6Mgg9YAI5scNIIYg.JPEG/IMG%A3%DF1731.jpg#900x676",
+      "http://blogfiles.naver.net/MjAyNTEwMTFfMjk0/MDAxNzYwMTg0NTAxMjk0.Cwc2y1zH73njqGe5luQyhMtU1Lncw9D053cmyGKLk7Eg.3_rQwjjU4X3mF44KEVAoXoMDpgaEUqdx7k-AtJCk91og.JPEG/IMG%A3%DF1733.jpg#900x1200"
+    ],
+    "thumbnailCount": "8",
+    "date": "3일 전",
+    "isOfficial": false,
+    "isRepresentative": false,
+    "profileImageUrl": "http://blogpfthumb.phinf.naver.net/MjAyMTEwMjJfMTYw/MDAxNjM0ODc0MTg4NTM1.pK9vNK90sb5iahxjfsh-7qfYXAbq7F2y9dqFAf1Bb80g.T0H5Jvj0qOEDpuIu1V5csK8IQLWyeCXS-vJ66vs-ck4g.PNG.ssj2151/profileImage.png",
+    "isVideoThumbnail": false,
+    "reviewId": "224037921406",
+    "authorName": "하율",
+    "createdString": "10.18.토",
+    "bypassToken": null,
+    "buyWithMyMoneyType": null
+  },
+  "FsasReview:blog_맛집 세상 정복중 ˚ ༘♡_224037568058_마산 합성동 돈카츠맛집추천 히도": {
+    "__typename": "FsasReview",
+    "name": "맛집 세상 정복중 ˚ ༘♡",
+    "type": "blog",
+    "typeName": "블로그",
+    "url": "https://m.blog.naver.com/0nion_ring/224037568058",
+    "home": "https://m.blog.naver.com/0nion_ring",
+    "id": "blog_맛집 세상 정복중 ˚ ༘♡_224037568058_마산 합성동 돈카츠맛집추천 히도",
+    "title": "마산 합성동 돈카츠맛집추천 히도",
+    "rank": "2",
+    "contents": "오늘은 합성동에 돈카츠 맛집으로 유명한 히도에 다녀왔다 위치는 삼일교회 맞은편! 입구 앞에 크게 간판이 있어서 찾기 어렵지 않아요 주차장은 따로 없지만 주변 갓길이나 인근 유료 주차장 주차시 1000원 지원! 나는 운좋게 갓길에 주차하고 다녀왔다 내부는 깔끔하고 테이블도 많았다 아기자기한 소품으로 이자카야 분위기 업~ 아기의자도 준비되어 있었다 한켠엔 머리끈, 충전기도 준비되어 있었음 센스 넘치는구만~~~ 자리를 잡고 태블릿으로 주문! 출처 : 네이버 나는 히레카츠 (13,000) 치즈 + 냉우동 세트 (18,000) 주문! 돈카츠는 주문 즉시 조리되어 15~20분 가량 소요됩니다. 양해 부탁드립니다. 돈카츠 소스류는 되도록 덜 자극적인 순서로 드시길 추천드립니다. 레몬> 소금> 와사비> 소스 먹기전 맛있게 먹는법 정독! 먼저 나온 냉우동 시워어어언한 살얼음 가득~! 탱글한 면발이라 씹는맛 제대로~ 뒤이어 나온 치즈카츠와 히레카츠 부드러운 치즈가득 밥, 장국, 소금, 깍두기가 함께 나왔다 치즈 정말 가득이라 넘 부드러움 치즈 폭포 비주얼 굳이죠? 속살 핑크핑크한 히레카츠 구성은 밥+장국+소금+깍두기 똑같음! 첫점은 무조건 소금이쥬? 입안에 가득 퍼지는 고소함! 육즙 가득하고 퍽퍽하지 않아서 맛있었다 와사비 + 소스 조합도 최고~ 부드러워서 넘 좋아요 오늘도 잘먹고 갑니다! 합성동 돈카츠 맛집을 찾는다면 히도 추천합니다~ 월-일 11:00 - 21:00 라스트오더 20:30 주차장 X , 주차지원0 #마산맛집 #창원맛집 #합성동맛집 #마산돈까스 #마산이자카야 #히도 #마산돈가스맛집 #마산맛집추천 #합성동점심",
+    "bySmartEditor3": false,
+    "hasNaverReservation": false,
+    "thumbnailUrl": "http://blogfiles.naver.net/MjAyNTEwMTFfNTgg/MDAxNzYwMTQ4Mjc4ODUw.poBdc4Wijs3MIY-TXgYuPRzcuiviQK3NfjYaPwmzDCgg._EgZbzTXcqFJlzCT1wn4MlB0GEXUA8lNsMxGvHQa_QQg.JPEG/IMG%A3%DF4883.jpg#900x1200",
+    "thumbnailUrlList": [
+      "http://blogfiles.naver.net/MjAyNTEwMTFfNTgg/MDAxNzYwMTQ4Mjc4ODUw.poBdc4Wijs3MIY-TXgYuPRzcuiviQK3NfjYaPwmzDCgg._EgZbzTXcqFJlzCT1wn4MlB0GEXUA8lNsMxGvHQa_QQg.JPEG/IMG%A3%DF4883.jpg#900x1200",
+      "http://blogfiles.naver.net/MjAyNTEwMTFfNzMg/MDAxNzYwMTQ4Mjc2ODc0.LXJvZqVY0sFOJNDwDAROEcZ4VoqS2RCATTGHdU4NFx4g.BpDZWxetSSPAP8EC7mH_gU967dq2FRHAZeSPcayuCrYg.JPEG/IMG%A3%DF4875.jpg#900x1200",
+      "http://blogfiles.naver.net/MjAyNTEwMTFfMjAw/MDAxNzYwMTQ4Mjc2ODYz.02VQRDqUwbnWxyHgrhK8QRqrK_9HAEX1Gru_bdYluuwg.GVC4TEH4Pe7PuWOKJ52SORTja9wZXM95ugqHSxSmQuUg.JPEG/IMG%A3%DF4858.jpg#900x1200",
+      "http://blogfiles.naver.net/MjAyNTEwMTFfMTY0/MDAxNzYwMTQ4Mjc2Nzkx.QxVZDEyMILleA9Hg2sslczjatY6jr3wnlz1ZiTIkuK0g.yWmr-ZxTLkx4bCJHD67vsIKjfD6XXC4m_MOHA48H7iwg.JPEG/IMG%A3%DF4859.jpg#900x1200",
+      "http://blogfiles.naver.net/MjAyNTEwMTFfMTAx/MDAxNzYwMTQ4Mjc3MzU1.PQFITCFlfji4mm2BqL56mp9k2nmk7tFGaSqWmBSRDDMg.-ntYRbdobaiip74Smmua24pIblHQ3Kk-HXF-vwNYTnog.JPEG/IMG%A3%DF4865.jpg#900x1200",
+      "http://blogfiles.naver.net/MjAyNTEwMTFfMTYg/MDAxNzYwMTQ4Mjc2Nzk1.Xj3w2P74NuDleN2X0Y2bzyVaf4go8IiX_bSbPR7yo5kg.VzodpSf1qWkSK7l71SKKsElR5lrgI8CDuLxo2j3AaYYg.JPEG/IMG%A3%DF4862.jpg#900x1200",
+      "http://blogfiles.naver.net/MjAyNTEwMTFfMjA0/MDAxNzYwMTQ4Mjc3MzI3.uLpBRcH1qDCfIuIArlxChzYcBr-1-D61DWjlt1wTCtYg.AU6mkEAX_nnxk74s3nVnIjbbqPBg1XMIt-7k-mqpoqwg.JPEG/IMG%A3%DF4867.jpg#900x1200",
+      "http://blogfiles.naver.net/MjAyNTEwMTFfNDkg/MDAxNzYwMTQ4Mjc3MzY3.XLO3lWv6mvMebez4DGaS-0xS6MYOyUrtDbQJlsmYXMYg.hdVG5Crjz-NvKpp8ZevkGVmEspUfb21wNoEIdvwN_Akg.JPEG/IMG%A3%DF4868.jpg#900x1200",
+      "http://blogfiles.naver.net/MjAyNTEwMTFfMTY1/MDAxNzYwMTQ4Mjc2ODM1.Z0e9JTBqsMxH_31KRA-twYqrNuN69zlJR4AL-X1Zcpsg.n-_Ix8EorIyb-_woOWRqJrcKb977HS0jXAJZn5bijvgg.JPEG/IMG%A3%DF4863.jpg#900x1200",
+      "http://blogfiles.naver.net/MjAyNTEwMTFfNDYg/MDAxNzYwMTQ4Mjc3Mzcw.H_r5_Wo7vEPXb4o09jwpTqebt9fYHDHIE3b_a4Agzbsg.zxTLnSPCKKPcJ19bAxWplc0W2-MQaza76ItGdmMQ47wg.JPEG/IMG%A3%DF4866.jpg#900x1200"
+    ],
+    "thumbnailCount": "27",
+    "date": "2025.10.11.",
+    "isOfficial": false,
+    "isRepresentative": false,
+    "profileImageUrl": "http://blogpfthumb.phinf.naver.net/MjAyNTA1MDZfNjUg/MDAxNzQ2NDk3MzQyMjc2.spnWszPzeptREmHlDP-JxZni0Pigvefmj_GE4li1d8Ig.xr7A9MOIJ4fUm_1x_6S_se9FnZHTOnX9eUFfvO6GtDcg.PNG/profileImage.png",
+    "isVideoThumbnail": false,
+    "reviewId": "224037568058",
+    "authorName": "0nion_ring",
+    "createdString": "10.11.토",
+    "bypassToken": null,
+    "buyWithMyMoneyType": null
+  },
+  "FsasReview:blog_꽃내음 가득한 예쁜 봄_224039410846_마산 합성동 맛집 히도": {
+    "__typename": "FsasReview",
+    "name": "꽃내음 가득한 예쁜 봄",
+    "type": "blog",
+    "typeName": "블로그",
+    "url": "https://m.blog.naver.com/tpseh0612/224039410846",
+    "home": "https://m.blog.naver.com/tpseh0612",
+    "id": "blog_꽃내음 가득한 예쁜 봄_224039410846_마산 합성동 맛집 히도",
+    "title": "마산 합성동 맛집 히도",
+    "rank": "3",
+    "contents": "전국에 소문난 마산 돈까스 맛집 맛과 가성비는 물론 분위기까지 잡은 마산 데이트, 창원 데이트 하기에도 좋은 창원 돈까스 맛집! 마산 밥집, 창원 밥집을 찾으신다면 점심, 저녁 식사로 ‘히도’의 히레카츠는 어떠실까요? 마산 합성동 맛집 히도 해니 주소 경남 창원시 마산회원구 산호천동길 226 1층 영업시간 11:00 - 21:00 20:30 라스트오더 전화번호 010-****-**** 주차 합성동 사설주차장 / 가게앞 하천 갓길 주차가능 / 고래주차장이 가장 가까우며 주차권 제시하면 천원 지원 안녕하세요:) 마산 합성동에 위치한 히도 방문해보았습니다 마산 삼일교회 맞은편에 있으며, 주차장은 따로 없어 근처 하천가에 주차했어요 ! 일식당 느낌 낭낭한 외관으로 주기적으로 먹어줘야하는 돈까스 먹으러 왔어요  마산 합성동 맛집 히도 내부 분위기 내부는 분리된 두공간으로 2인•4인의 여럿 좌석들이 있습니다 아기의자도 있어 가족단위로 오셔도 좋을 곳입니다 감각적인 인테리어에 구석구석 보는 즐거움도 있어 데이트 코스로 오셔도 참 좋을 것 같아요 오픈키친으로 요리하시는 모습도 볼 수 있으며, 위생은 걱정 없어요 ^^ 화장실도 내부에 위치해있습니다 마산 합성동 맛집 히도 메뉴 메뉴판 가격 메뉴는 테이블마다 있는 태블릿으로 확인 가능하며, 주문과 결제를 동시에 할 수 있어 편리합니다 다양하게 먹고 싶을때는 세트메뉴를! 메인 돈카츠와 카츠김치나베, 짜글이와 그 외 부타동, 두루치기정식의 식사류도 있어요 우동, 소바, 새우튀김의 사이드류와 하이볼의 주류도 있어 술과 함께 즐기기에도 좋은 곳이랍니다 저희는 히레카츠, 로스+치즈 주문했습니다 테이블에는 수저와 티슈, 물, 컵, 소스가 구비되어 있고, 태블릿 화면에 메뉴마다 간략한 설명이 있어 선택하는데 도움이 많이 되었답니다 ✨✨ 돈카츠는 주문 즉시 조리되어 15~20분 가량 소요되며, 레몬>소금>와사비>소스 순으로 드시는 걸 추천합니다 ⭐️ 영수증 리뷰이벤트 많관부 ~! 연휴때 방문해서 그런지, 점심시간이라 손님들이 정말 많았어요 ! 그래서 음식 나오는데 시간이 꽤 걸렸지만 이렇게 트레이에 예쁘게 한 상 담겨나오는 걸 보면 미소가 .. 메인 돈카츠와 밥, 장국, 소금, 깍두기와 연겨자가 들어있는 그릇에는 돈카츠 소스 넣어 드시면 됩니다 참깨드레싱 뿌려 완성하는 샐러드는 고소한 맛에 맛있게 먹었어요 샐러드는 드레싱이 맛있으면 끝  연겨자가 킥이었던게 보통의 소스들은 먹다보면 물리기 마련인데, 느끼함을 잡아주는 톡 쏘는 맛이 가미되니 끝까지 맛있게... ",
+    "bySmartEditor3": false,
+    "hasNaverReservation": false,
+    "thumbnailUrl": "http://blogfiles.naver.net/MjAyNTEwMTNfODAg/MDAxNzYwMzE2MjU2NDQ3.UCI_bfBSwxLrWk3mKVZZQy92lnldxh06AucmGYUqhecg.mKmCOFwZxtm_Ak8GvqGawrFQKD6MgMcCo07RyCiSZ28g.JPEG/IMG%A3%DF2907.JPG#4284x4284",
+    "thumbnailUrlList": [
+      "http://blogfiles.naver.net/MjAyNTEwMTNfODAg/MDAxNzYwMzE2MjU2NDQ3.UCI_bfBSwxLrWk3mKVZZQy92lnldxh06AucmGYUqhecg.mKmCOFwZxtm_Ak8GvqGawrFQKD6MgMcCo07RyCiSZ28g.JPEG/IMG%A3%DF2907.JPG#4284x4284",
+      "http://blogfiles.naver.net/MjAyNTEwMTNfNjUg/MDAxNzYwMzIzMDE3ODc5.RZiKHvsywKqXaq4mJkl5yjHPWbpqAyGN_WZ0ixXKaZkg.OMBpSgM-zBufSb_g9PZmdZ5cursRjZer24Gl2sqoiIgg.JPEG/IMG%A3%DF2932.JPG#3000x3000",
+      "http://blogfiles.naver.net/MjAyNTEwMTNfNjUg/MDAxNzYwMzIzMDIwNzI5.X6Vf80_lCEUWjrFHjd5XiiPDkgXQI6PgO_5nWSrHwbMg.ZkcIAGFcTE2o59PqavRGKM8vBSrnawIoH0s8KL2rnJAg.JPEG/IMG%A3%DF2931.JPG#3000x3000",
+      "http://blogfiles.naver.net/MjAyNTEwMTNfNzEg/MDAxNzYwMzIzMDIzNDMw.S_ef6Wbccas84os_H_V0sM1TtnwNOxYGTJCLcM5ptsEg.hENHoYsrT7QlwGwNJIUnHjzwoj1LX6lD8U4ULzxpTYYg.JPEG/IMG%A3%DF2928.JPG#3000x3000",
+      "http://blogfiles.naver.net/MjAyNTEwMTNfMTYz/MDAxNzYwMzE2MjUzOTE4.-akLsoSryFZcheFT6QjeGI1ymnnHIDPzxcRiHvxmRmsg.YIc5dOHwwfWoxEprjs00vNr4mOKnIX4FuBGLZ5Euk0Yg.JPEG/IMG%A3%DF2927.JPG#4284x4284",
+      "http://blogfiles.naver.net/MjAyNTEwMTNfMTYg/MDAxNzYwMzIzMDI2MjQx.a57xSUYzyOrtgKexnc5GsQU7adI4llXdByEsph76o-og.BzTLm6flEpb2QoRiJB7CyDjVhiH7BC76OhWf3u1Z9NQg.JPEG/IMG%A3%DF2929.JPG#3000x3000",
+      "http://blogfiles.naver.net/MjAyNTEwMTNfMjI0/MDAxNzYwMzIzMDQxMjUz.HG3-LQr9BEmsMQaZqvyeRwhP4lkmJHFiaFJGgkCyfOAg.ONfm19oqIaK1q6EHpuvuZFubzSd2Jsn0uhyyNd7ycnIg.JPEG/IMG%A3%DF2930.JPG#3000x3000",
+      "http://blogfiles.naver.net/MjAyNTEwMTNfMjYx/MDAxNzYwMzIzMDQ0MTE4.tpwmfq0qUyy5Q0xCxKBzgcH6JZJaeHvHCqi480VGS30g.z1oXLt0u8SwdD7cbJI-OH2p54jWCavs3vJEf0gcS_Iog.JPEG/IMG%A3%DF2896.JPG#3000x3000",
+      "http://blogfiles.naver.net/MjAyNTEwMTNfODMg/MDAxNzYwMzE2MjE0NzAw.taywO2mUm7dvg68N_TeXB_p6LsYL0RFGhw1JSJ_S6HUg.9H9m4FUfwE0lBkG3x73V8mXhO0wLHK_2j2PmkKrpeWMg.JPEG/IMG%A3%DF2877.JPG#4284x4284",
+      "http://blogfiles.naver.net/MjAyNTEwMTNfNDYg/MDAxNzYwMzIzMDQ2NzUz.wGTecsbjZfsb1JqcCpIeWkvjQdi1H0zTHTKFMRqQLr8g.fxtAC6v8AgW12O_Xhis9lMnLxG9upMgp6cyM6T4P8l4g.JPEG/IMG%A3%DF2880.JPG#3000x3000"
+    ],
+    "thumbnailCount": "43",
+    "date": "2025.10.13.",
+    "isOfficial": false,
+    "isRepresentative": false,
+    "profileImageUrl": "http://blogpfthumb.phinf.naver.net/MjAyNTAzMDNfMTQx/MDAxNzQxMDEzMDEzNDc4.RTUMOnK7dW4Plk8MROmQLM1izUJJCdXq_2zzirNgh1Eg.iM2Iup-zrH31gLakn3e309az92X6ni_XL5pt1eNWxckg.JPEG/profileImage.jpg",
+    "isVideoThumbnail": false,
+    "reviewId": "224039410846",
+    "authorName": "해니",
+    "createdString": "10.13.월",
+    "bypassToken": null,
+    "buyWithMyMoneyType": null
+  },
+  "VisitorReviewStatsResult:1768171911": {
+    "__typename": "VisitorReviewStatsResult",
+    "id": 1768171911,
+    "name": null,
+    "review": {
+      "__typename": "VisitorReviewStats",
+      "avgRating": 0,
+      "totalCount": 708,
+      "scores": [],
+      "imageReviewCount": 517,
+      "authorCount": 0
+    },
+    "analysis": {
+      "__typename": "VisitorReviewStatsAnalysis",
+      "themes": [
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "code": "taste",
+          "label": "맛",
+          "count": 535
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "code": "total",
+          "label": "만족도",
+          "count": 294
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "code": "service",
+          "label": "서비스",
+          "count": 87
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "code": "amount",
+          "label": "음식량",
+          "count": 63
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "code": "mood",
+          "label": "분위기",
+          "count": 58
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "code": "menu",
+          "label": "메뉴",
+          "count": 21
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "code": "location",
+          "label": "위치",
+          "count": 13
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "code": "cleanliness",
+          "label": "청결도",
+          "count": 10
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "code": "purpose",
+          "label": "목적",
+          "count": 10
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "code": "price",
+          "label": "가격",
+          "count": 7
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "code": "waitingtime",
+          "label": "대기시간",
+          "count": 6
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "code": "parking",
+          "label": "주차",
+          "count": 4
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "code": "delivery",
+          "label": "배달",
+          "count": 2
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "code": "naver",
+          "label": "예약",
+          "count": 1
+        }
+      ],
+      "menus": [
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "돈까스",
+          "count": 119
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "치즈",
+          "count": 67
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "고기",
+          "count": 61
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "히레카츠",
+          "count": 44
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "치즈돈까스",
+          "count": 38
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "우동",
+          "count": 31
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "로스카츠",
+          "count": 24
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "샐러드",
+          "count": 19
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "안심",
+          "count": 19
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "튀김",
+          "count": 19
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "냉우동",
+          "count": 18
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "등심",
+          "count": 10
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "짜글이",
+          "count": 10
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "부타동",
+          "count": 7
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "안심돈까스",
+          "count": 5
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "하이볼",
+          "count": 5
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "깍두기",
+          "count": 4
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "새우",
+          "count": 4
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "새우튀김",
+          "count": 4
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "일식돈까스",
+          "count": 3
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "가브리살",
+          "count": 2
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "냉모밀",
+          "count": 2
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "덮밥",
+          "count": 2
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "두루치기",
+          "count": 2
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "라면",
+          "count": 2
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "콜라",
+          "count": 2
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "가라아게",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "가츠동",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "경양식돈가스",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "교자",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "김치우동",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "냄비우동",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "돈까스덮밥",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "돼지짜글이",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "등심카츠",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "막국수",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "만두",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "미소된장국",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "밥집",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "불닭",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "비빔만두",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "수육",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "어묵",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "얼그레이",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "왕새우",
+          "count": 1
+        },
+        {
+          "__typename": "VisitorReviewStatsAnalysisThemes",
+          "label": "치킨",
+          "count": 1
+        }
+      ],
+      "votedKeyword": {
+        "__typename": "VisitorReviewStatsAnalysisVoteKeyword",
+        "totalCount": 2746,
+        "reviewCount": 703,
+        "userCount": 641,
+        "details": [
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "food_good",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/face_savoring_food20220119222022.png",
+            "iconCode": "face_savoring_food",
+            "displayName": "음식이 맛있어요",
+            "count": 653,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "fresh",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/leaf20220119222023.png",
+            "iconCode": "leaf",
+            "displayName": "재료가 신선해요",
+            "count": 320,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "kind",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/beating_heart20220119222223.png",
+            "iconCode": "beating_heart",
+            "displayName": "친절해요",
+            "count": 300,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "interior_cool",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/couch_and_lamp20220119222025.png",
+            "iconCode": "couch_and_lamp",
+            "displayName": "인테리어가 멋져요",
+            "count": 270,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "large",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/steamed_rice20220119222024.png",
+            "iconCode": "steamed_rice",
+            "displayName": "양이 많아요",
+            "count": 224,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "spacious",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/eyes20220119222026.png",
+            "iconCode": "eyes",
+            "displayName": "매장이 넓어요",
+            "count": 196,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "store_clean",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/sparkles20220119222028.png",
+            "iconCode": "sparkles",
+            "displayName": "매장이 청결해요",
+            "count": 178,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "eat_alone",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/rice_ball20220119222026.png",
+            "iconCode": "rice_ball",
+            "displayName": "혼밥하기 좋아요",
+            "count": 135,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "special_menu",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/cook20220119222024.png",
+            "iconCode": "cook",
+            "displayName": "특별한 메뉴가 있어요",
+            "count": 115,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "price_cheap",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/coin20220119222025.png",
+            "iconCode": "coin",
+            "displayName": "가성비가 좋아요",
+            "count": 80,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "menu_good",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/green_heart20220119222224.png",
+            "iconCode": "green_heart",
+            "displayName": "메뉴 구성이 알차요",
+            "count": 44,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "cozy",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/face_smiling20220119222244.png",
+            "iconCode": "face_smiling",
+            "displayName": "아늑해요",
+            "count": 41,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "meat_good",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/meat_cut20220119224257.png",
+            "iconCode": "meat_cut",
+            "displayName": "고기 질이 좋아요",
+            "count": 39,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "atmosphere_calm",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/face_relieved20220119222233.png",
+            "iconCode": "face_relieved",
+            "displayName": "차분한 분위기예요",
+            "count": 20,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "toilet_clean",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/restroom20220119222222.png",
+            "iconCode": "restroom",
+            "displayName": "화장실이 깨끗해요",
+            "count": 20,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "music_good",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/musical_note20220119222233.png",
+            "iconCode": "musical_note",
+            "displayName": "음악이 좋아요",
+            "count": 16,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "together",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/busts_in_silhouette20220119222027.png",
+            "iconCode": "busts_in_silhouette",
+            "displayName": "단체모임 하기 좋아요",
+            "count": 14,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "talk_good",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/speaking_head20220119222227.png",
+            "iconCode": "speaking_head",
+            "displayName": "대화하기 좋아요",
+            "count": 13,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "less_smell",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/nose20220325175453.png",
+            "iconCode": "nose",
+            "displayName": "잡내가 적어요",
+            "count": 10,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "sidedish_good",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/bento_box20220119222224.png",
+            "iconCode": "bento_box",
+            "displayName": "반찬이 잘 나와요",
+            "count": 10,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "special_day",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/bouquet20220119222223.png",
+            "iconCode": "bouquet",
+            "displayName": "특별한 날 가기 좋아요",
+            "count": 9,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "view_good",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/framed_picture20220119222027.png",
+            "iconCode": "framed_picture",
+            "displayName": "뷰가 좋아요",
+            "count": 7,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "parking_easy",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/park_sign20220119222222.png",
+            "iconCode": "park_sign",
+            "displayName": "주차하기 편해요",
+            "count": 6,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "photo_good",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/camera_with_flash20220119222227.png",
+            "iconCode": "camera_with_flash",
+            "displayName": "사진이 잘 나와요",
+            "count": 5,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "taste_healthy",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/leaf20220119222023.png",
+            "iconCode": "leaf",
+            "displayName": "건강한 맛이에요",
+            "count": 4,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "kid_good",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/baby_face20220119224307.png",
+            "iconCode": "baby_face",
+            "displayName": "아이와 가기 좋아요",
+            "count": 3,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "price_worthy",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/gem_stone20220119222239.png",
+            "iconCode": "gem_stone",
+            "displayName": "비싼 만큼 가치있어요",
+            "count": 3,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "comfy",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/couch20220119222228.png",
+            "iconCode": "couch",
+            "displayName": "좌석이 편해요",
+            "count": 2,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "food_fast",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/stopwatch20220119222225.png",
+            "iconCode": "stopwatch",
+            "displayName": "음식이 빨리 나와요",
+            "count": 2,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "concept_unique",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/light_bulb20220119222315.png",
+            "iconCode": "light_bulb",
+            "displayName": "컨셉이 독특해요",
+            "count": 1,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "course_good",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/artist_palette20220119222240.png",
+            "iconCode": "artist_palette",
+            "displayName": "코스요리가 알차요",
+            "count": 1,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "local_taste",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/face_with_thumbsup20220119222236.png",
+            "iconCode": "face_with_thumbsup",
+            "displayName": "현지 맛에 가까워요",
+            "count": 1,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "packaging_clean",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/wrapped_gift20220119222229.png",
+            "iconCode": "wrapped_gift",
+            "displayName": "포장이 깔끔해요",
+            "count": 1,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "stay_long",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/face_relieved20220119222233.png",
+            "iconCode": "face_relieved",
+            "displayName": "오래 머무르기 좋아요",
+            "count": 1,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "study_good",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/laptop20220119222228.png",
+            "iconCode": "laptop",
+            "displayName": "집중하기 좋아요",
+            "count": 1,
+            "previousRank": null
+          },
+          {
+            "__typename": "VisitorReviewStatsAnalysisVoteKeywordDetail",
+            "category": null,
+            "code": "ventilation_good",
+            "iconUrl": "https://ssl.pstatic.net/static/pup/emoji/wind20220325175453.png",
+            "iconCode": "wind",
+            "displayName": "환기가 잘 돼요",
+            "count": 1,
+            "previousRank": null
+          }
+        ]
+      }
+    },
+    "visitorReviewsTotal": 708,
+    "ratingReviewsTotal": 55
+  },
+  "InnerRoute:2050019": {
+    "__typename": "InnerRoute",
+    "id": "2050019",
+    "name": "20"
+  },
+  "InnerRoute:2050021": {
+    "__typename": "InnerRoute",
+    "id": "2050021",
+    "name": "21"
+  },
+  "InnerRoute:2050122": {
+    "__typename": "InnerRoute",
+    "id": "2050122",
+    "name": "102"
+  },
+  "InnerRoute:2050134": {
+    "__typename": "InnerRoute",
+    "id": "2050134",
+    "name": "109"
+  },
+  "InnerRoute:2050164": {
+    "__typename": "InnerRoute",
+    "id": "2050164",
+    "name": "162"
+  },
+  "InnerRoute:2050025": {
+    "__typename": "InnerRoute",
+    "id": "2050025",
+    "name": "23"
+  },
+  "InnerRoute:2050045": {
+    "__typename": "InnerRoute",
+    "id": "2050045",
+    "name": "40"
+  },
+  "InnerRoute:2050047": {
+    "__typename": "InnerRoute",
+    "id": "2050047",
+    "name": "41"
+  },
+  "InnerRoute:2050049": {
+    "__typename": "InnerRoute",
+    "id": "2050049",
+    "name": "42"
+  },
+  "InnerRoute:2050051": {
+    "__typename": "InnerRoute",
+    "id": "2050051",
+    "name": "44"
+  },
+  "InnerRoute:2050053": {
+    "__typename": "InnerRoute",
+    "id": "2050053",
+    "name": "45"
+  },
+  "InnerRoute:2050059": {
+    "__typename": "InnerRoute",
+    "id": "2050059",
+    "name": "50"
+  },
+  "InnerRoute:2050075": {
+    "__typename": "InnerRoute",
+    "id": "2050075",
+    "name": "60"
+  },
+  "InnerRoute:2050077": {
+    "__typename": "InnerRoute",
+    "id": "2050077",
+    "name": "61"
+  },
+  "InnerRoute:20030428": {
+    "__typename": "InnerRoute",
+    "id": "20030428",
+    "name": "61-1"
+  },
+  "InnerRoute:2050079": {
+    "__typename": "InnerRoute",
+    "id": "2050079",
+    "name": "62"
+  },
+  "InnerRoute:2050083": {
+    "__typename": "InnerRoute",
+    "id": "2050083",
+    "name": "64"
+  },
+  "InnerRoute:11056310": {
+    "__typename": "InnerRoute",
+    "id": "11056310",
+    "name": "64-1"
+  },
+  "InnerRoute:2050085": {
+    "__typename": "InnerRoute",
+    "id": "2050085",
+    "name": "65"
+  },
+  "InnerRoute:20030425": {
+    "__typename": "InnerRoute",
+    "id": "20030425",
+    "name": "65-1"
+  },
+  "InnerRoute:20030422": {
+    "__typename": "InnerRoute",
+    "id": "20030422",
+    "name": "65-2"
+  },
+  "InnerRoute:2050089": {
+    "__typename": "InnerRoute",
+    "id": "2050089",
+    "name": "72"
+  },
+  "InnerRoute:2050093": {
+    "__typename": "InnerRoute",
+    "id": "2050093",
+    "name": "73"
+  },
+  "InnerRoute:2050095": {
+    "__typename": "InnerRoute",
+    "id": "2050095",
+    "name": "74"
+  },
+  "InnerRoute:2050101": {
+    "__typename": "InnerRoute",
+    "id": "2050101",
+    "name": "75"
+  },
+  "InnerRoute:2050105": {
+    "__typename": "InnerRoute",
+    "id": "2050105",
+    "name": "76"
+  },
+  "InnerRoute:2050111": {
+    "__typename": "InnerRoute",
+    "id": "2050111",
+    "name": "78"
+  },
+  "InnerRoute:2050113": {
+    "__typename": "InnerRoute",
+    "id": "2050113",
+    "name": "80"
+  },
+  "InnerRoute:11056326": {
+    "__typename": "InnerRoute",
+    "id": "11056326",
+    "name": "277"
+  },
+  "InnerRoute:11056334": {
+    "__typename": "InnerRoute",
+    "id": "11056334",
+    "name": "3002"
+  },
+  "InnerRoute:20019132": {
+    "__typename": "InnerRoute",
+    "id": "20019132",
+    "name": "113-02"
+  },
+  "InnerRoute:20019196": {
+    "__typename": "InnerRoute",
+    "id": "20019196",
+    "name": "113-04"
+  },
+  "InnerRoute:20019131": {
+    "__typename": "InnerRoute",
+    "id": "20019131",
+    "name": "113-05"
+  },
+  "InnerRoute:20019130": {
+    "__typename": "InnerRoute",
+    "id": "20019130",
+    "name": "113-07"
+  },
+  "InnerRoute:20019166": {
+    "__typename": "InnerRoute",
+    "id": "20019166",
+    "name": "113-08"
+  },
+  "InnerRoute:20019129": {
+    "__typename": "InnerRoute",
+    "id": "20019129",
+    "name": "113-09"
+  },
+  "InnerRoute:20019198": {
+    "__typename": "InnerRoute",
+    "id": "20019198",
+    "name": "113-21"
+  },
+  "InnerRoute:20019195": {
+    "__typename": "InnerRoute",
+    "id": "20019195",
+    "name": "113-23"
+  },
+  "InnerRoute:20019182": {
+    "__typename": "InnerRoute",
+    "id": "20019182",
+    "name": "113-24"
+  },
+  "InnerRoute:20019199": {
+    "__typename": "InnerRoute",
+    "id": "20019199",
+    "name": "113-26"
+  },
+  "InnerRoute:20019179": {
+    "__typename": "InnerRoute",
+    "id": "20019179",
+    "name": "113-27"
+  },
+  "InnerRoute:20019262": {
+    "__typename": "InnerRoute",
+    "id": "20019262",
+    "name": "113-29"
+  },
+  "InnerRoute:20019177": {
+    "__typename": "InnerRoute",
+    "id": "20019177",
+    "name": "113-30"
+  },
+  "InnerRoute:20019181": {
+    "__typename": "InnerRoute",
+    "id": "20019181",
+    "name": "113-32"
+  },
+  "InnerRoute:20019197": {
+    "__typename": "InnerRoute",
+    "id": "20019197",
+    "name": "113-34"
+  },
+  "InnerRoute:20019265": {
+    "__typename": "InnerRoute",
+    "id": "20019265",
+    "name": "113-35"
+  },
+  "InnerRoute:20019074": {
+    "__typename": "InnerRoute",
+    "id": "20019074",
+    "name": "113-40"
+  },
+  "InnerRoute:20019263": {
+    "__typename": "InnerRoute",
+    "id": "20019263",
+    "name": "113-41"
+  },
+  "InnerRoute:20019165": {
+    "__typename": "InnerRoute",
+    "id": "20019165",
+    "name": "113-50"
+  },
+  "InnerRoute:20019200": {
+    "__typename": "InnerRoute",
+    "id": "20019200",
+    "name": "113-51"
+  },
+  "InnerRoute:20019264": {
+    "__typename": "InnerRoute",
+    "id": "20019264",
+    "name": "113-52"
+  },
+  "InnerRoute:20019173": {
+    "__typename": "InnerRoute",
+    "id": "20019173",
+    "name": "113-54"
+  },
+  "InnerRoute:20019171": {
+    "__typename": "InnerRoute",
+    "id": "20019171",
+    "name": "113-56"
+  },
+  "InnerRoute:20019187": {
+    "__typename": "InnerRoute",
+    "id": "20019187",
+    "name": "113-58"
+  },
+  "InnerRoute:20019268": {
+    "__typename": "InnerRoute",
+    "id": "20019268",
+    "name": "113-59"
+  },
+  "InnerRoute:20019270": {
+    "__typename": "InnerRoute",
+    "id": "20019270",
+    "name": "113-60"
+  },
+  "InnerRoute:20019266": {
+    "__typename": "InnerRoute",
+    "id": "20019266",
+    "name": "113-71"
+  },
+  "InnerRoute:20019185": {
+    "__typename": "InnerRoute",
+    "id": "20019185",
+    "name": "113-72"
+  },
+  "InnerRoute:20019168": {
+    "__typename": "InnerRoute",
+    "id": "20019168",
+    "name": "113-74"
+  },
+  "InnerRoute:20019167": {
+    "__typename": "InnerRoute",
+    "id": "20019167",
+    "name": "113-75"
+  },
+  "InnerRoute:20019169": {
+    "__typename": "InnerRoute",
+    "id": "20019169",
+    "name": "113-79"
+  },
+  "InnerRoute:20019267": {
+    "__typename": "InnerRoute",
+    "id": "20019267",
+    "name": "113-81"
+  },
+  "InnerRoute:20019104": {
+    "__typename": "InnerRoute",
+    "id": "20019104",
+    "name": "113-83"
+  },
+  "InnerRoute:20019269": {
+    "__typename": "InnerRoute",
+    "id": "20019269",
+    "name": "113-84"
+  },
+  "InnerRoute:20018923": {
+    "__typename": "InnerRoute",
+    "id": "20018923",
+    "name": "114-11"
+  },
+  "InnerRoute:20019079": {
+    "__typename": "InnerRoute",
+    "id": "20019079",
+    "name": "114-13"
+  },
+  "InnerRoute:20019155": {
+    "__typename": "InnerRoute",
+    "id": "20019155",
+    "name": "114-21"
+  },
+  "InnerRoute:20019069": {
+    "__typename": "InnerRoute",
+    "id": "20019069",
+    "name": "114-22"
+  },
+  "InnerRoute:20019099": {
+    "__typename": "InnerRoute",
+    "id": "20019099",
+    "name": "114-23"
+  },
+  "BusStation:55036391": {
+    "__typename": "BusStation",
+    "id": "55036391",
+    "name": "양덕동",
+    "displayCode": "411201",
+    "lat": 35.233623,
+    "lng": 128.5814226,
+    "innerRoutes": {
+      "__typename": "InnerRoutes",
+      "routeType": [
+        {
+          "__typename": "RouteType",
+          "type": "1",
+          "typeName": "일반",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:2050019"
+            },
+            {
+              "__ref": "InnerRoute:2050021"
+            }
+          ]
+        },
+        {
+          "__typename": "RouteType",
+          "type": "11",
+          "typeName": "간선",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:2050122"
+            },
+            {
+              "__ref": "InnerRoute:2050134"
+            },
+            {
+              "__ref": "InnerRoute:2050164"
+            }
+          ]
+        },
+        {
+          "__typename": "RouteType",
+          "type": "12",
+          "typeName": "지선",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:2050025"
+            },
+            {
+              "__ref": "InnerRoute:2050045"
+            },
+            {
+              "__ref": "InnerRoute:2050047"
+            },
+            {
+              "__ref": "InnerRoute:2050049"
+            },
+            {
+              "__ref": "InnerRoute:2050051"
+            },
+            {
+              "__ref": "InnerRoute:2050053"
+            },
+            {
+              "__ref": "InnerRoute:2050059"
+            },
+            {
+              "__ref": "InnerRoute:2050075"
+            },
+            {
+              "__ref": "InnerRoute:2050077"
+            },
+            {
+              "__ref": "InnerRoute:20030428"
+            },
+            {
+              "__ref": "InnerRoute:2050079"
+            },
+            {
+              "__ref": "InnerRoute:2050083"
+            },
+            {
+              "__ref": "InnerRoute:11056310"
+            },
+            {
+              "__ref": "InnerRoute:2050085"
+            },
+            {
+              "__ref": "InnerRoute:20030425"
+            },
+            {
+              "__ref": "InnerRoute:20030422"
+            },
+            {
+              "__ref": "InnerRoute:2050089"
+            },
+            {
+              "__ref": "InnerRoute:2050093"
+            },
+            {
+              "__ref": "InnerRoute:2050095"
+            },
+            {
+              "__ref": "InnerRoute:2050101"
+            },
+            {
+              "__ref": "InnerRoute:2050105"
+            },
+            {
+              "__ref": "InnerRoute:2050111"
+            },
+            {
+              "__ref": "InnerRoute:2050113"
+            },
+            {
+              "__ref": "InnerRoute:11056326"
+            }
+          ]
+        },
+        {
+          "__typename": "RouteType",
+          "type": "15",
+          "typeName": "",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:11056334"
+            }
+          ]
+        },
+        {
+          "__typename": "RouteType",
+          "type": "20",
+          "typeName": "농어촌",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:20019132"
+            },
+            {
+              "__ref": "InnerRoute:20019196"
+            },
+            {
+              "__ref": "InnerRoute:20019131"
+            },
+            {
+              "__ref": "InnerRoute:20019130"
+            },
+            {
+              "__ref": "InnerRoute:20019166"
+            },
+            {
+              "__ref": "InnerRoute:20019129"
+            },
+            {
+              "__ref": "InnerRoute:20019198"
+            },
+            {
+              "__ref": "InnerRoute:20019195"
+            },
+            {
+              "__ref": "InnerRoute:20019182"
+            },
+            {
+              "__ref": "InnerRoute:20019199"
+            },
+            {
+              "__ref": "InnerRoute:20019179"
+            },
+            {
+              "__ref": "InnerRoute:20019262"
+            },
+            {
+              "__ref": "InnerRoute:20019177"
+            },
+            {
+              "__ref": "InnerRoute:20019181"
+            },
+            {
+              "__ref": "InnerRoute:20019197"
+            },
+            {
+              "__ref": "InnerRoute:20019265"
+            },
+            {
+              "__ref": "InnerRoute:20019074"
+            },
+            {
+              "__ref": "InnerRoute:20019263"
+            },
+            {
+              "__ref": "InnerRoute:20019165"
+            },
+            {
+              "__ref": "InnerRoute:20019200"
+            },
+            {
+              "__ref": "InnerRoute:20019264"
+            },
+            {
+              "__ref": "InnerRoute:20019173"
+            },
+            {
+              "__ref": "InnerRoute:20019171"
+            },
+            {
+              "__ref": "InnerRoute:20019187"
+            },
+            {
+              "__ref": "InnerRoute:20019268"
+            },
+            {
+              "__ref": "InnerRoute:20019270"
+            },
+            {
+              "__ref": "InnerRoute:20019266"
+            },
+            {
+              "__ref": "InnerRoute:20019185"
+            },
+            {
+              "__ref": "InnerRoute:20019168"
+            },
+            {
+              "__ref": "InnerRoute:20019167"
+            },
+            {
+              "__ref": "InnerRoute:20019169"
+            },
+            {
+              "__ref": "InnerRoute:20019267"
+            },
+            {
+              "__ref": "InnerRoute:20019104"
+            },
+            {
+              "__ref": "InnerRoute:20019269"
+            },
+            {
+              "__ref": "InnerRoute:20018923"
+            },
+            {
+              "__ref": "InnerRoute:20019079"
+            },
+            {
+              "__ref": "InnerRoute:20019155"
+            },
+            {
+              "__ref": "InnerRoute:20019069"
+            },
+            {
+              "__ref": "InnerRoute:20019099"
+            }
+          ]
+        }
+      ]
+    },
+    "walkTime": 2,
+    "walkingDistance": 139
+  },
+  "BusStation:55036145": {
+    "__typename": "BusStation",
+    "id": "55036145",
+    "name": "도원예식장",
+    "displayCode": "630241",
+    "lat": 35.2355768,
+    "lng": 128.5820883,
+    "innerRoutes": {
+      "__typename": "InnerRoutes",
+      "routeType": [
+        {
+          "__typename": "RouteType",
+          "type": "11",
+          "typeName": "간선",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:2050164"
+            }
+          ]
+        }
+      ]
+    },
+    "walkTime": 3,
+    "walkingDistance": 156
+  },
+  "InnerRoute:20031273": {
+    "__typename": "InnerRoute",
+    "id": "20031273",
+    "name": "540-1"
+  },
+  "InnerRoute:11056318": {
+    "__typename": "InnerRoute",
+    "id": "11056318",
+    "name": "540"
+  },
+  "BusStation:55036239": {
+    "__typename": "BusStation",
+    "id": "55036239",
+    "name": "마산역",
+    "displayCode": "400114",
+    "lat": 35.2351803,
+    "lng": 128.5803002,
+    "innerRoutes": {
+      "__typename": "InnerRoutes",
+      "routeType": [
+        {
+          "__typename": "RouteType",
+          "type": "1",
+          "typeName": "일반",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:2050019"
+            },
+            {
+              "__ref": "InnerRoute:2050021"
+            }
+          ]
+        },
+        {
+          "__typename": "RouteType",
+          "type": "11",
+          "typeName": "간선",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:2050122"
+            },
+            {
+              "__ref": "InnerRoute:2050134"
+            },
+            {
+              "__ref": "InnerRoute:2050164"
+            },
+            {
+              "__ref": "InnerRoute:20031273"
+            }
+          ]
+        },
+        {
+          "__typename": "RouteType",
+          "type": "12",
+          "typeName": "지선",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:2050025"
+            },
+            {
+              "__ref": "InnerRoute:2050045"
+            },
+            {
+              "__ref": "InnerRoute:2050047"
+            },
+            {
+              "__ref": "InnerRoute:2050049"
+            },
+            {
+              "__ref": "InnerRoute:2050051"
+            },
+            {
+              "__ref": "InnerRoute:2050053"
+            },
+            {
+              "__ref": "InnerRoute:11056310"
+            },
+            {
+              "__ref": "InnerRoute:2050085"
+            },
+            {
+              "__ref": "InnerRoute:20030425"
+            },
+            {
+              "__ref": "InnerRoute:20030422"
+            },
+            {
+              "__ref": "InnerRoute:2050093"
+            }
+          ]
+        },
+        {
+          "__typename": "RouteType",
+          "type": "13",
+          "typeName": "순환",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:11056318"
+            }
+          ]
+        }
+      ]
+    },
+    "walkTime": 5,
+    "walkingDistance": 271
+  },
+  "InnerRoute:11056332": {
+    "__typename": "InnerRoute",
+    "id": "11056332",
+    "name": "3003"
+  },
+  "InnerRoute:11056327": {
+    "__typename": "InnerRoute",
+    "id": "11056327",
+    "name": "BRT급행(6000)"
+  },
+  "InnerRoute:2050273": {
+    "__typename": "InnerRoute",
+    "id": "2050273",
+    "name": "710"
+  },
+  "InnerRoute:11056313": {
+    "__typename": "InnerRoute",
+    "id": "11056313",
+    "name": "730"
+  },
+  "BusStation:607372": {
+    "__typename": "BusStation",
+    "id": "607372",
+    "name": "마산시외버스터미널",
+    "displayCode": "400116",
+    "lat": 35.2371676,
+    "lng": 128.5818463,
+    "innerRoutes": {
+      "__typename": "InnerRoutes",
+      "routeType": [
+        {
+          "__typename": "RouteType",
+          "type": "15",
+          "typeName": "",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:11056334"
+            },
+            {
+              "__ref": "InnerRoute:11056332"
+            },
+            {
+              "__ref": "InnerRoute:11056327"
+            }
+          ]
+        },
+        {
+          "__typename": "RouteType",
+          "type": "2",
+          "typeName": "좌석",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:2050273"
+            },
+            {
+              "__ref": "InnerRoute:11056313"
+            }
+          ]
+        }
+      ]
+    },
+    "walkTime": 5,
+    "walkingDistance": 312
+  },
+  "InnerRoute:2050118": {
+    "__typename": "InnerRoute",
+    "id": "2050118",
+    "name": "100"
+  },
+  "InnerRoute:2050120": {
+    "__typename": "InnerRoute",
+    "id": "2050120",
+    "name": "101"
+  },
+  "InnerRoute:2050125": {
+    "__typename": "InnerRoute",
+    "id": "2050125",
+    "name": "103"
+  },
+  "InnerRoute:2050132": {
+    "__typename": "InnerRoute",
+    "id": "2050132",
+    "name": "108"
+  },
+  "InnerRoute:2050137": {
+    "__typename": "InnerRoute",
+    "id": "2050137",
+    "name": "110"
+  },
+  "InnerRoute:20011774": {
+    "__typename": "InnerRoute",
+    "id": "20011774",
+    "name": "111"
+  },
+  "InnerRoute:2050142": {
+    "__typename": "InnerRoute",
+    "id": "2050142",
+    "name": "113"
+  },
+  "InnerRoute:2050147": {
+    "__typename": "InnerRoute",
+    "id": "2050147",
+    "name": "115"
+  },
+  "InnerRoute:2050151": {
+    "__typename": "InnerRoute",
+    "id": "2050151",
+    "name": "122"
+  },
+  "InnerRoute:11056328": {
+    "__typename": "InnerRoute",
+    "id": "11056328",
+    "name": "BRT일반(5000)"
+  },
+  "InnerRoute:2050029": {
+    "__typename": "InnerRoute",
+    "id": "2050029",
+    "name": "24"
+  },
+  "InnerRoute:2050008": {
+    "__typename": "InnerRoute",
+    "id": "2050008",
+    "name": "27"
+  },
+  "InnerRoute:2050057": {
+    "__typename": "InnerRoute",
+    "id": "2050057",
+    "name": "46"
+  },
+  "InnerRoute:11056308": {
+    "__typename": "InnerRoute",
+    "id": "11056308",
+    "name": "55"
+  },
+  "InnerRoute:2050088": {
+    "__typename": "InnerRoute",
+    "id": "2050088",
+    "name": "71"
+  },
+  "InnerRoute:2050202": {
+    "__typename": "InnerRoute",
+    "id": "2050202",
+    "name": "262"
+  },
+  "InnerRoute:2050203": {
+    "__typename": "InnerRoute",
+    "id": "2050203",
+    "name": "263"
+  },
+  "InnerRoute:20030423": {
+    "__typename": "InnerRoute",
+    "id": "20030423",
+    "name": "263-1"
+  },
+  "InnerRoute:20019288": {
+    "__typename": "InnerRoute",
+    "id": "20019288",
+    "name": "113-01"
+  },
+  "InnerRoute:20019128": {
+    "__typename": "InnerRoute",
+    "id": "20019128",
+    "name": "113-03"
+  },
+  "InnerRoute:20019290": {
+    "__typename": "InnerRoute",
+    "id": "20019290",
+    "name": "113-05"
+  },
+  "InnerRoute:20019072": {
+    "__typename": "InnerRoute",
+    "id": "20019072",
+    "name": "113-06"
+  },
+  "InnerRoute:20019120": {
+    "__typename": "InnerRoute",
+    "id": "20019120",
+    "name": "113-07"
+  },
+  "InnerRoute:20019283": {
+    "__typename": "InnerRoute",
+    "id": "20019283",
+    "name": "113-08"
+  },
+  "InnerRoute:20019070": {
+    "__typename": "InnerRoute",
+    "id": "20019070",
+    "name": "113-09"
+  },
+  "InnerRoute:20019277": {
+    "__typename": "InnerRoute",
+    "id": "20019277",
+    "name": "113-10"
+  },
+  "InnerRoute:20018924": {
+    "__typename": "InnerRoute",
+    "id": "20018924",
+    "name": "113-11"
+  },
+  "InnerRoute:20019205": {
+    "__typename": "InnerRoute",
+    "id": "20019205",
+    "name": "113-22"
+  },
+  "InnerRoute:20019191": {
+    "__typename": "InnerRoute",
+    "id": "20019191",
+    "name": "113-25"
+  },
+  "InnerRoute:20019156": {
+    "__typename": "InnerRoute",
+    "id": "20019156",
+    "name": "113-28"
+  },
+  "InnerRoute:20019107": {
+    "__typename": "InnerRoute",
+    "id": "20019107",
+    "name": "113-29"
+  },
+  "InnerRoute:20019291": {
+    "__typename": "InnerRoute",
+    "id": "20019291",
+    "name": "113-31"
+  },
+  "InnerRoute:20019157": {
+    "__typename": "InnerRoute",
+    "id": "20019157",
+    "name": "113-33"
+  },
+  "InnerRoute:20019203": {
+    "__typename": "InnerRoute",
+    "id": "20019203",
+    "name": "113-34"
+  },
+  "InnerRoute:20019204": {
+    "__typename": "InnerRoute",
+    "id": "20019204",
+    "name": "113-36"
+  },
+  "InnerRoute:20019161": {
+    "__typename": "InnerRoute",
+    "id": "20019161",
+    "name": "113-37"
+  },
+  "InnerRoute:20019276": {
+    "__typename": "InnerRoute",
+    "id": "20019276",
+    "name": "113-38"
+  },
+  "InnerRoute:20019275": {
+    "__typename": "InnerRoute",
+    "id": "20019275",
+    "name": "113-39"
+  },
+  "InnerRoute:20019136": {
+    "__typename": "InnerRoute",
+    "id": "20019136",
+    "name": "113-53"
+  },
+  "InnerRoute:20019135": {
+    "__typename": "InnerRoute",
+    "id": "20019135",
+    "name": "113-54"
+  },
+  "InnerRoute:20019273": {
+    "__typename": "InnerRoute",
+    "id": "20019273",
+    "name": "113-57"
+  },
+  "InnerRoute:20019073": {
+    "__typename": "InnerRoute",
+    "id": "20019073",
+    "name": "113-58"
+  },
+  "InnerRoute:20019119": {
+    "__typename": "InnerRoute",
+    "id": "20019119",
+    "name": "113-60"
+  },
+  "InnerRoute:20019159": {
+    "__typename": "InnerRoute",
+    "id": "20019159",
+    "name": "113-70"
+  },
+  "InnerRoute:20019126": {
+    "__typename": "InnerRoute",
+    "id": "20019126",
+    "name": "113-73"
+  },
+  "InnerRoute:20019289": {
+    "__typename": "InnerRoute",
+    "id": "20019289",
+    "name": "113-74"
+  },
+  "InnerRoute:20019117": {
+    "__typename": "InnerRoute",
+    "id": "20019117",
+    "name": "113-75"
+  },
+  "InnerRoute:20018925": {
+    "__typename": "InnerRoute",
+    "id": "20018925",
+    "name": "113-76"
+  },
+  "InnerRoute:20019097": {
+    "__typename": "InnerRoute",
+    "id": "20019097",
+    "name": "113-77"
+  },
+  "InnerRoute:20019134": {
+    "__typename": "InnerRoute",
+    "id": "20019134",
+    "name": "113-78"
+  },
+  "InnerRoute:20019101": {
+    "__typename": "InnerRoute",
+    "id": "20019101",
+    "name": "113-79"
+  },
+  "InnerRoute:20019102": {
+    "__typename": "InnerRoute",
+    "id": "20019102",
+    "name": "113-80"
+  },
+  "InnerRoute:20019103": {
+    "__typename": "InnerRoute",
+    "id": "20019103",
+    "name": "113-81"
+  },
+  "InnerRoute:20019160": {
+    "__typename": "InnerRoute",
+    "id": "20019160",
+    "name": "113-82"
+  },
+  "InnerRoute:20019202": {
+    "__typename": "InnerRoute",
+    "id": "20019202",
+    "name": "113-83"
+  },
+  "InnerRoute:20019115": {
+    "__typename": "InnerRoute",
+    "id": "20019115",
+    "name": "113-84"
+  },
+  "InnerRoute:20019108": {
+    "__typename": "InnerRoute",
+    "id": "20019108",
+    "name": "114-11"
+  },
+  "InnerRoute:20019078": {
+    "__typename": "InnerRoute",
+    "id": "20019078",
+    "name": "114-12"
+  },
+  "InnerRoute:20019111": {
+    "__typename": "InnerRoute",
+    "id": "20019111",
+    "name": "114-13"
+  },
+  "InnerRoute:20019091": {
+    "__typename": "InnerRoute",
+    "id": "20019091",
+    "name": "114-15"
+  },
+  "InnerRoute:20019080": {
+    "__typename": "InnerRoute",
+    "id": "20019080",
+    "name": "114-16"
+  },
+  "InnerRoute:20019090": {
+    "__typename": "InnerRoute",
+    "id": "20019090",
+    "name": "114-20"
+  },
+  "InnerRoute:20019098": {
+    "__typename": "InnerRoute",
+    "id": "20019098",
+    "name": "114-21"
+  },
+  "InnerRoute:20019154": {
+    "__typename": "InnerRoute",
+    "id": "20019154",
+    "name": "114-22"
+  },
+  "InnerRoute:20019124": {
+    "__typename": "InnerRoute",
+    "id": "20019124",
+    "name": "114-23"
+  },
+  "BusStation:55036240": {
+    "__typename": "BusStation",
+    "id": "55036240",
+    "name": "마산역.365병원",
+    "displayCode": "400111",
+    "lat": 35.2336469,
+    "lng": 128.5791371,
+    "innerRoutes": {
+      "__typename": "InnerRoutes",
+      "routeType": [
+        {
+          "__typename": "RouteType",
+          "type": "11",
+          "typeName": "간선",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:2050118"
+            },
+            {
+              "__ref": "InnerRoute:2050120"
+            },
+            {
+              "__ref": "InnerRoute:2050125"
+            },
+            {
+              "__ref": "InnerRoute:2050132"
+            },
+            {
+              "__ref": "InnerRoute:2050137"
+            },
+            {
+              "__ref": "InnerRoute:20011774"
+            },
+            {
+              "__ref": "InnerRoute:2050142"
+            },
+            {
+              "__ref": "InnerRoute:2050147"
+            },
+            {
+              "__ref": "InnerRoute:2050151"
+            },
+            {
+              "__ref": "InnerRoute:20031273"
+            },
+            {
+              "__ref": "InnerRoute:11056328"
+            }
+          ]
+        },
+        {
+          "__typename": "RouteType",
+          "type": "12",
+          "typeName": "지선",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:2050029"
+            },
+            {
+              "__ref": "InnerRoute:2050008"
+            },
+            {
+              "__ref": "InnerRoute:2050057"
+            },
+            {
+              "__ref": "InnerRoute:2050059"
+            },
+            {
+              "__ref": "InnerRoute:11056308"
+            },
+            {
+              "__ref": "InnerRoute:2050088"
+            },
+            {
+              "__ref": "InnerRoute:2050113"
+            },
+            {
+              "__ref": "InnerRoute:2050202"
+            },
+            {
+              "__ref": "InnerRoute:2050203"
+            },
+            {
+              "__ref": "InnerRoute:20030423"
+            }
+          ]
+        },
+        {
+          "__typename": "RouteType",
+          "type": "15",
+          "typeName": "",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:11056334"
+            },
+            {
+              "__ref": "InnerRoute:11056332"
+            },
+            {
+              "__ref": "InnerRoute:11056327"
+            }
+          ]
+        },
+        {
+          "__typename": "RouteType",
+          "type": "2",
+          "typeName": "좌석",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:2050273"
+            },
+            {
+              "__ref": "InnerRoute:11056313"
+            }
+          ]
+        },
+        {
+          "__typename": "RouteType",
+          "type": "20",
+          "typeName": "농어촌",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:20019288"
+            },
+            {
+              "__ref": "InnerRoute:20019128"
+            },
+            {
+              "__ref": "InnerRoute:20019290"
+            },
+            {
+              "__ref": "InnerRoute:20019072"
+            },
+            {
+              "__ref": "InnerRoute:20019120"
+            },
+            {
+              "__ref": "InnerRoute:20019283"
+            },
+            {
+              "__ref": "InnerRoute:20019070"
+            },
+            {
+              "__ref": "InnerRoute:20019277"
+            },
+            {
+              "__ref": "InnerRoute:20018924"
+            },
+            {
+              "__ref": "InnerRoute:20019205"
+            },
+            {
+              "__ref": "InnerRoute:20019191"
+            },
+            {
+              "__ref": "InnerRoute:20019156"
+            },
+            {
+              "__ref": "InnerRoute:20019107"
+            },
+            {
+              "__ref": "InnerRoute:20019291"
+            },
+            {
+              "__ref": "InnerRoute:20019157"
+            },
+            {
+              "__ref": "InnerRoute:20019203"
+            },
+            {
+              "__ref": "InnerRoute:20019204"
+            },
+            {
+              "__ref": "InnerRoute:20019161"
+            },
+            {
+              "__ref": "InnerRoute:20019276"
+            },
+            {
+              "__ref": "InnerRoute:20019275"
+            },
+            {
+              "__ref": "InnerRoute:20019136"
+            },
+            {
+              "__ref": "InnerRoute:20019135"
+            },
+            {
+              "__ref": "InnerRoute:20019273"
+            },
+            {
+              "__ref": "InnerRoute:20019073"
+            },
+            {
+              "__ref": "InnerRoute:20019119"
+            },
+            {
+              "__ref": "InnerRoute:20019159"
+            },
+            {
+              "__ref": "InnerRoute:20019126"
+            },
+            {
+              "__ref": "InnerRoute:20019289"
+            },
+            {
+              "__ref": "InnerRoute:20019117"
+            },
+            {
+              "__ref": "InnerRoute:20018925"
+            },
+            {
+              "__ref": "InnerRoute:20019097"
+            },
+            {
+              "__ref": "InnerRoute:20019134"
+            },
+            {
+              "__ref": "InnerRoute:20019101"
+            },
+            {
+              "__ref": "InnerRoute:20019102"
+            },
+            {
+              "__ref": "InnerRoute:20019103"
+            },
+            {
+              "__ref": "InnerRoute:20019160"
+            },
+            {
+              "__ref": "InnerRoute:20019202"
+            },
+            {
+              "__ref": "InnerRoute:20019115"
+            },
+            {
+              "__ref": "InnerRoute:20019108"
+            },
+            {
+              "__ref": "InnerRoute:20019078"
+            },
+            {
+              "__ref": "InnerRoute:20019111"
+            },
+            {
+              "__ref": "InnerRoute:20019091"
+            },
+            {
+              "__ref": "InnerRoute:20019080"
+            },
+            {
+              "__ref": "InnerRoute:20019090"
+            },
+            {
+              "__ref": "InnerRoute:20019098"
+            },
+            {
+              "__ref": "InnerRoute:20019154"
+            },
+            {
+              "__ref": "InnerRoute:20019124"
+            }
+          ]
+        }
+      ]
+    },
+    "walkTime": 6,
+    "walkingDistance": 369
+  },
+  "InnerRoute:2050107": {
+    "__typename": "InnerRoute",
+    "id": "2050107",
+    "name": "77"
+  },
+  "InnerRoute:20019133": {
+    "__typename": "InnerRoute",
+    "id": "20019133",
+    "name": "113-78"
+  },
+  "InnerRoute:20019094": {
+    "__typename": "InnerRoute",
+    "id": "20019094",
+    "name": "114-10"
+  },
+  "InnerRoute:20019093": {
+    "__typename": "InnerRoute",
+    "id": "20019093",
+    "name": "114-12"
+  },
+  "InnerRoute:20019096": {
+    "__typename": "InnerRoute",
+    "id": "20019096",
+    "name": "114-14"
+  },
+  "InnerRoute:20019095": {
+    "__typename": "InnerRoute",
+    "id": "20019095",
+    "name": "114-20"
+  },
+  "BusStation:55036241": {
+    "__typename": "BusStation",
+    "id": "55036241",
+    "name": "마산역.동마산병원",
+    "displayCode": "400112",
+    "lat": 35.2335187,
+    "lng": 128.5784681,
+    "innerRoutes": {
+      "__typename": "InnerRoutes",
+      "routeType": [
+        {
+          "__typename": "RouteType",
+          "type": "11",
+          "typeName": "간선",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:2050118"
+            },
+            {
+              "__ref": "InnerRoute:2050120"
+            },
+            {
+              "__ref": "InnerRoute:2050125"
+            },
+            {
+              "__ref": "InnerRoute:2050132"
+            },
+            {
+              "__ref": "InnerRoute:2050137"
+            },
+            {
+              "__ref": "InnerRoute:20011774"
+            },
+            {
+              "__ref": "InnerRoute:2050142"
+            },
+            {
+              "__ref": "InnerRoute:2050147"
+            },
+            {
+              "__ref": "InnerRoute:2050151"
+            },
+            {
+              "__ref": "InnerRoute:11056328"
+            }
+          ]
+        },
+        {
+          "__typename": "RouteType",
+          "type": "12",
+          "typeName": "지선",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:2050029"
+            },
+            {
+              "__ref": "InnerRoute:2050008"
+            },
+            {
+              "__ref": "InnerRoute:2050057"
+            },
+            {
+              "__ref": "InnerRoute:2050059"
+            },
+            {
+              "__ref": "InnerRoute:11056308"
+            },
+            {
+              "__ref": "InnerRoute:2050088"
+            },
+            {
+              "__ref": "InnerRoute:2050107"
+            },
+            {
+              "__ref": "InnerRoute:2050113"
+            },
+            {
+              "__ref": "InnerRoute:2050202"
+            },
+            {
+              "__ref": "InnerRoute:2050203"
+            },
+            {
+              "__ref": "InnerRoute:20030423"
+            }
+          ]
+        },
+        {
+          "__typename": "RouteType",
+          "type": "15",
+          "typeName": "",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:11056334"
+            },
+            {
+              "__ref": "InnerRoute:11056332"
+            },
+            {
+              "__ref": "InnerRoute:11056327"
+            }
+          ]
+        },
+        {
+          "__typename": "RouteType",
+          "type": "2",
+          "typeName": "좌석",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:2050273"
+            },
+            {
+              "__ref": "InnerRoute:11056313"
+            }
+          ]
+        },
+        {
+          "__typename": "RouteType",
+          "type": "20",
+          "typeName": "농어촌",
+          "innerRoute": [
+            {
+              "__ref": "InnerRoute:20019132"
+            },
+            {
+              "__ref": "InnerRoute:20019196"
+            },
+            {
+              "__ref": "InnerRoute:20019131"
+            },
+            {
+              "__ref": "InnerRoute:20019130"
+            },
+            {
+              "__ref": "InnerRoute:20019166"
+            },
+            {
+              "__ref": "InnerRoute:20019129"
+            },
+            {
+              "__ref": "InnerRoute:20019198"
+            },
+            {
+              "__ref": "InnerRoute:20019195"
+            },
+            {
+              "__ref": "InnerRoute:20019182"
+            },
+            {
+              "__ref": "InnerRoute:20019199"
+            },
+            {
+              "__ref": "InnerRoute:20019179"
+            },
+            {
+              "__ref": "InnerRoute:20019262"
+            },
+            {
+              "__ref": "InnerRoute:20019177"
+            },
+            {
+              "__ref": "InnerRoute:20019181"
+            },
+            {
+              "__ref": "InnerRoute:20019197"
+            },
+            {
+              "__ref": "InnerRoute:20019265"
+            },
+            {
+              "__ref": "InnerRoute:20019074"
+            },
+            {
+              "__ref": "InnerRoute:20019263"
+            },
+            {
+              "__ref": "InnerRoute:20019165"
+            },
+            {
+              "__ref": "InnerRoute:20019200"
+            },
+            {
+              "__ref": "InnerRoute:20019264"
+            },
+            {
+              "__ref": "InnerRoute:20019173"
+            },
+            {
+              "__ref": "InnerRoute:20019171"
+            },
+            {
+              "__ref": "InnerRoute:20019187"
+            },
+            {
+              "__ref": "InnerRoute:20019268"
+            },
+            {
+              "__ref": "InnerRoute:20019270"
+            },
+            {
+              "__ref": "InnerRoute:20019266"
+            },
+            {
+              "__ref": "InnerRoute:20019185"
+            },
+            {
+              "__ref": "InnerRoute:20019168"
+            },
+            {
+              "__ref": "InnerRoute:20019167"
+            },
+            {
+              "__ref": "InnerRoute:20019133"
+            },
+            {
+              "__ref": "InnerRoute:20019169"
+            },
+            {
+              "__ref": "InnerRoute:20019267"
+            },
+            {
+              "__ref": "InnerRoute:20019104"
+            },
+            {
+              "__ref": "InnerRoute:20019269"
+            },
+            {
+              "__ref": "InnerRoute:20019094"
+            },
+            {
+              "__ref": "InnerRoute:20018923"
+            },
+            {
+              "__ref": "InnerRoute:20019093"
+            },
+            {
+              "__ref": "InnerRoute:20019079"
+            },
+            {
+              "__ref": "InnerRoute:20019096"
+            },
+            {
+              "__ref": "InnerRoute:20019095"
+            },
+            {
+              "__ref": "InnerRoute:20019155"
+            },
+            {
+              "__ref": "InnerRoute:20019069"
+            },
+            {
+              "__ref": "InnerRoute:20019099"
+            }
+          ]
+        }
+      ]
+    },
+    "walkTime": 7,
+    "walkingDistance": 444
+  },
+  "RestaurantSeatItems:304": {
+    "__typename": "RestaurantSeatItems",
+    "id": "304",
+    "name": "입식",
+    "description": ""
+  },
+  "RestaurantSeatItems:306": {
+    "__typename": "RestaurantSeatItems",
+    "id": "306",
+    "name": "바테이블",
+    "description": ""
+  },
+  "InformationFacilities:4": {
+    "__typename": "InformationFacilities",
+    "id": "4",
+    "name": "포장",
+    "i18nName": "포장"
+  },
+  "InformationFacilities:3": {
+    "__typename": "InformationFacilities",
+    "id": "3",
+    "name": "배달",
+    "i18nName": "배달"
+  },
+  "InformationFacilities:7": {
+    "__typename": "InformationFacilities",
+    "id": "7",
+    "name": "무선 인터넷",
+    "i18nName": "무선 인터넷"
+  },
+  "InformationFacilities:1": {
+    "__typename": "InformationFacilities",
+    "id": "1",
+    "name": "예약",
+    "i18nName": "예약"
+  },
+  "InformationFacilities:40": {
+    "__typename": "InformationFacilities",
+    "id": "40",
+    "name": "유아의자",
+    "i18nName": "유아의자"
+  },
+  "ROOT_QUERY": {
+    "__typename": "Query",
+    "accessor({\"businessId\":\"1768171911\"})": {
+      "__typename": "Accessor",
+      "accessor": "",
+      "accessorBanner": []
+    },
+    "recentBooking({\"input\":{\"bookingStatuses\":[\"confirmed\"],\"businessId\":\"1768171911\",\"businessType\":\"restaurant\"}})": null,
+    "placeDetail({\"input\":{\"deviceType\":\"pc\",\"id\":\"1768171911\",\"isNx\":false}})": {
+      "__typename": "PlaceDetail",
+      "base": {
+        "__ref": "PlaceDetailBase:1768171911"
+      },
+      "images({\"source\":[\"starbucks\",\"tpirates\"]})": {
+        "__typename": "PlaceDetailImages",
+        "images": [
+          {
+            "__typename": "Image",
+            "origin": "https://ldb-phinf.pstatic.net/20241008_205/1728369713989eSs8j_JPEG/IMG_0143.jpeg",
+            "number": null,
+            "infoTitle": null,
+            "url": null,
+            "desc": null,
+            "width": 4284,
+            "height": 5712,
+            "source": null
+          },
+          {
+            "__typename": "Image",
+            "origin": "https://ldb-phinf.pstatic.net/20241008_238/1728369713188H10Gn_JPEG/IMG_0330.jpeg",
+            "number": null,
+            "infoTitle": null,
+            "url": null,
+            "desc": null,
+            "width": 3024,
+            "height": 4032,
+            "source": null
+          },
+          {
+            "__typename": "Image",
+            "origin": "https://ldb-phinf.pstatic.net/20230411_231/1681211926511SUpJw_JPEG/IMG_20230401_164424_693.jpg",
+            "number": null,
+            "infoTitle": null,
+            "url": null,
+            "desc": null,
+            "width": 3000,
+            "height": 3000,
+            "source": null
+          },
+          {
+            "__typename": "Image",
+            "origin": "https://ldb-phinf.pstatic.net/20230411_213/168121192651162lva_JPEG/IMG_20230328_160416_638.jpg",
+            "number": null,
+            "infoTitle": null,
+            "url": null,
+            "desc": null,
+            "width": 3000,
+            "height": 3000,
+            "source": null
+          },
+          {
+            "__typename": "Image",
+            "origin": "https://ldb-phinf.pstatic.net/20230411_15/1681211923981fdbew_JPEG/1678862189411.jpg",
+            "number": null,
+            "infoTitle": null,
+            "url": null,
+            "desc": null,
+            "width": 1081,
+            "height": 1440,
+            "source": null
+          },
+          {
+            "__typename": "Image",
+            "origin": "https://ldb-phinf.pstatic.net/20230411_122/1681211924558Ehsbo_JPEG/1678683026939.jpg",
+            "number": null,
+            "infoTitle": null,
+            "url": null,
+            "desc": null,
+            "width": 1440,
+            "height": 1440,
+            "source": null
+          },
+          {
+            "__typename": "Image",
+            "origin": "https://ldb-phinf.pstatic.net/20241008_154/1728369935264mK2Rs_JPEG/IMG_1146.jpeg",
+            "number": null,
+            "infoTitle": null,
+            "url": null,
+            "desc": null,
+            "width": 2610,
+            "height": 3480,
+            "source": null
+          },
+          {
+            "__typename": "Image",
+            "origin": "https://ldb-phinf.pstatic.net/20241008_109/17283699353787os6N_JPEG/IMG_1119.jpeg",
+            "number": null,
+            "infoTitle": null,
+            "url": null,
+            "desc": null,
+            "width": 2810,
+            "height": 3747,
+            "source": null
+          },
+          {
+            "__typename": "Image",
+            "origin": "https://ldb-phinf.pstatic.net/20241008_210/1728369790566qm62p_JPEG/3472525463177226572_20231013135032697.jpeg",
+            "number": null,
+            "infoTitle": null,
+            "url": null,
+            "desc": null,
+            "width": 3024,
+            "height": 4032,
+            "source": null
+          }
+        ],
+        "totalImages": 9
+      },
+      "menuImages": [
+        {
+          "__typename": "MenuImage",
+          "imageUrl": "https://ldb-phinf.pstatic.net/20250709_76/1751991502395gN2Sk_PNG/Pizza_with_sausage.png"
+        }
+      ],
+      "cpImages({\"source\":[\"ugcImage\"]})": {
+        "__typename": "CPImages",
+        "total": 0,
+        "images": []
+      },
+      "michelinGuide": null,
+      "bookingAwards": null,
+      "mfds": null,
+      "naverBooking({\"bookingType\":\"restaurant\"})": {
+        "__typename": "PlaceDetailNaverBooking",
+        "bookingBusinessId": null,
+        "naverBookingUrl": null,
+        "bookingDisplayName": "방문",
+        "bookingButtonName": "예약",
+        "bookingHubButtonName": null,
+        "naverBookingHubUrl": null,
+        "naverBookingPromotion": null,
+        "promotionTitle": null,
+        "nPayPromotion": null,
+        "hasSmartOrder": false
+      },
+      "menuSource": null,
+      "menus({\"source\":[\"tpirates\"]})": [
+        {
+          "__ref": "Menu:1768171911_0"
+        },
+        {
+          "__ref": "Menu:1768171911_1"
+        },
+        {
+          "__ref": "Menu:1768171911_2"
+        },
+        {
+          "__ref": "Menu:1768171911_3"
+        },
+        {
+          "__ref": "Menu:1768171911_4"
+        },
+        {
+          "__ref": "Menu:1768171911_5"
+        },
+        {
+          "__ref": "Menu:1768171911_6"
+        },
+        {
+          "__ref": "Menu:1768171911_7"
+        },
+        {
+          "__ref": "Menu:1768171911_8"
+        },
+        {
+          "__ref": "Menu:1768171911_9"
+        },
+        {
+          "__ref": "Menu:1768171911_10"
+        },
+        {
+          "__ref": "Menu:1768171911_11"
+        },
+        {
+          "__ref": "Menu:1768171911_12"
+        },
+        {
+          "__ref": "Menu:1768171911_13"
+        },
+        {
+          "__ref": "Menu:1768171911_14"
+        },
+        {
+          "__ref": "Menu:1768171911_15"
+        },
+        {
+          "__ref": "Menu:1768171911_16"
+        },
+        {
+          "__ref": "Menu:1768171911_17"
+        },
+        {
+          "__ref": "Menu:1768171911_18"
+        },
+        {
+          "__ref": "Menu:1768171911_19"
+        },
+        {
+          "__ref": "Menu:1768171911_20"
+        },
+        {
+          "__ref": "Menu:1768171911_21"
+        },
+        {
+          "__ref": "Menu:1768171911_22"
+        }
+      ],
+      "baemin": null,
+      "relatedLinks": [
+        {
+          "__typename": "RelatedLink",
+          "name": "식신",
+          "iconName": "siksin",
+          "url": "https://www.siksinhot.com/P/1690928",
+          "clickCode": "siksin"
+        },
+        {
+          "__typename": "RelatedLink",
+          "name": "다이닝코드",
+          "iconName": "diningcode",
+          "url": "https://diningcode.com/profile.php?rid=ilA2RkBbPBqs",
+          "clickCode": "dcode"
+        }
+      ],
+      "brandPromotion": null,
+      "fsasReviews({\"fsasReviewsType\":\"restaurant\"})": {
+        "__typename": "FsasReviewsResult",
+        "total": 665,
+        "maxItemCount": 100,
+        "items": [
+          {
+            "__ref": "FsasReview:blog_멍석 깔아주면 누워자는 블로그_224037921406_[마산 맛집] 히도: 합성동 돈까스 맛집, 특로스카츠 이거 실화냐?"
+          },
+          {
+            "__ref": "FsasReview:blog_맛집 세상 정복중 ˚ ༘♡_224037568058_마산 합성동 돈카츠맛집추천 히도"
+          },
+          {
+            "__ref": "FsasReview:blog_꽃내음 가득한 예쁜 봄_224039410846_마산 합성동 맛집 히도"
+          }
+        ]
+      },
+      "visitorReviewStats": {
+        "__ref": "VisitorReviewStatsResult:1768171911"
+      },
+      "subwayStations": [],
+      "busStations": [
+        {
+          "__ref": "BusStation:55036391"
+        },
+        {
+          "__ref": "BusStation:55036145"
+        },
+        {
+          "__ref": "BusStation:55036239"
+        },
+        {
+          "__ref": "BusStation:607372"
+        },
+        {
+          "__ref": "BusStation:55036240"
+        },
+        {
+          "__ref": "BusStation:55036241"
+        }
+      ],
+      "datalabPhotos": null,
+      "tvcasts": null,
+      "hasCoupon": {
+        "__typename": "HasCoupon",
+        "count": 0
+      },
+      "hasFeed": {
+        "__typename": "HasFeed",
+        "blogExist": null,
+        "feedExist": true
+      },
+      "shopWindow": {
+        "__typename": "ShopWindow",
+        "total": null,
+        "naverPayYn": null,
+        "sales": null,
+        "description": null,
+        "itemsFromChannelNo": null,
+        "itemsFromInterlockId": null,
+        "branchNews": null,
+        "url": null,
+        "typeName": null,
+        "branchYn": null,
+        "isTraditionalMarket": null,
+        "homepages": {
+          "__typename": "Homepage",
+          "etc": [],
+          "repr": {
+            "__typename": "HomepageRepr",
+            "url": "https://www.instagram.com/hido_tonkatsu",
+            "landingUrl": "https://www.instagram.com/hido_tonkatsu",
+            "isDeadUrl": false,
+            "type": "인스타그램",
+            "order": 0,
+            "isRep": null
+          }
+        },
+        "businessHours": null
+      },
+      "naverOrder": {
+        "__typename": "NaverOrder",
+        "items": [],
+        "isPickup": false,
+        "isTableOrder": false,
+        "isPreOrder": false,
+        "isDelivery": false
+      },
+      "restaurantInfoTabDetails": {
+        "__typename": "RestaurantInfoTabDetails",
+        "seat": [
+          {
+            "__ref": "RestaurantSeatItems:304"
+          },
+          {
+            "__ref": "RestaurantSeatItems:306"
+          }
+        ]
+      },
+      "businessTools": {
+        "__typename": "BusinessTools",
+        "tools": [
+          {
+            "__typename": "BusinessTool",
+            "type": "smartOrder",
+            "title": "네이버 주문",
+            "countInString": null,
+            "description": "매장 내 주문부터 포장주문까지 편하게",
+            "link": "https://new.smartplace.naver.com/bizes/place/1768171911/solutions/order",
+            "using": false
+          },
+          {
+            "__typename": "BusinessTool",
+            "type": "naverBooking",
+            "title": "네이버예약",
+            "countInString": null,
+            "description": "실시간 예약관리를 온라인으로 한번에",
+            "link": "https://new.smartplace.naver.com/bizes/place/1768171911/solutions/booking",
+            "using": false
+          },
+          {
+            "__typename": "BusinessTool",
+            "type": "smartCall",
+            "title": "스마트콜",
+            "countInString": "100만",
+            "description": "전화를 대신 받고 응대까지 해드려요!",
+            "link": "https://new-m.smartplace.naver.com/bizes/place/1768171911/smartcall",
+            "using": false
+          }
+        ],
+        "hideAnnouncement": false
+      },
+      "excludeTargets": null,
+      "cesco": null,
+      "kinQna": {
+        "__typename": "KinQna",
+        "answerCount": null,
+        "answerList": null,
+        "profileUrl": null
+      },
+      "newBusinessHours({\"format\":\"restaurant\"})": [
+        {
+          "__typename": "NewBusinessHour",
+          "name": "",
+          "businessStatusDescription": {
+            "__typename": "BusinessStatusDescription",
+            "status": "영업 종료",
+            "blindDescription": "11시 0분에 영업 시작",
+            "description": "11:00에 영업 시작"
+          },
+          "businessHours": [
+            {
+              "__typename": "WorkingHoursInfo",
+              "day": "화",
+              "businessHours": {
+                "__typename": "StartEndTime",
+                "start": "11:00",
+                "end": "21:00"
+              },
+              "breakHours": [],
+              "description": null,
+              "lastOrderTimes": [
+                {
+                  "__typename": "LastOrderTimes",
+                  "type": "영업시간",
+                  "time": "20:30"
+                }
+              ]
+            },
+            {
+              "__typename": "WorkingHoursInfo",
+              "day": "수",
+              "businessHours": {
+                "__typename": "StartEndTime",
+                "start": "11:00",
+                "end": "21:00"
+              },
+              "breakHours": [],
+              "description": null,
+              "lastOrderTimes": [
+                {
+                  "__typename": "LastOrderTimes",
+                  "type": "영업시간",
+                  "time": "20:30"
+                }
+              ]
+            },
+            {
+              "__typename": "WorkingHoursInfo",
+              "day": "목",
+              "businessHours": {
+                "__typename": "StartEndTime",
+                "start": "11:00",
+                "end": "21:00"
+              },
+              "breakHours": [],
+              "description": null,
+              "lastOrderTimes": [
+                {
+                  "__typename": "LastOrderTimes",
+                  "type": "영업시간",
+                  "time": "20:30"
+                }
+              ]
+            },
+            {
+              "__typename": "WorkingHoursInfo",
+              "day": "금",
+              "businessHours": {
+                "__typename": "StartEndTime",
+                "start": "11:00",
+                "end": "21:00"
+              },
+              "breakHours": [],
+              "description": null,
+              "lastOrderTimes": [
+                {
+                  "__typename": "LastOrderTimes",
+                  "type": "영업시간",
+                  "time": "20:30"
+                }
+              ]
+            },
+            {
+              "__typename": "WorkingHoursInfo",
+              "day": "토",
+              "businessHours": {
+                "__typename": "StartEndTime",
+                "start": "11:00",
+                "end": "21:00"
+              },
+              "breakHours": [],
+              "description": null,
+              "lastOrderTimes": [
+                {
+                  "__typename": "LastOrderTimes",
+                  "type": "영업시간",
+                  "time": "20:30"
+                }
+              ]
+            },
+            {
+              "__typename": "WorkingHoursInfo",
+              "day": "일",
+              "businessHours": {
+                "__typename": "StartEndTime",
+                "start": "11:00",
+                "end": "21:00"
+              },
+              "breakHours": [],
+              "description": null,
+              "lastOrderTimes": [
+                {
+                  "__typename": "LastOrderTimes",
+                  "type": "영업시간",
+                  "time": "20:30"
+                }
+              ]
+            },
+            {
+              "__typename": "WorkingHoursInfo",
+              "day": "월",
+              "businessHours": {
+                "__typename": "StartEndTime",
+                "start": "11:00",
+                "end": "21:00"
+              },
+              "breakHours": [],
+              "description": null,
+              "lastOrderTimes": [
+                {
+                  "__typename": "LastOrderTimes",
+                  "type": "영업시간",
+                  "time": "20:30"
+                }
+              ]
+            }
+          ],
+          "comingIrregularClosedDays": [],
+          "comingRegularClosedDays": "",
+          "freeText": "휴무없이 운영합니다. 추석/설날 당일만 쉽니다."
+        }
+      ],
+      "businessHours({\"source\":[\"tpirates\",\"shopWindow\"]})": null,
+      "gift": {
+        "__typename": "Gift",
+        "gifticonId": null,
+        "gifticonMoreUrl": null
+      },
+      "broadcastInfos": null,
+      "informationTab({\"providerSource\":[\"pbp\"]})": {
+        "__typename": "InformationTab",
+        "parkingInfo": {
+          "__typename": "InformationParking",
+          "description": "합성동 사설주차장 또는 가게앞 하천갓길에 주차 가능합니다! 고래주차장이 가장 가까우며 주차권 제시하시면 천원 지원해드립니다!",
+          "basicParking": null,
+          "valetParking": null
+        },
+        "facilities": [
+          {
+            "__ref": "InformationFacilities:4"
+          },
+          {
+            "__ref": "InformationFacilities:3"
+          },
+          {
+            "__ref": "InformationFacilities:7"
+          },
+          {
+            "__ref": "InformationFacilities:1"
+          },
+          {
+            "__ref": "InformationFacilities:40"
+          }
+        ],
+        "keywordList": [
+          "마산역돈까스",
+          "마산터미널돈까스",
+          "합성동돈까스",
+          "마산히레까스",
+          "창원시마산구돈까스"
+        ]
+      },
+      "homepages": {
+        "__typename": "Homepage",
+        "etc": [],
+        "repr": {
+          "__typename": "HomepageRepr",
+          "url": "https://www.instagram.com/hido_tonkatsu",
+          "landingUrl": "https://www.instagram.com/hido_tonkatsu",
+          "isDeadUrl": false,
+          "type": "인스타그램",
+          "typeI18n": "인스타그램",
+          "order": 0,
+          "isRep": null
+        }
+      },
+      "sasImages({\"businessType\":\"restaurant\",\"display\":30,\"input\":{\"businessType\":\"restaurant\",\"display\":30}})": [
+        {
+          "__typename": "SasImage",
+          "relation": "연관사진",
+          "total": 7337,
+          "items": [
+            {
+              "__typename": "UgcImage",
+              "rank": "1",
+              "title": "마산 오동동 돼지 짜글이 맛집 얼큰한 국물과 푸짐한 라면 사리의 조합",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fimage.nmv.naver.net%2Fblog_2025_09_04_2341%2FUMkEFNMMFz_03.jpg",
+              "originalUrl": "http://image.nmv.naver.net/blog_2025_09_04_2341/UMkEFNMMFz_03.jpg",
+              "text": "마산 오동동 돼지 짜글이 맛집 얼큰한 국물과 푸짐한 라면 사리의 조합",
+              "link": "http://blog.naver.com/j-yura/223995513329",
+              "section": "blog",
+              "subsection": "뚝딱뚝딱 곰손레시피 :)",
+              "width": "4320",
+              "height": "7680",
+              "date": "20250904202500",
+              "authorname": "주주마마",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyNTA2MzBfMTIz%2FMDAxNzUxMjY4ODU5MTE2.UAsF266HDnD9zoYfxw9MGE3f_3lQCe8xHbxl3O58Vlog.qSZOGHZR8nqSX1FoFIUDvdCnDagJ-VoHb7r53yWeX04g.PNG%2F4.png%2F4.png"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "2",
+              "title": "마산 합성동 맛집 히도",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTEwMTNfMjIy%2FMDAxNzYwMzE2MjE5ODk0.w8gEwNhwDS6R7QjQjE_uc7Ijf35jdIZMSFEvqbwzcOkg.HIeSZCo6Y8Uuxscj2EtwC9nSTfOtXiRNrpSM6QVXnxog.JPEG%2FIMG%25A3%25DF2885.JPG",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTEwMTNfMjIy/MDAxNzYwMzE2MjE5ODk0.w8gEwNhwDS6R7QjQjE_uc7Ijf35jdIZMSFEvqbwzcOkg.HIeSZCo6Y8Uuxscj2EtwC9nSTfOtXiRNrpSM6QVXnxog.JPEG/IMG%A3%DF2885.JPG",
+              "text": "마산 합성동 맛집 히도",
+              "link": "http://blog.naver.com/tpseh0612/224039410846",
+              "section": "blog",
+              "subsection": "꽃내음 가득한 예쁜 봄",
+              "width": "4284",
+              "height": "4284",
+              "date": "20251013113839",
+              "authorname": "해니",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyNTAzMDNfMTQx%2FMDAxNzQxMDEzMDEzNDc4.RTUMOnK7dW4Plk8MROmQLM1izUJJCdXq_2zzirNgh1Eg.iM2Iup-zrH31gLakn3e309az92X6ni_XL5pt1eNWxckg.JPEG%2FprofileImage.jpg"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "3",
+              "title": "마산맛집 돈까스 맛있는 히도",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MzBfODUg%2FMDAxNzU5MjMwMDYwNzAy.jn1IbzccLuam_2_yefPw1KrjFBGC5q2rDVZo-J5hUMQg.9tnY4P1nPkX5RLVJ6LsIuBGCVSBXt69BF6Bqiu9hrC0g.JPEG%2FIMG%25A3%25DF4317.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MzBfODUg/MDAxNzU5MjMwMDYwNzAy.jn1IbzccLuam_2_yefPw1KrjFBGC5q2rDVZo-J5hUMQg.9tnY4P1nPkX5RLVJ6LsIuBGCVSBXt69BF6Bqiu9hrC0g.JPEG/IMG%A3%DF4317.jpg",
+              "text": "마산맛집 돈까스 맛있는 히도",
+              "link": "http://blog.naver.com/illhvhlya/224027503046",
+              "section": "blog",
+              "subsection": "그냥 기록 ✏️",
+              "width": "4284",
+              "height": "4284",
+              "date": "20250930202751",
+              "authorname": "한나",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyNTA3MDdfMjEg%2FMDAxNzUxODk1NjczMDI3.XpnNzFR4oHm3HcMPUlcruDJ41mdi7SnY5YEEK2y-diUg._iwmWg1rpEHgr9oA1Pkm2CTaZJ2hMxpQsAfCK5Z7n4sg.JPEG%2FprofileImage.jpg"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "4",
+              "title": "마산 합성동 일본식 돈까스맛집 “히도”",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTEwMDJfMjk4%2FMDAxNzU5Mzg2NDg4MDQz.ewjm098OdZ2a6phIIE6CtvgsQJYZPZe1ds6635j9Bl0g.VFbLCc2JY-6-HsT2_EQspzSS9BiehXJCZHO4Lvr99tog.JPEG%2FIMG%25A3%25DF5486.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTEwMDJfMjk4/MDAxNzU5Mzg2NDg4MDQz.ewjm098OdZ2a6phIIE6CtvgsQJYZPZe1ds6635j9Bl0g.VFbLCc2JY-6-HsT2_EQspzSS9BiehXJCZHO4Lvr99tog.JPEG/IMG%A3%DF5486.jpg",
+              "text": "마산 합성동 일본식 돈까스맛집 “히도”",
+              "link": "http://blog.naver.com/jis055/224029748005",
+              "section": "blog",
+              "subsection": "코알라 의 이야기와 맛집기행",
+              "width": "3024",
+              "height": "4032",
+              "date": "20251002155125",
+              "authorname": "코알라",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyMzEwMTVfMjM5%2FMDAxNjk3Mjk3Mjc3MjI3.Cau_PFhx4wJ1mujhCyLVbaqiBwzEpqj6wW3rHutxoAQg.VDPzQjiXXcSHpvuPqpUTUdPI9KZhP5rY-7o4m-c_-JAg.PNG.jis055%2FprofileImage.png"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "5",
+              "title": "[창원 마산역] 두루치기, 짜글이도 파는 돈가스 맛집 히도 | 카츠 냉모밀 세트| 모둠카츠 | 김치대패 두루치기",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MDdfMTk5%2FMDAxNzU3MjA2NjEwMDM5.RalBe5FFv_npfKBYb5R3QfYmPmxfMD5SN1-Ib-2koW0g.4g2XkLYlp4rp09uWSgOcP0ZOa7honGCnTmp5tTrQ_XEg.JPEG%2F20250906%25A3%25DF145414.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MDdfMTk5/MDAxNzU3MjA2NjEwMDM5.RalBe5FFv_npfKBYb5R3QfYmPmxfMD5SN1-Ib-2koW0g.4g2XkLYlp4rp09uWSgOcP0ZOa7honGCnTmp5tTrQ_XEg.JPEG/20250906%A3%DF145414.jpg",
+              "text": "[창원 마산역] 두루치기, 짜글이도 파는 돈가스 맛집 히도 | 카츠 냉모밀 세트| 모둠카츠 | 김치대패 두루치기",
+              "link": "http://blog.naver.com/sodamly/224002809250",
+              "section": "blog",
+              "subsection": "대전 사는 기아girl",
+              "width": "2992",
+              "height": "2992",
+              "date": "20250910164753",
+              "authorname": "담다디",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyNTA3MDNfNyAg%2FMDAxNzUxNTQyODYwMTY3.7mq9rTqPgVc95iI48RQwu6an4J43Y3UGAmvKmVgMq4Eg.4lUWBEtpILH6E2HBNXGcE3INht_Q7lg7V0vgg0XkWpkg.JPEG%2FprofileImage.jpg"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "6",
+              "title": "마산 돈까스 맛집 양덕동 히도 내돈내산",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA3MjJfNjgg%2FMDAxNzUzMTU2MzU4NDE5.DMQISv1ujEDFgRumkTJghJpllZ6wDSE3T5lup2aOh4wg.VaUgd_H4-Ue7Zyksa6l4f-4ZmL8Xn8SHbo0BgVEVkF4g.JPEG%2F2_%25287%2529.jpeg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA3MjJfNjgg/MDAxNzUzMTU2MzU4NDE5.DMQISv1ujEDFgRumkTJghJpllZ6wDSE3T5lup2aOh4wg.VaUgd_H4-Ue7Zyksa6l4f-4ZmL8Xn8SHbo0BgVEVkF4g.JPEG/2_%287%29.jpeg",
+              "text": "마산 돈까스 맛집 양덕동 히도 내돈내산",
+              "link": "http://blog.naver.com/apfl369/223942764954",
+              "section": "blog",
+              "subsection": "쫑알쫑알 즐거운 이야기",
+              "width": "4032",
+              "height": "3024",
+              "date": "20250722134553",
+              "authorname": "쫑알",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyNTA2MzBfMjUg%2FMDAxNzUxMjUxOTQ5MzY0.zpA0kCaNxZqMH7iATfJ-JIf5Stqwwgiiy-ND1IwJFg8g.mYc-UQz1zbIo-FzB49azNfDonkQN--63Y7aLhs-7OmUg.PNG%2FIMG_9363.png%2FIMG_9363.png"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "7",
+              "title": "마산맛집 촉촉한 돈가스부터 김치짜글이까지! 합성동 밥집 히도",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA3MTdfMjEy%2FMDAxNzUyNzUyMDg3MDYy.00VBwhz99s-g1z23NPQI7_m0IWg6wWC0rinCTueeKUMg.zwoH9qARgq6kOv-zFNgHzZqA8lMwa7zEs7CWmNtKnPsg.JPEG%2FIMG%25A3%25DF4774.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA3MTdfMjEy/MDAxNzUyNzUyMDg3MDYy.00VBwhz99s-g1z23NPQI7_m0IWg6wWC0rinCTueeKUMg.zwoH9qARgq6kOv-zFNgHzZqA8lMwa7zEs7CWmNtKnPsg.JPEG/IMG%A3%DF4774.jpg",
+              "text": "마산맛집 촉촉한 돈가스부터 김치짜글이까지! 합성동 밥집 히도",
+              "link": "http://blog.naver.com/osko90/223937512816",
+              "section": "blog",
+              "subsection": "똥강아지 소이일기",
+              "width": "4032",
+              "height": "3024",
+              "date": "20250717204838",
+              "authorname": "소이",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyNTA0MTRfMTgx%2FMDAxNzQ0NTk3MjIzMjc1.fr_B9c_OOJXgCvLUiTfGQHFaKzs6K8t5-hdTZiLaM8gg.rC7hDJWwQXUJMt8wJwrDRMIT4RUxLO8bv4EyC4nIMrog.JPEG%2FprofileImage.jpg"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "8",
+              "title": "[창원/마산]히도 - 마산역 근처 짜글이+돈가스 제대로 하는 집",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA3MDhfMjY5%2FMDAxNzUxOTU0NTYwNjg3.K7SWnRIkKVSGqkNptVkoEecajOzJstDnkgh-qGKOOLsg.t29Nk0ChVUfrV0SjTqmgy1tpk0VNujy8wy1mp3axWrog.JPEG%2FKakaoTalk_20250708_143738244_06.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA3MDhfMjY5/MDAxNzUxOTU0NTYwNjg3.K7SWnRIkKVSGqkNptVkoEecajOzJstDnkgh-qGKOOLsg.t29Nk0ChVUfrV0SjTqmgy1tpk0VNujy8wy1mp3axWrog.JPEG/KakaoTalk_20250708_143738244_06.jpg",
+              "text": "[창원/마산]히도 - 마산역 근처 짜글이+돈가스 제대로 하는 집",
+              "link": "http://blog.naver.com/winnie_mi/223926198528",
+              "section": "blog",
+              "subsection": "서울댁의 마산살이",
+              "width": "3000",
+              "height": "4000",
+              "date": "20250708151654",
+              "authorname": "winnie",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyNTA1MjFfMzAw%2FMDAxNzQ3ODA2ODU5MTkx.mfKlYoKgrnyZS59PXnPyJ8ARNwGel8KDpa8bQB6z54cg.IPuHS6fKgn8x3RpMq-Rt8GHuKioV2Zc0-oJOnv7KCOog.JPEG%2FKakaoTalk_20250521_145249506.jpg%2FKakaoTalk_20250521_145249506.png"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "9",
+              "title": "마산 가츠 맛집 히도, 두툼한 고기와 바삭한 튀김의 완벽 조화",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MjhfMTk3%2FMDAxNzU4OTg2OTg5NzE3.bf885XBZMaJgKf8i2xKNf770hglWtIVNtPDE4tPZ4wQg.PCjQo24Pvvn-grIcsC2DY8je4hGj4xntQ8WWpA8ogiYg.JPEG%2F1-KakaoTalk_20250707_151449437_07.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MjhfMTk3/MDAxNzU4OTg2OTg5NzE3.bf885XBZMaJgKf8i2xKNf770hglWtIVNtPDE4tPZ4wQg.PCjQo24Pvvn-grIcsC2DY8je4hGj4xntQ8WWpA8ogiYg.JPEG/1-KakaoTalk_20250707_151449437_07.jpg",
+              "text": "마산 가츠 맛집 히도, 두툼한 고기와 바삭한 튀김의 완벽 조화",
+              "link": "http://blog.naver.com/kimmmmmn11/224024091422",
+              "section": "blog",
+              "subsection": "kimmmmmn11님의 블로그",
+              "width": "1874",
+              "height": "1876",
+              "date": "20250928003004",
+              "authorname": "kimmmmmn11",
+              "authorThumbnail": ""
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "10",
+              "title": "창원 마산 합성동 돈까스 맛집 히도",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fimage.nmv.naver.net%2Fblog_2025_10_13_2418%2FSAbgf7cyJB_03.jpg",
+              "originalUrl": "http://image.nmv.naver.net/blog_2025_10_13_2418/SAbgf7cyJB_03.jpg",
+              "text": "창원 마산 합성동 돈까스 맛집 히도",
+              "link": "http://blog.naver.com/kwonjy0033/224040079049",
+              "section": "blog",
+              "subsection": "JY님의 블로그",
+              "width": "1920",
+              "height": "1080",
+              "date": "20251013214415",
+              "authorname": "JY",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyNTA4MjBfMjQ5%2FMDAxNzU1Njk1NTE2MzY2.Xrq9_NlPGID2GH9wzzYl1zEFx8B5-uLE7Ix6JCBOt-og.haZ-e5wLPxHubGynTmcIh_0PLR4YyR7kIEz0C_zRDe0g.JPEG%2FKakaoTalk_20240326_102138241.jpg%2FKakaoTalk_20240326_102138241.jpg"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "11",
+              "title": "마산 카츠 맛집 히도, 바삭한 튀김 속 촉촉한 고기 맛에 부모님도 반한 진짜 정통 카츠 맛집",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MjRfMjY4%2FMDAxNzU4NzIyNTk1OTQ2.9T63DoEJ83tafySEcWclQgBUdGTjXz9WSrH9SbbcCG4g.bmSB7RXs7-nrk0tgMPcE-L26LcX66SWB0OOA0LzcvCAg.JPEG%2F1-KakaoTalk_20250707_151449437_13.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MjRfMjY4/MDAxNzU4NzIyNTk1OTQ2.9T63DoEJ83tafySEcWclQgBUdGTjXz9WSrH9SbbcCG4g.bmSB7RXs7-nrk0tgMPcE-L26LcX66SWB0OOA0LzcvCAg.JPEG/1-KakaoTalk_20250707_151449437_13.jpg",
+              "text": "마산 카츠 맛집 히도, 바삭한 튀김 속 촉촉한 고기 맛에 부모님도 반한 진짜 정통 카츠 맛집",
+              "link": "http://blog.naver.com/judj5870/224020638483",
+              "section": "blog",
+              "subsection": ".",
+              "width": "1876",
+              "height": "1878",
+              "date": "20250924230440",
+              "authorname": "",
+              "authorThumbnail": ""
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "12",
+              "title": "마산 가츠 맛집 [ 히도 ] / 바삭함과 육즙의 완벽한 조화가 있는 공간 - 가츠, 나베, 짜글이 등",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MjRfMjE5%2FMDAxNzU4Njg1MTI3OTY0.W9mrheSnCAzdFcNkzF6cWfeAFSn8k8PhpfcD8tbBi1cg.0mtU7sUiYFgr-ab2HFdoMkVUAO2LwqZXJniRtRF7j2Ag.JPEG%2F1-KakaoTalk_20250707_151708572_15.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MjRfMjE5/MDAxNzU4Njg1MTI3OTY0.W9mrheSnCAzdFcNkzF6cWfeAFSn8k8PhpfcD8tbBi1cg.0mtU7sUiYFgr-ab2HFdoMkVUAO2LwqZXJniRtRF7j2Ag.JPEG/1-KakaoTalk_20250707_151708572_15.jpg",
+              "text": "마산 가츠 맛집 [ 히도 ] / 바삭함과 육즙의 완벽한 조화가 있는 공간 - 가츠, 나베, 짜글이 등",
+              "link": "http://blog.naver.com/hiinme/224019202515",
+              "section": "blog",
+              "subsection": "hi_inme",
+              "width": "1868",
+              "height": "1870",
+              "date": "20250923205932",
+              "authorname": "hiinme",
+              "authorThumbnail": ""
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "13",
+              "title": "마산 가츠 맛집 [ 히도 ] 에서 만나는 바삭한 카츠와 푸짐한 돼지짜글이, 김치나베의 진한 매력",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MjNfMTIx%2FMDAxNzU4NTg4MjA0MzU3.7GG8IncQrf5VKeIpxq6n95KkfRT9KRucO-j8V41oR0gg.0g5M8ioG_L8qOTaC3CID-84DoH5a3bXaUz6fh23xYsIg.JPEG%2F1-KakaoTalk_20250707_151449437_08.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MjNfMTIx/MDAxNzU4NTg4MjA0MzU3.7GG8IncQrf5VKeIpxq6n95KkfRT9KRucO-j8V41oR0gg.0g5M8ioG_L8qOTaC3CID-84DoH5a3bXaUz6fh23xYsIg.JPEG/1-KakaoTalk_20250707_151449437_08.jpg",
+              "text": "마산 가츠 맛집 [ 히도 ] 에서 만나는 바삭한 카츠와 푸짐한 돼지짜글이, 김치나베의 진한 매력",
+              "link": "http://blog.naver.com/715147/224017986265",
+              "section": "blog",
+              "subsection": "FLO_",
+              "width": "1874",
+              "height": "1876",
+              "date": "20250922223729",
+              "authorname": "",
+              "authorThumbnail": ""
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "14",
+              "title": "마산 가츠 맛집 히도, 돈가스에 진심인 집 발견! ",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MjJfOTAg%2FMDAxNzU4NTIxNzU1MTUy.yXdLW6er6FruUXB2rrf1HNKxUTiwF4fJ1x5wPlkR_Ywg._PEWwrMFen0ZuPm3VglYMAU39CjBgtZHrRFSSFEf1X8g.JPEG%2F1-KakaoTalk_20250707_151449437_15.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MjJfOTAg/MDAxNzU4NTIxNzU1MTUy.yXdLW6er6FruUXB2rrf1HNKxUTiwF4fJ1x5wPlkR_Ywg._PEWwrMFen0ZuPm3VglYMAU39CjBgtZHrRFSSFEf1X8g.JPEG/1-KakaoTalk_20250707_151449437_15.jpg",
+              "text": "마산 가츠 맛집 히도, 돈가스에 진심인 집 발견! ",
+              "link": "http://blog.naver.com/sunnyjin8801/224017487943",
+              "section": "blog",
+              "subsection": "sunnyjin8801님의 블로그",
+              "width": "1876",
+              "height": "1878",
+              "date": "20250922151705",
+              "authorname": "sunnyjin8801",
+              "authorThumbnail": ""
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "15",
+              "title": "마산 산호천동길 맛집 히도, 튀김과 고기의 완벽 밸런스에 반해 단골 예약",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MjBfMTQ5%2FMDAxNzU4Mzc2MTQ0NzQ2.WMv5ImC8dsBETK-uOMFm9cNufMH-LQGwG14FClwtsSog.DXAPOYYPSdPGQD_v384ylERL83Q0O03JSHz7AW-ABz4g.JPEG%2F1-KakaoTalk_20250707_151449437_18.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MjBfMTQ5/MDAxNzU4Mzc2MTQ0NzQ2.WMv5ImC8dsBETK-uOMFm9cNufMH-LQGwG14FClwtsSog.DXAPOYYPSdPGQD_v384ylERL83Q0O03JSHz7AW-ABz4g.JPEG/1-KakaoTalk_20250707_151449437_18.jpg",
+              "text": "마산 산호천동길 맛집 히도, 튀김과 고기의 완벽 밸런스에 반해 단골 예약",
+              "link": "http://blog.naver.com/hymyon/224015650593",
+              "section": "blog",
+              "subsection": "hay00nlog",
+              "width": "1892",
+              "height": "1894",
+              "date": "20250920224957",
+              "authorname": "hayoon",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyNDA1MTJfMjc5%2FMDAxNzE1NTA4NDQxNTg3.DUdUH5DmelX0jMSLT2uk0nap-j-krgXt9xd6V72WzNEg.V_TwGhtxYssTt5B0oK05KtQyZb7oU6TX-PBiLKKpbWAg.JPEG%2FIMG_5761_2.JPG%2FIMG_5761%2B2.JPG"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "16",
+              "title": "마산 가츠 맛집, 히도에 대해 소개해 드릴게요. 히도의 매력과 메뉴, 그리고 식사 경험에 대해 자세히 알아볼까요?",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MjJfMjMw%2FMDAxNzU4NTA4NDYyNzYz.5R5epc0wf6WlX-Gal6Uq93XBs4MX6Ls-RDeMcFvhHkkg.TJcwz8cDz8-t9SPVCITlSIVRDUTm5UqWL8K7tkxGN0og.JPEG%2F1-KakaoTalk_20250707_151449437_22_%25281%2529.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MjJfMjMw/MDAxNzU4NTA4NDYyNzYz.5R5epc0wf6WlX-Gal6Uq93XBs4MX6Ls-RDeMcFvhHkkg.TJcwz8cDz8-t9SPVCITlSIVRDUTm5UqWL8K7tkxGN0og.JPEG/1-KakaoTalk_20250707_151449437_22_%281%29.jpg",
+              "text": "마산 가츠 맛집, 히도에 대해 소개해 드릴게요. 히도의 매력과 메뉴, 그리고 식사 경험에 대해 자세히 알아볼까요?",
+              "link": "http://blog.naver.com/jannnneee/224017193628",
+              "section": "blog",
+              "subsection": "지민",
+              "width": "1852",
+              "height": "1854",
+              "date": "20250922113456",
+              "authorname": "지민",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyMzAyMjNfMjg1%2FMDAxNjc3MTU4MTM1NTAx.-id55ONd9o5CN1tz0qkHyBUR-gTrkIarg8qh_yCVZ4sg.9uUWZrNzCAWlIWq--T7J0rWLg9Z0CEBK57AqbkT5uLkg.JPEG.kjimin0801%2F20210801508331_%25281%2529.jpg%2F20210801508331%2B%25281%2529.jpg"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "17",
+              "title": "[마산 맛집] 히도: 합성동 돈까스 맛집, 특로스카츠 이거 실화냐?",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTEwMTFfMjk0%2FMDAxNzYwMTg0NTAxMjk0.Cwc2y1zH73njqGe5luQyhMtU1Lncw9D053cmyGKLk7Eg.3_rQwjjU4X3mF44KEVAoXoMDpgaEUqdx7k-AtJCk91og.JPEG%2FIMG%25A3%25DF1733.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTEwMTFfMjk0/MDAxNzYwMTg0NTAxMjk0.Cwc2y1zH73njqGe5luQyhMtU1Lncw9D053cmyGKLk7Eg.3_rQwjjU4X3mF44KEVAoXoMDpgaEUqdx7k-AtJCk91og.JPEG/IMG%A3%DF1733.jpg",
+              "text": "[마산 맛집] 히도: 합성동 돈까스 맛집, 특로스카츠 이거 실화냐?",
+              "link": "http://blog.naver.com/ssj2151/224037921406",
+              "section": "blog",
+              "subsection": "멍석 깔아주면 누워자는 블로그",
+              "width": "900",
+              "height": "1200",
+              "date": "20251018122146",
+              "authorname": "하율",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyMTEwMjJfMTYw%2FMDAxNjM0ODc0MTg4NTM1.pK9vNK90sb5iahxjfsh-7qfYXAbq7F2y9dqFAf1Bb80g.T0H5Jvj0qOEDpuIu1V5csK8IQLWyeCXS-vJ66vs-ck4g.PNG.ssj2151%2FprofileImage.png"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "18",
+              "title": "양 많고 가성비 좋은 마산 카츠 명가, 히도",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MTlfMzIg%2FMDAxNzU4MjY1NjAyNzg2.GUpenGbeX7P0vc9LvbrsujYDr90tKQhQ-r1og_qSQEEg.cmPfjFbD21vwhUeunMcTQigNdo0RUzpAKWc6ZVzTajMg.JPEG%2F1-KakaoTalk_20250707_151503577_20.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MTlfMzIg/MDAxNzU4MjY1NjAyNzg2.GUpenGbeX7P0vc9LvbrsujYDr90tKQhQ-r1og_qSQEEg.cmPfjFbD21vwhUeunMcTQigNdo0RUzpAKWc6ZVzTajMg.JPEG/1-KakaoTalk_20250707_151503577_20.jpg",
+              "text": "양 많고 가성비 좋은 마산 카츠 명가, 히도",
+              "link": "http://blog.naver.com/assajoco1212/224014319077",
+              "section": "blog",
+              "subsection": "잔잔바리 ᨻ",
+              "width": "1874",
+              "height": "1876",
+              "date": "20250919160714",
+              "authorname": "코코",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyNDEwMThfMjMg%2FMDAxNzI5MTc4MzQwNzky.xKuAlQ3J-2zufOQ-G6afgO5QDNrxeGt3NkyGh_2aVNYg._x-biK3D0OGMf9F2sgjhWBD3onpgsHDB6wjz0bbiolcg.JPEG%2FprofileImage.jpg"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "19",
+              "title": "히도 방문 짜글이랑 돈가스 조합, 여기서 끝냈다",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MTlfMjIz%2FMDAxNzU4MjY1NTI0NTM2.Kx-Sju0uc01MSHXM1-xdGxZbiCBJlsq_j6FeDPQOeNIg.3DUdMZTlFgBPGb-uXTAUM8aQqJianUJNqIiGN-9scqog.JPEG%2F1-KakaoTalk_20250707_151503577_08.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MTlfMjIz/MDAxNzU4MjY1NTI0NTM2.Kx-Sju0uc01MSHXM1-xdGxZbiCBJlsq_j6FeDPQOeNIg.3DUdMZTlFgBPGb-uXTAUM8aQqJianUJNqIiGN-9scqog.JPEG/1-KakaoTalk_20250707_151503577_08.jpg",
+              "text": "히도 방문 짜글이랑 돈가스 조합, 여기서 끝냈다",
+              "link": "http://blog.naver.com/hh09231/224014316700",
+              "section": "blog",
+              "subsection": "hh09231님의블로그",
+              "width": "1874",
+              "height": "1876",
+              "date": "20250919160528",
+              "authorname": "",
+              "authorThumbnail": ""
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "20",
+              "title": "히도,튀김 & 고기의 밸런스… 여기 대박이다!",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MTlfMjk5%2FMDAxNzU4MjY1MzY2MDAy.rC3LBwuZjkt-0bpEh77SwD7M1E54ael3sPdcnTjW19Ig.Q5HPmMt5roAq2L8sFy-mL5y2ELk0yTNhSZhunNT1Q7wg.JPEG%2F1-KakaoTalk_20250707_151503577_04.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MTlfMjk5/MDAxNzU4MjY1MzY2MDAy.rC3LBwuZjkt-0bpEh77SwD7M1E54ael3sPdcnTjW19Ig.Q5HPmMt5roAq2L8sFy-mL5y2ELk0yTNhSZhunNT1Q7wg.JPEG/1-KakaoTalk_20250707_151503577_04.jpg",
+              "text": "히도,튀김 & 고기의 밸런스… 여기 대박이다!",
+              "link": "http://blog.naver.com/tntnjini-/224014314008",
+              "section": "blog",
+              "subsection": "tntnjini-님의 블로그",
+              "width": "1874",
+              "height": "1876",
+              "date": "20250919160329",
+              "authorname": "",
+              "authorThumbnail": ""
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "21",
+              "title": "히도: 마산역 인근 돈까스 & 짜글이 맛집 진짜 대박!",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MTlfNjEg%2FMDAxNzU4MjYyOTM2MjE4.yQfkAtjRzrRbFENDaXiJu8msrdeGfW6CZ9vIld3pJWUg.vbrTYxHKgu49wSF2gJW6PIctSiwY60wE1Uy2944FpLMg.JPEG%2F1-KakaoTalk_20250707_151449437_15.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MTlfNjEg/MDAxNzU4MjYyOTM2MjE4.yQfkAtjRzrRbFENDaXiJu8msrdeGfW6CZ9vIld3pJWUg.vbrTYxHKgu49wSF2gJW6PIctSiwY60wE1Uy2944FpLMg.JPEG/1-KakaoTalk_20250707_151449437_15.jpg",
+              "text": "히도: 마산역 인근 돈까스 & 짜글이 맛집 진짜 대박!",
+              "link": "http://blog.naver.com/doraemon024/224014312288",
+              "section": "blog",
+              "subsection": "happybbin2님의 블로그",
+              "width": "1874",
+              "height": "1876",
+              "date": "20250919160212",
+              "authorname": "happybbin2",
+              "authorThumbnail": ""
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "22",
+              "title": "한 번 맛보면 잊을 수 없는 깊은 풍미의 돈까스 마산 가츠 맛집 히도 체험기",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MTVfNjgg%2FMDAxNzU3OTEyMjU0Mjcy.Ik3lBWjktDSRl_5ucAO2gJndI-6gh8AFSQq7pK4nY40g.2FkSbbZssfKbyO_UUnTD3TwFf56r22mKl2BlMHuBkmMg.JPEG%2F1-KakaoTalk_20250707_151456880_24.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MTVfNjgg/MDAxNzU3OTEyMjU0Mjcy.Ik3lBWjktDSRl_5ucAO2gJndI-6gh8AFSQq7pK4nY40g.2FkSbbZssfKbyO_UUnTD3TwFf56r22mKl2BlMHuBkmMg.JPEG/1-KakaoTalk_20250707_151456880_24.jpg",
+              "text": "한 번 맛보면 잊을 수 없는 깊은 풍미의 돈까스 마산 가츠 맛집 히도 체험기",
+              "link": "http://blog.naver.com/lovemesuya/224008697285",
+              "section": "blog",
+              "subsection": "일상, 여행, 맛집 위주 블로그",
+              "width": "1892",
+              "height": "1894",
+              "date": "20250915135823",
+              "authorname": "연울",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyNDAyMjhfMTIz%2FMDAxNzA5MTAzMzkyNzE3.o9s4_meyMpEK9g4b1bx_txDhRX8m0kV-Jh2NnNJZtjUg.fx_ni5C_gBKWj1XmmruFipXNVcYYCJxuc7B6ApRwPb0g.PNG%2Fzzzdsd.png%2Fzzzdsd.png"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "23",
+              "title": "현지인과 관광객 모두가 인정하는 진짜 맛집 마산 가츠 맛집 히도 이야기",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MTVfNiAg%2FMDAxNzU3OTExODQxOTI3.Vo8lTohLRCBg_WPabTIOZQJofO67yGmpB2PaQkfq4gUg.XgtdsIQcU0gcG3z3aHok4XJqCSEPwSG8NPrdJ1Hfdagg.JPEG%2F1-KakaoTalk_20250707_151708572_07.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MTVfNiAg/MDAxNzU3OTExODQxOTI3.Vo8lTohLRCBg_WPabTIOZQJofO67yGmpB2PaQkfq4gUg.XgtdsIQcU0gcG3z3aHok4XJqCSEPwSG8NPrdJ1Hfdagg.JPEG/1-KakaoTalk_20250707_151708572_07.jpg",
+              "text": "현지인과 관광객 모두가 인정하는 진짜 맛집 마산 가츠 맛집 히도 이야기",
+              "link": "http://blog.naver.com/junis2may/224008687965",
+              "section": "blog",
+              "subsection": "오맛의 행복한 일상",
+              "width": "1892",
+              "height": "1894",
+              "date": "20250915135147",
+              "authorname": "오맛",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyNDAyMjhfMTE0%2FMDAxNzA5MDkyMTE4NjEy.bVcpA4NbJ35o-YPxqY2HDXQoFGWn_vE7_dzpWJho614g.P3pgCBzC4eTv1HWZDNAYxdnj8yPbRCcN_P3WkvnzKPkg.JPEG%2F%25E3%2585%2581%25E3%2585%2588.jpg%2F%25E3%2585%2581%25E3%2585%2588.jpg"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "24",
+              "title": "마산 맛집 히도 돈까스와 돼지짜글이 조합",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fimage.nmv.naver.net%2Fblog_2025_10_16_745%2FxS1AM86Uac_03.jpg",
+              "originalUrl": "http://image.nmv.naver.net/blog_2025_10_16_745/xS1AM86Uac_03.jpg",
+              "text": "마산 맛집 히도 돈까스와 돼지짜글이 조합",
+              "link": "http://blog.naver.com/yunseul6/224042830758",
+              "section": "blog",
+              "subsection": "more than happiest",
+              "width": "1280",
+              "height": "720",
+              "date": "20251016080406",
+              "authorname": "윤슬",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyMzA4MjZfMjUg%2FMDAxNjkzMDEwMjgwMDYw.-Dy5X2tE3U2zM-Jm2OFcynUoG80vIkmtIWzW4n27kwMg.YPmcUcqyFmT5OZd7bqYhhzbGWRSOqu698w_e5KqHRr4g.PNG.yunseul6%2FprofileImage.png"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "25",
+              "title": "돈카츠의 진수를 느낄 수 있는 곳 마산 가츠 맛집 히도에서 경험하는 특별한 미식 여행",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MTRfMTE1%2FMDAxNzU3ODM3Mjc1NDE3.a9CL89k-s1eXo-H4b0c_ijjYnvV3tM_W3dqJDfIrsTsg.YP5iwMLv5sXdYrYseEnrNUaiHRS0hEJcOx3Fc9W_ki8g.JPEG%2F1-KakaoTalk_20250707_151456880_23.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MTRfMTE1/MDAxNzU3ODM3Mjc1NDE3.a9CL89k-s1eXo-H4b0c_ijjYnvV3tM_W3dqJDfIrsTsg.YP5iwMLv5sXdYrYseEnrNUaiHRS0hEJcOx3Fc9W_ki8g.JPEG/1-KakaoTalk_20250707_151456880_23.jpg",
+              "text": "돈카츠의 진수를 느낄 수 있는 곳 마산 가츠 맛집 히도에서 경험하는 특별한 미식 여행",
+              "link": "http://blog.naver.com/aruem0750/224007595079",
+              "section": "blog",
+              "subsection": "맛집 전문 블로그",
+              "width": "1892",
+              "height": "1894",
+              "date": "20250914170838",
+              "authorname": "민화",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyNDAyMjhfMTc4%2FMDAxNzA5MTA1Njc1ODg1.Y_BR22cBoVdqZo9aLfu4s0JBy2Mjtw9xu0TQ5APQ3hYg.DDp3cQ_neunHQvjXUxNTH7h8kdgF_G25s4ZUaBjr8a4g.JPEG%2F45ffgd.jpg%2F45ffgd.jpg"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "26",
+              "title": "고소한 풍미와 바삭한 식감이 살아있는 마산 가츠 맛집 히도 퀄리티로 인정받는 맛집",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MTRfMTM0%2FMDAxNzU3ODM2ODYwOTMw.lN72BLHezkfrbcnIVZbV_dkAvjlNdH5Ahxk3-dBW7Rsg.IHHw_bYj8_kpeT00A8-LyWcYJqQpNhFY8nHtvwZsmtUg.JPEG%2F1-KakaoTalk_20250707_151456880_25.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MTRfMTM0/MDAxNzU3ODM2ODYwOTMw.lN72BLHezkfrbcnIVZbV_dkAvjlNdH5Ahxk3-dBW7Rsg.IHHw_bYj8_kpeT00A8-LyWcYJqQpNhFY8nHtvwZsmtUg.JPEG/1-KakaoTalk_20250707_151456880_25.jpg",
+              "text": "고소한 풍미와 바삭한 식감이 살아있는 마산 가츠 맛집 히도 퀄리티로 인정받는 맛집",
+              "link": "http://blog.naver.com/loveinsoccer/224007588854",
+              "section": "blog",
+              "subsection": "일상을 즐기는 남자",
+              "width": "1892",
+              "height": "1894",
+              "date": "20250914170132",
+              "authorname": "일기남",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyNDExMTJfMjY5%2FMDAxNzMxMzg2NjIxMTIx.ZpFs2FWWepeP0ZzPZr9bKaJRVu5aZm_810MxftmXAfog.vNYPqh14bJkaw9nJTClh7k1MlWJlDtphLAiWlHQl6VQg.JPEG%2FprofileImage.jpg"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "27",
+              "title": "마산 합성동맛집 / 히도 : 히레카츠 냉우동 숨은 마산맛집",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTEwMTFfMTUg%2FMDAxNzYwMTczNzEwMTg0.D90_CFNoTXYpl19z4iFlS9lft96qjugDrg20WXPXQ9wg.J_YDHC4A8mucjvy2RIB3mDiTgJpWAO8zZpQk2fClzqkg.PNG%2F%25C1%25A6%25B8%25F1%25C0%25BB-%25C0%25D4%25B7%25C2%25C7%25D8%25C1%25D6%25BC%25BC%25BF%25E4_-001_%25281%2529.png",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTEwMTFfMTUg/MDAxNzYwMTczNzEwMTg0.D90_CFNoTXYpl19z4iFlS9lft96qjugDrg20WXPXQ9wg.J_YDHC4A8mucjvy2RIB3mDiTgJpWAO8zZpQk2fClzqkg.PNG/%C1%A6%B8%F1%C0%BB-%C0%D4%B7%C2%C7%D8%C1%D6%BC%BC%BF%E4_-001_%281%29.png",
+              "text": "마산 합성동맛집 / 히도 : 히레카츠 냉우동 숨은 마산맛집",
+              "link": "http://blog.naver.com/jyunish/224037794323",
+              "section": "blog",
+              "subsection": "꽃밭에서 나실나실",
+              "width": "1080",
+              "height": "1080",
+              "date": "20251011180950",
+              "authorname": "드메루",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyNTA5MDlfMjMx%2FMDAxNzU3NDEyMzk5NjMx.k0rlVY9q8GXaxXOvC63h1B5Tv7Jxa3ZFyM3Ts3IYrcgg.dD3vwgm6saDSJaQToEP3CqJMohiV1wqd7jlzUjU8D04g.PNG%2FprofileImage.png"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "28",
+              "title": "마산 가츠 맛집 히도에서 남자친구랑 푸짐하게 즐긴 바삭 촉촉 카츠와 감각적인 일본풍 공간 후기",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MTNfNjgg%2FMDAxNzU3NzQzMzM5OTIw.VUjPmhwNQCdC3LB_xkszknzhmAD2WYpbzoszVv8xCgwg.qbkYnIjXhw1Y4X5dJnDTMCuwWxmUKJ6G7OYrP519m6Ug.JPEG%2F1-KakaoTalk_20250707_151503577_17.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MTNfNjgg/MDAxNzU3NzQzMzM5OTIw.VUjPmhwNQCdC3LB_xkszknzhmAD2WYpbzoszVv8xCgwg.qbkYnIjXhw1Y4X5dJnDTMCuwWxmUKJ6G7OYrP519m6Ug.JPEG/1-KakaoTalk_20250707_151503577_17.jpg",
+              "text": "마산 가츠 맛집 히도에서 남자친구랑 푸짐하게 즐긴 바삭 촉촉 카츠와 감각적인 일본풍 공간 후기",
+              "link": "http://blog.naver.com/btobsubsub/224006481981",
+              "section": "blog",
+              "subsection": "subsub님의 블로그",
+              "width": "1876",
+              "height": "1878",
+              "date": "20250913150251",
+              "authorname": "우리의story",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyMzExMTRfMjgy%2FMDAxNjk5OTI2NjUwNDk1.To3qoQ8cV3ffdzA9yS73Nj8g1ZYxHE_HPbb0v-xGyKcg.yxlRfDvoHRa4D1BRrwoMBLsBm7i3nSAyovVPJxDKX7sg.PNG.btobsubsub%2FProfile_defaultIMG_B2x.png"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "29",
+              "title": "마산 가츠 맛집! 히도에서 느낀 한 입의 만족과 가성비 폭발 (무한리필에 감성 인테리어까지 완벽한 맛집)",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA5MTNfNjcg%2FMDAxNzU3NzQzNjc0MTYx.04MX4gt-2PNzMBPaCmGMIQgRCnjTpcasoe88DJv4LNsg.cT0ZPmixZtRvgyIgprkQ2oxtnD1JrZPJBoTfq33Res4g.JPEG%2F1-KakaoTalk_20250707_151503577_15.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTA5MTNfNjcg/MDAxNzU3NzQzNjc0MTYx.04MX4gt-2PNzMBPaCmGMIQgRCnjTpcasoe88DJv4LNsg.cT0ZPmixZtRvgyIgprkQ2oxtnD1JrZPJBoTfq33Res4g.JPEG/1-KakaoTalk_20250707_151503577_15.jpg",
+              "text": "마산 가츠 맛집! 히도에서 느낀 한 입의 만족과 가성비 폭발 (무한리필에 감성 인테리어까지 완벽한 맛집)",
+              "link": "http://blog.naver.com/mywaynanana/224006486751",
+              "section": "blog",
+              "subsection": "생각대로",
+              "width": "1874",
+              "height": "1876",
+              "date": "20250913150817",
+              "authorname": "nanana",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyMzExMTZfMTUg%2FMDAxNzAwMTIyMzQwMzU5.2d-xaQRTvP5Bb-BEHLu4UwP32m6L2saXVza1dhKFPUsg.uktd9aKZ72075GRLuT3WjsvYoN_sfnl3jszFEr5yza8g.PNG.bloomingfw0321%2FProfile_defaultIMG_M2x.png"
+            },
+            {
+              "__typename": "UgcImage",
+              "rank": "30",
+              "title": "마산 합성동 돈카츠맛집추천 히도",
+              "imgUrl": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTEwMTFfNzMg%2FMDAxNzYwMTQ4Mjc3ODI1.LMCtIsixVHKuOWkzeILYN7cb1HF_XMKPfeDCyIcQv-kg._UWZ7LCb0N8Eq8AXasnuOxH2Z2r4nInB3IU98ZQsTXQg.JPEG%2FIMG%25A3%25DF4870.jpg",
+              "originalUrl": "http://blogfiles.naver.net/MjAyNTEwMTFfNzMg/MDAxNzYwMTQ4Mjc3ODI1.LMCtIsixVHKuOWkzeILYN7cb1HF_XMKPfeDCyIcQv-kg._UWZ7LCb0N8Eq8AXasnuOxH2Z2r4nInB3IU98ZQsTXQg.JPEG/IMG%A3%DF4870.jpg",
+              "text": "마산 합성동 돈카츠맛집추천 히도",
+              "link": "http://blog.naver.com/0nion_ring/224037568058",
+              "section": "blog",
+              "subsection": "맛집 세상 정복중 ˚ ༘♡",
+              "width": "900",
+              "height": "1200",
+              "date": "20251011130859",
+              "authorname": "",
+              "authorThumbnail": "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=f120_120&src=http%3A%2F%2Fblogpfthumb.phinf.naver.net%2FMjAyNTA1MDZfNjUg%2FMDAxNzQ2NDk3MzQyMjc2.spnWszPzeptREmHlDP-JxZni0Pigvefmj_GE4li1d8Ig.xr7A9MOIJ4fUm_1x_6S_se9FnZHTOnX9eUFfvO6GtDcg.PNG%2FprofileImage.png"
+            }
+          ]
+        }
+      ],
+      "festivalPerformance": {
+        "__typename": "FestivalPerformance",
+        "headInfo": "",
+        "festivalSectionHeadInfo": "",
+        "festivalsTotal": 0,
+        "festivals": [],
+        "performancesTotal": 0,
+        "performances": []
+      },
+      "cp0Videos": [],
+      "goodPrice": null,
+      "paiUpperImage": {
+        "__typename": "PaiUpperImage",
+        "images": [
+          "https://pup-review-phinf.pstatic.net/MjAyNTA5MjRfOTMg/MDAxNzU4Njg1OTU5NTkw.LTEHkWh6GQ9ZjXzUyfKtXhe-08XXCvHvAbsLMVIzhmkg.3QvMWyPQVw2cn76hAOvUWcYAzx5mY-IKbMOL150mtxUg.JPEG/20250924_123415.jpg.jpg",
+          "https://pup-review-phinf.pstatic.net/MjAyNTAyMDlfMTM5/MDAxNzM5MDgyNzg3ODUy.qxTjkXHzv1ARoX6ILb38eeeBCr1h7xC1i5vi-XqfjMsg.MIBqrMyW-tpOOXbJbXyu7YRbA2QwrQcL94R8WrZ2Uywg.JPEG/1000051526.jpg.jpg",
+          "https://pup-review-phinf.pstatic.net/MjAyNTA0MDlfMjk3/MDAxNzQ0MTc2NTgwNjI5.lz311RrE70fD-jz6MTakQhSUnPhUyNX9Tl_bXBzF4jUg.fE1FvbHIGdXBjmVb8dzd9MIKwlIet4PPiYvEtiFPDWYg.JPEG/20250409_124912.jpg.jpg",
+          "https://pup-review-phinf.pstatic.net/MjAyNTAxMTJfMTgy/MDAxNzM2NjcyNjg3MDQ0.as44gWP4XmMCJhjxTfXDptzN_gsiVoxqFdyn9FzvEh4g.4YcR3SlcfADwrfaZJJFh8_lgMOLoTk0GAc-CuDx2bZIg.JPEG/1000040444.jpg.jpg",
+          "https://pup-review-phinf.pstatic.net/MjAyNTAyMDVfMTA3/MDAxNzM4NzI2NTQ1MTky.IlPBAng-QfTem26NJIGDGeyxi-oUBA_Brs99RnNnMTkg.p4e24QmZqjRi_DJPG3oV0Q0GVQ6kflw-DsHx4EOFYP0g.JPEG/F4943E5D-9674-4287-A93A-BF9D94331BBA.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNTAxMDhfMjY3/MDAxNzM2MzEyNjY0MjE2.yrurF6F-w9tb_jtJCsVCcH_7viNgmwCxNPNR10m--8og.EcLTw3VA65AxNZ7eA9bHSgDkwqmS0nWT02kHjQNf-C0g.JPEG/D67AA12E-9340-4278-8BF7-8CF8E5D050C5.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNDExMjlfNDkg/MDAxNzMyODc0MDI5MTY0.Ppwt2tgd8UOH4P1_KUZszmwGTyHQRa08ABEsEO5WSkog.3uEyBXXnWZGrTma7Y1WpHbOFG04FGyjyfpb196ij1IEg.JPEG/1000057562.jpg.jpg",
+          "https://pup-review-phinf.pstatic.net/MjAyNTAxMDFfNzYg/MDAxNzM1NzEwODE2ODE5.hWIdHRuqrPrhX6wzG1_nAUDUpALvBa0HbmbggB49Jiwg.Hn3QKbG3Z4vZ4u2TlxRypAFLda6KdMVtcWDqP0R8Ab0g.JPEG/E4A77EA3-CE1C-4F19-A0EE-986CCC8BFB1A.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNDExMjFfODIg/MDAxNzMyMTc3NTk3NzYz.eJIgC3ld5JDCPd1OqR2J15uejBR-ePUi7buQNE5lDEYg.KPZZ3VQLvVphOyTkT1x4KMmtngDNMSL5auNJjwxmt6wg.JPEG/IMG_9359.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNDExMjVfMTE5/MDAxNzMyNDY4NjQ5MTA5.zuIxq5WhE4L11nT3Sj7wcNc7XH71UJP20KL2t8nNvaYg.PTLDk4rBC9Fj2Um0_Qeoc8e4BIcKImyp7CtO9hND5gUg.JPEG/C4537D52-0627-4B56-81D2-E00DDB85379C.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNDEyMDFfMTkx/MDAxNzMzMDUxNDc5NDk5.VEjuChJe7_XsIeq_ciepJyWng0V4cIBNh10-tEEzI0Ug.UhVZUaBgJmUZ3YmLnamuwaPiDvK3gIc7aBwEvu6KBhkg.JPEG/5A55344E-6D90-48C8-9ECA-5469F29ECF4A.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNDEyMTJfNzEg/MDAxNzMzOTgzMTYwNDQ3.N_QPGtvrWqhScgy7IHLviEUQmj1rKXczykAwgtVwXWog.SiG9rwJ_u7fYlrwyErm86Z8Da80Oezjsdc9b2bWn56wg.JPEG/11417252-7B82-4EB6-A8E7-7D5864B65064.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNTAxMDdfMTU1/MDAxNzM2MjQ1Mzc4NDU3.73WwdYRS1CVlLje2FZ1P0kWRSY7Y1iuITUrRo2uG7v4g.QzucEde5988ts9LUkPZdFD99bFOnppFSLlWaAXg_5Ycg.JPEG/20250107_185339.jpg",
+          "https://pup-review-phinf.pstatic.net/MjAyNDExMjJfMjY5/MDAxNzMyMjY1NDQ0MjUw.dyonWGDG1-i0ZsGYPFrBloUpP-NNwzbT5O3wSywZIiYg.HnkPtWz6JnEC6eNLnXE0aizUL00Tt7vWv1l4iPFCnewg.JPEG/1000073531.jpg.jpg",
+          "https://pup-review-phinf.pstatic.net/MjAyNDEyMjBfMjU5/MDAxNzM0NjY2MjU4Mzg0.ZcHDuE71OBL7PkhafUQzqZ5JXs7Un8lGkWPrUWtcfbQg.sQNvXAaCrfnnVCmgRuEmRjcl3qK6dVHl9t7zCcO6TuIg.JPEG/2DA43079-D863-4D55-8532-11632C928CA1.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNDExMjJfNTAg/MDAxNzMyMjY1NDQ2MTE2.BBpwsgMjkXv3aPGoXTZr3TQJtXNO78H0i54ZOUPvJaEg.UX6vEyrl04VQrmruf9EoW-gGGrUz9fq-XwlaHpfysq0g.JPEG/1000073529.jpg.jpg",
+          "https://pup-review-phinf.pstatic.net/MjAyNTA5MzBfMTU5/MDAxNzU5MjAyNzQ5NTY3.4S3s0XWeD7RKnQbZppXxpz6Fkkv2waHJWS3yoIxnc0Ug.u1gXFot3RxNogR0xfv2_pGSq-XnVvL4i2Ba-wNLnt9Eg.JPEG/20250930_122538.jpg",
+          "https://pup-review-phinf.pstatic.net/MjAyNTAxMDFfMTQ1/MDAxNzM1NzIzNzU5MjU4.f6U-5MgNS-3mlW0Tx5PP6CAG78Ln-H72YzcfPtu_M4kg.zVcaw_WbAlJ5in9UvbwZ_Y5zxtLg7vGhxcbus1syuDsg.JPEG/96CB45EA-0534-453B-A0CE-E5D5E055F729.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNDEyMDdfNTYg/MDAxNzMzNTMwMjAzMzQ3.wNk3Vid9A1cDQC0nqwDZV5FWcn6m4NzJN_GpBswGgA4g.yKhxMVZwYc9ZSkHlLs0fwWhOtQeTSxa9nFroaQX9ocMg.JPEG/C6CBDB7B-0F03-42CC-AACC-76BEAB97DDAD.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNDEyMTZfNzUg/MDAxNzM0MzI1MTQ4NTY4.rSg56FwfmUxmGapAUWDjmwQH_AdhKZZ_PjnrRkJ2-PEg.r8eTyxxbkIXa-ezfzrp1EzNaHfF1jAq9Vy8-35ziAtkg.JPEG/1000027353.jpg.jpg",
+          "https://pup-review-phinf.pstatic.net/MjAyNDExMTVfMjk2/MDAxNzMxNjQyNjk2MjEy.klHw_6x91HDIkZ0-FsD7QSYqUfN39v1xMUIE74RSljkg.XETNqJAidr49oICvIrmGe0sk7lj8LWU29iRZ936CmkYg.JPEG/C38F9C6F-6C24-433B-ACD6-B25DD4999550.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNTA2MTVfMTUy/MDAxNzQ5OTU4MTMwMjE3.GX3ibRVAoGbGdAqjfvD5w6YeCJCs9U3GfnpLcNqBOXQg.Ep_3HAVmluenr3wgFOAcs3UtR319DupY3Q2iPLcgCyEg.JPEG/1000046235.jpg.jpg",
+          "https://pup-review-phinf.pstatic.net/MjAyNDEyMDFfMTQ5/MDAxNzMzMDMyMjc0MDc5.iz8hYKfrpxU66rsNsoN0AU-mgcAMtVAw6bdSV2grIJQg.6NnWCiYYYcHoOvHTwBMs9_BXnNylQIOwgPSLdzRczWsg.JPEG/9E7A6AF2-D372-4EA6-ADF3-5062FAF9157F.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNTAyMDlfOTAg/MDAxNzM5MDgxMzg2OTk1.YOA9wgIJHEeG34KsAruN83Rbm1pAFcBEPffanEy4JQwg.VOs8YsiqpkAojhg9TwRVJuPzxruaPkdz8NfaEuUylNMg.JPEG/E9659AB0-B9BC-4318-9375-B8BD6752239E.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNDExMjJfODcg/MDAxNzMyMjY1NDQzMTE4.OV1SJoqXNtA4vdTWXll150KhmmGPSQnHkaNE2fzoRBQg.Stf35PuOvcMh7GcWWI5WhfBUrvMxPUjejX9sO0_6k_Eg.JPEG/1000073534.jpg.jpg",
+          "https://pup-review-phinf.pstatic.net/MjAyNTAxMDFfMjMg/MDAxNzM1NzEwODE2ODk5.pFINAKjRx_wep3FJfQHRmnmufxjU0RIWYZ7skuowzw4g.uh6GLCXcT_0DtxY-oV_it25mKTqO_j_9FuVs8va1Q7cg.JPEG/7618C537-DEEC-49B6-A4B4-15311E591398.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNDEyMTJfMzMg/MDAxNzMzOTgzMTYwNzQ0.uVDiPVa2-FaXBqHc7SsAXzmo1rkjV4m_arh0Cvg5uqIg.XeMT_gAv_ppUNQ3XVsarvRQqD8jZ9E8NWZvSZP4knsEg.JPEG/B922842B-B8AE-4334-BA26-C98CA9BA36D0.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNTA3MTRfMTgz/MDAxNzUyNDcwNjg3OTY4.LHHEDvjLJXi0TTz1Z9NFOD3BtYfe-dHWOiKgKeyCrIYg.WZepCrlsfaFPRFYB4r98OOq0xmjoDJlua-ANenZ4PKMg.JPEG/B7623B5F-115C-4834-8221-CCDD1AD32AB6.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNDEwMjJfNyAg/MDAxNzI5NTkyNDQ3NTAy.fO25VHGxWBLnl_cs12foYBZuY63EdO1lu0xJ0l6wQCgg.6A0Yu7jofd-t3-AEhVi_YEx5NrzKh6btwWBbcAJ1lgsg.JPEG/E27760F0-33F7-4826-A951-C80DFD04ABEF.jpeg",
+          "https://pup-review-phinf.pstatic.net/MjAyNTAzMjZfMjUw/MDAxNzQyOTgwOTA1ODQ3.E-sDnwhT1NjZTHRselYwCUi6-vxk2VZVmhzud_M8JIUg.ymt2CuASs-PNrD7HlsdoUqRbMT_gNO6JBVpIgRgfkNUg.JPEG/20250326_175746.jpg.jpg"
+        ]
+      },
+      "POS": {
+        "__typename": "POS",
+        "isPOS": false,
+        "badge": null,
+        "salesCount": null,
+        "popularMenus": null,
+        "averagePrice": null,
+        "popularDay": null,
+        "weeklyPopularity": null,
+        "durationTime": null,
+        "today": null
+      },
+      "relatedPopupstore": [],
+      "exp": null,
+      "staticMapUrl({\"markerType\":\"restaurant\"})": "https://simg.pstatic.net/static.map/v2/map/staticmap.bin?center=128.5813429%2C35.2348228&level=16&dataversion=176.36&caller=naver_mstore&markers=pos%3A128.5813429%2035.2348228%7Ctype%3Ac%7Ccolor%3Ablue%7Clabel%3Arestaurant",
+      "isRelaxRestaurant": null,
+      "isStarbucks": null,
+      "is100YearCertified": null,
+      "is100YearSmallManufacturer": null,
+      "isNFASafetyCertified": null,
+      "isAntiqueStore": null,
+      "newOpening": null,
+      "themes": [
+        "데이트하기 좋은",
+        "조용한 분위기",
+        "모임하기 좋은"
+      ],
+      "visitorReviewMediasTotal": 1171,
+      "description({\"source\":[\"shopWindow\"]})": "전국에 소문난 마산 돈까스 맛집\n\n안녕하세요 저희는 히레카츠, 로스카츠 전문점 마산 맛집 '히도'입니다.\n\n맛과 가성비는 물론 분위기까지 잡은 마산 데이트, 창원 데이트 하기에도 좋은 창원 돈까스 맛집!\n\n마산 밥집, 창원 밥집을 찾으신다면 점심, 저녁 식사로 '히도'의 히레카츠는 어떠실까요?\n\n김치나베, 우동, 대패두루치기도 '히도'의 명물!\n\n저희는 질 좋은 원육을 200시간 이상 빙온숙성을 하여 최상의 품질을 손님상에 제공합니다.\n\n저희가 고생할수록 고객님의 입을 즐겁게 할 수 있다는 생각으로 매일 정성을 담아 대접해 드리고 있습니다.\n\n저희는 타협하지 않겠습니다. 그건 저희를 믿고 마산 돈까스 맛집으로 자리 잡게 해주신 손님들을 배신하는 거라고 생각하니까요 :)\n\n이러한 저희 '히도'의 마음이 손님들께 전달되어 창원 맛집, 마산 맛집, 합성동 맛집으로 자리잡을 수 있었습니다. :)\n\n이에 보답하고자 저희 '히도'는 손님들께 약속드리겠습니다.\n\n최고의 재료와 최고의 서비스를 항상 유지하겠습니다.\n\n이는 마산 돈까스 맛집으로서 갖추어야 할 기본이라 생각하며 기본에 충실하겠습니다!\n\n변함없는 맛과 정성을 약속하겠습니다.\n\n흔한 마산 돈까스집, 창원 돈까스집이 아닌 항상 노력하고 발전하는 마산 돈까스 맛집, 창원 돈까스 맛집 '히도'가 되도록 하겠습니다.!!\n\n영업시간:매일 11:00~21:00 (20:30 라스트오더)\n추석, 설날 당일빼곤 연중무휴!\n마산 삼일교회 맞은편 위치\n합성동 사설 주차장 또는 가게앞 하천 갓길에 주차 가능합니다!\n주차장이 따로 없어서 인근 유료주차장 주차시 주차권 보여주시면 1,000원 지원해드립니다!",
+      "isKoreaGrandSale": false,
+      "hasAroundItems": true,
+      "hasAiBriefing": true,
+      "acceptsConsumerCoupon": true
+    },
+    "panoramaThumbnail({\"input\":{\"businessId\":\"1768171911\",\"height\":400,\"type\":\"thumbnail\",\"width\":800}})": {
+      "__typename": "PanoramaThumbnailResult",
+      "url": "https://apis.naver.com/place/panorama/thumbnail/1768171911/0?width=800&height=400&msgpad=1761052545326&md=si%2BQaXl5SxFWuEu6Dy0Pc1Lsqkw%3D"
+    }
+  }
+}

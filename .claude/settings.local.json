@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(NUL)",
+      "Bash(for file in place-1265317185 place-1538590732 place-1575722042 place-1596131027)",
+      "Bash(tasklist:*)",
+      "Bash(taskkill:*)",
+      "Bash(git fetch:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File .specify/scripts/powershell/create-new-feature.ps1:*)",
+      "Bash(tree:*)",
+      "SlashCommand(/speckit.plan)",
+      "Bash(powershell -ExecutionPolicy Bypass -File .specify/scripts/powershell/setup-plan.ps1 -Json)",
+      "Bash(if [ -d \"Place_Keywords_maker\" ])",
+      "Bash(then rm -rf Place_Keywords_maker)",
+      "Bash(fi)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

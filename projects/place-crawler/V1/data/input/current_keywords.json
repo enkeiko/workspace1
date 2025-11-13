@@ -1,0 +1,24 @@
+{
+  "1768171911": {
+    "primary_keywords": ["강남 닭갈비", "히도 강남점"],
+    "secondary_keywords": ["강남 맛집", "닭갈비 맛집"],
+    "last_updated": "2025-09-15",
+    "performance": {
+      "avg_monthly_searches": 5000,
+      "avg_click_rate": 0.15,
+      "conversion_rate": 0.05
+    },
+    "notes": "9월 이후 '히도 강남점' 검색량 감소 추세"
+  },
+  "1265317185": {
+    "primary_keywords": ["신촌 카페", "블루보틀 신촌"],
+    "secondary_keywords": ["신촌 데이트", "커피 맛집"],
+    "last_updated": "2025-10-01",
+    "performance": {
+      "avg_monthly_searches": 8000,
+      "avg_click_rate": 0.22,
+      "conversion_rate": 0.08
+    },
+    "notes": "안정적인 검색량 유지 중"
+  }
+}
