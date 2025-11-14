@@ -1,6 +1,8 @@
 # Place Keywords Maker V2
 
-네이버 플레이스 SEO 자동화 시스템 - 모듈화 및 테스트 개선 버전
+네이버 플레이스 SEO 자동화 시스템 - **42ment Guidebook v1.1** 기반 구현
+
+📎 **전략 프레임워크**: [Guidebook v1.1](docs/architecture/251113_Guidebook_v1.1_full.md) | **전략↔구현**: [GUIDEBOOK_MAPPING.md](docs/GUIDEBOOK_MAPPING.md) | **전체 문서**: [인덱스](../../DOCUMENTATION_INDEX.md)
 
 ## 🎯 V2 주요 개선 사항
 

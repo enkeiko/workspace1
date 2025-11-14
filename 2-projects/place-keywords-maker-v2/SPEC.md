@@ -1,9 +1,14 @@
 # Place Keywords Maker V2 - 통합 스펙 문서
 
+📎 **전략 프레임워크**: [42ment Guidebook v1.1](docs/architecture/251113_Guidebook_v1.1_full.md) - 이 프로젝트의 전략적 기반
+📎 **전략 → 구현 매핑**: [GUIDEBOOK_MAPPING.md](docs/GUIDEBOOK_MAPPING.md) - C-Sys/D-Sys/E-Sys 구현 위치
+
+---
+
 ## 1. 프로젝트 개요
 
 ### 1.1 목적
-네이버 플레이스 데이터를 자동으로 수집하고 분석하여 SEO 최적화를 위한 키워드 전략을 수립하는 통합 시스템
+**42ment Guidebook v1.1**의 네이버 플레이스 SEO 전략을 구현하여 데이터 자동 수집, AI 분석, 키워드 전략 수립을 통합 자동화하는 시스템
 
 ### 1.2 V2의 목표
 - **V1의 완성도 높은 기능** + **V2의 깔끔한 아키텍처** 결합

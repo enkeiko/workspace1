@@ -1,13 +1,17 @@
-# Version 2: With Guidebook (가이드북 분석 후 보완)
+# Version 2: With Guidebook (가이드북 기반)
 
-이 버전은 **Place_Keywords_maker 가이드북을 분석**한 후 Spec을 보완하는 버전입니다.
+이 버전은 **42ment Guidebook v1.1**을 전략적 기반으로 삼아 C-Sys/D-Sys/E-Sys를 구현하는 버전입니다.
+
+📎 **전략 프레임워크**: [42ment Guidebook v1.1](../../../2-projects/place-keywords-maker-v2/docs/architecture/251113_Guidebook_v1.1_full.md)
+📎 **전략 → 구현 매핑**: [GUIDEBOOK_MAPPING.md](../../../2-projects/place-keywords-maker-v2/docs/GUIDEBOOK_MAPPING.md)
 
 ## 📋 상태
+- ✅ **Guidebook v1.1 분석 완료** (2025-11-14)
 - ✅ **Spec.md 초안 완료** (2025-11-09)
-- ⏳ **가이드북 분석 대기**
-- ⏳ **Spec.md 보완 대기**
-- ⏳ **Plan.md 대기**
-- ⏳ **Tasks.md 대기**
+- ✅ **전략 ↔ 구현 매핑 완료** (2025-11-14)
+- 🔨 **구현 진행 중** (L1 완료, L2/L3 진행 중)
+- ⏳ **Plan.md 업데이트 대기**
+- ⏳ **Tasks.md 업데이트 대기**
 
 ## 🎯 목표
 - 가이드북의 상세 구현 사항 반영

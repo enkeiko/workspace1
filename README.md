@@ -2,6 +2,8 @@
 
 통합 모노레포 워크스페이스 - 네이버 플레이스 검색 최적화 도구 개발 및 관리
 
+📎 **전략 프레임워크**: [42ment Guidebook v1.1](2-projects/place-keywords-maker-v2/docs/architecture/251113_Guidebook_v1.1_full.md) | [문서 인덱스](DOCUMENTATION_INDEX.md)
+
 ---
 
 ## 📁 프로젝트 구조 (번호순 정렬)
