@@ -12,6 +12,11 @@
 
 const puppeteer = require('puppeteer');
 const { EventEmitter } = require('events');
+const {
+  normalizeAddress,
+  normalizeMenu,
+  normalizeReview
+} = require('../utils/normalizers');
 
 class PlaceCrawler extends EventEmitter {
   constructor(options = {}) {
@@ -323,10 +328,7 @@ class PlaceCrawler extends EventEmitter {
 
     if (!rawAddress) return null;
 
-    return {
-      raw: rawAddress,
-      normalized: this._normalizeAddress(rawAddress)
-    };
+    return normalizeAddress(rawAddress);
   }
 
   /**
@@ -366,7 +368,7 @@ class PlaceCrawler extends EventEmitter {
         }));
       });
 
-      return menus.map(menu => this._normalizeMenu(menu));
+      return menus.map(menu => normalizeMenu(menu)).filter(Boolean);
 
     } catch (error) {
       return [];
@@ -394,45 +396,21 @@ class PlaceCrawler extends EventEmitter {
   async _extractReviews(page) {
     try {
       // TODO: 리뷰 페이지네이션 처리
-      return await page.$$eval('.review_item', elements => {
+      const rawReviews = await page.$$eval('.review_item', elements => {
         return elements.slice(0, 100).map(el => ({
           author: el.querySelector('.author')?.textContent.trim() || 'Anonymous',
           rating: el.querySelector('.rating')?.textContent.trim() || '',
           content: el.querySelector('.content')?.textContent.trim() || '',
-          date: el.querySelector('.date')?.textContent.trim() || ''
+          date: el.querySelector('.date')?.textContent.trim() || '',
+          images: Array.from(el.querySelectorAll('.review_img')).map(img => img.src),
+          isVerified: el.querySelector('.verified_badge') !== null
         }));
       });
+
+      return rawReviews.map(review => normalizeReview(review)).filter(Boolean);
     } catch (error) {
       return [];
     }
-  }
-
-  /**
-   * 주소 정규화 (L1_FEATURE_SPEC.md 참조)
-   * @private
-   */
-  _normalizeAddress(rawAddress) {
-    // TODO: 실제 정규화 로직 구현 (extractSi, extractGu, extractDong 등)
-    return {
-      si: null,
-      gu: null,
-      dong: null,
-      roadAddress: null,
-      jibunAddress: null
-    };
-  }
-
-  /**
-   * 메뉴 정규화 (L1_FEATURE_SPEC.md 참조)
-   * @private
-   */
-  _normalizeMenu(rawMenu) {
-    // TODO: 실제 정규화 로직 구현 (cleanMenuName, extractPrice 등)
-    return {
-      name: rawMenu.name,
-      price: null,
-      priceFormatted: rawMenu.price
-    };
   }
 
   /**
