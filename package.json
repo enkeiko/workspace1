@@ -1,0 +1,25 @@
+{
+  "name": "naver-place-crawler",
+  "version": "1.0.0",
+  "description": "L1 Pipeline - Naver Place Data Crawler",
+  "main": "src/crawlers/PlaceCrawler.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "example": "node examples/basic-usage.js"
+  },
+  "keywords": [
+    "crawler",
+    "naver-place",
+    "puppeteer",
+    "web-scraping"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^21.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
