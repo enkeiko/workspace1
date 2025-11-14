@@ -1,6 +1,66 @@
 # Place Keywords Maker V2
 
-네이버 플레이스 SEO 자동화 시스템 - 모듈화 및 테스트 개선 버전
+네이버 플레이스 SEO 자동화 시스템 - **42ment Guidebook v1.1** 기반 구현
+
+📎 **전략 프레임워크**: [Guidebook v1.1](docs/architecture/251113_Guidebook_v1.1_full.md) | **전략↔구현**: [GUIDEBOOK_MAPPING.md](docs/GUIDEBOOK_MAPPING.md) | **전체 문서**: [인덱스](../../DOCUMENTATION_INDEX.md)
+
+---
+
+## 🚀 빠른 시작
+
+5분 안에 첫 번째 키워드 분석을 실행하세요!
+
+→ **[시작하기 (5분 퀵스타트)](GETTING_STARTED.md)**
+
+### 주요 명령어
+```bash
+npm install              # 설치
+npm run l1               # L1 파이프라인 실행
+npm run l2               # L2 파이프라인 실행
+npm run l3               # L3 파이프라인 실행
+npm test                 # 테스트 실행
+```
+
+---
+
+## 📖 역할별 가이드
+
+시작하기 전에 역할에 맞는 문서를 선택하세요:
+
+### 🆕 신규 사용자
+- **첫 방문이신가요?** → [GETTING_STARTED.md](GETTING_STARTED.md) (5분 퀵스타트)
+- **문제 발생 시** → [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+- **변경 이력** → [CHANGELOG.md](CHANGELOG.md)
+
+### 🔧 개발자
+- **시스템 아키텍처** → [docs/architecture/overview.md](docs/architecture/overview.md)
+- **전략↔구현 매핑** → [GUIDEBOOK_MAPPING.md](docs/GUIDEBOOK_MAPPING.md)
+- **통합 스펙** → [SPEC.md](SPEC.md)
+- **테스트 가이드** → [Testing](#-테스트) (아래 섹션)
+
+### 📋 기획자/PM
+- **전략 프레임워크** → [Guidebook v1.1](docs/architecture/251113_Guidebook_v1.1_full.md)
+- **커버리지 분석** → [GUIDEBOOK_COVERAGE_ANALYSIS.md](docs/GUIDEBOOK_COVERAGE_ANALYSIS.md)
+- **PM 문서 리뷰** → [PM_DOCUMENTATION_REVIEW.md](docs/PM_DOCUMENTATION_REVIEW.md)
+
+### 💡 기여자
+- **기여 가이드** → CONTRIBUTING.md (작성 예정)
+- **이슈 제기** → [GitHub Issues](https://github.com/enkeiko/workspace1/issues)
+
+---
+
+## 🆘 도움이 필요하신가요?
+
+### 자주 발생하는 문제
+→ [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - 14가지 일반적인 문제 해결법
+
+### 자주 묻는 질문
+→ docs/FAQ.md (작성 예정)
+
+### 문의하기
+→ [GitHub Issues](https://github.com/enkeiko/workspace1/issues)
+
+---
 
 ## 🎯 V2 주요 개선 사항
 

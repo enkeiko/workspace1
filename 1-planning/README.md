@@ -2,6 +2,9 @@
 
 **목적**: 코드 작성 전 모든 기획, 설계, 아이디어 구체화
 
+📎 **전략 기반**: [42ment Guidebook v1.1](../2-projects/place-keywords-maker-v2/docs/architecture/251113_Guidebook_v1.1_full.md) - 모든 기획의 전략적 기반
+📎 **문서 체계**: [전체 문서 인덱스](../DOCUMENTATION_INDEX.md) - Guidebook 중심 문서 구조
+
 ---
 
 ## 📁 폴더 구조

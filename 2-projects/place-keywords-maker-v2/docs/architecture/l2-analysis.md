@@ -1,8 +1,17 @@
 # L2 — 분석 및 목표키워드 설정
 
+📎 **Guidebook 전략**: [C-Sys-2 (효율지수)](251113_Guidebook_v1.1_full.md#c-3-c-sys-키워드-자동화-구조), [C-Sys-3 (Improver 연동)](251113_Guidebook_v1.1_full.md#c-3-c-sys-키워드-자동화-구조)
+📎 **이전 단계**: [L1 데이터 수집](l1-pipeline.md)
+📎 **다음 단계**: [L3 최종 대표키워드 조합](l3-strategy.md)
+📎 **전체 파이프라인**: [Overview](overview.md)
+
+---
+
 ## 목적
 
 L1에서 수집/정렬된 데이터를 AI와 마케터가 협업하여 심층 분석하고, **네이버 월간 검색량을 조회**하여, **목표키워드**(단기/장기, 메인/서브, 확장 방향)를 전략적으로 설정합니다.
+
+**Guidebook 관점**: 이 단계는 **C-Sys-2 (효율지수)** 계산과 **C-Sys-3 (Improver)** AI 키워드 추천을 구현합니다.
 
 ## 핵심 원칙
 
@@ -345,6 +354,8 @@ async function fetchSearchVolumes(matrix) {
 ### 3단계: AI 분석 — 키워드 관련성 평가
 AI로 각 키워드와 매장의 관련성을 평가합니다.
 
+**Guidebook 용어**: 이 단계는 **Improver** (AI 기반 키워드 추천 시스템)를 구현합니다.
+
 **AI 프롬프트**:
 ```javascript
 async function analyzeRelevance(place, matrix) {
@@ -445,10 +456,13 @@ async function applyAIAnalysis(matrix, place) {
 ### 5단계: 목표키워드 분류 및 설정
 마케터 검토를 바탕으로 키워드를 전략적으로 분류합니다.
 
+**Guidebook 용어**: 이 단계는 **효율지수 (Efficiency Index)** 계산을 구현합니다.
+
 **자동 분류 로직**:
 ```javascript
 function autoClassifyTargetKeywords(matrix, place) {
-  // 점수 계산: 검색량 + 관련성 + 트렌드
+  // 효율지수 계산: 검색량 + 관련성 + 트렌드
+  // Guidebook C-Sys-2: log(검색량+1) / (경쟁도+1) 공식 변형
   for (const item of matrix) {
     item.composite_score =
       normalizeVolume(item.monthly_volume) * 0.5 +
