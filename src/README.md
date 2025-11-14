@@ -33,14 +33,38 @@ L1_FEATURE_SPEC.md 명세를 바탕으로 구현한 네이버 플레이스 데�
    - STANDARD: 필수 + 중요 필드 (~30초)
    - COMPLETE: 모든 필드 + 리뷰 (~60초)
 
+6. **Rate Limiting** (RS-003)
+   - Leaky Bucket 알고리즘
+   - 우선순위 큐 (HIGH/MEDIUM/LOW)
+   - 분당 30회, 시간당 1,000회 제한
+   - 동시 실행 최대 5개
+
+7. **데이터 정규화** (normalizers.js)
+   - 주소 정규화: 시/도, 구/군, 동/읍/면 추출
+   - 메뉴 정규화: 가격 추출, 카테고리 분류, 키워드 추출
+   - 리뷰 정규화: 텍스트 정리, 키워드 추출
+   - 연락처/영업시간 정규화
+
+8. **데이터 검증** (validators.js)
+   - 필수 필드 검증
+   - 데이터 타입 검증 (Semantic Versioning, ISO 8601 등)
+   - 비즈니스 규칙 검증 (완성도 일치성, 가격 합리성, 위치 좌표)
+   - 품질 체크 (CRITICAL/HIGH/WARNING 단계)
+
+9. **데이터 저장** (DataStorage.js)
+   - 개별 매장 JSON 파일 저장/로드
+   - 배치 데이터 저장
+   - 수집 요약 및 메타데이터 저장
+   - 저장소 통계 및 정리 기능
+
 ### 🚧 TODO (향후 구현 예정)
 
-- [ ] **Rate Limiting** (RS-003)
-- [ ] **데이터 정규화 함수들** (normalizeAddress, extractPrice 등)
-- [ ] **배치 처리**
-- [ ] **데이터 저장 (JSON 파일)**
-- [ ] **모니터링 및 로깅**
+- [ ] **Rate Limiter와 PlaceCrawler 통합**
+- [ ] **DataStorage와 PlaceCrawler 통합**
+- [ ] **Validator와 PlaceCrawler 통합**
+- [ ] **모니터링 및 로깅 강화**
 - [ ] **단위 테스트**
+- [ ] **통합 테스트**
 
 ## 설치
 
@@ -85,9 +109,11 @@ npm run example
 src/
 ├── crawlers/
 │   └── PlaceCrawler.js      # 메인 크롤러 클래스
-├── utils/                    # 유틸리티 함수 (TODO)
-│   ├── normalizers.js        # 데이터 정규화
-│   └── validators.js         # 데이터 검증
+├── utils/
+│   ├── normalizers.js        # 데이터 정규화 (25+ 함수)
+│   ├── validators.js         # 데이터 검증 (8 검증 함수)
+│   ├── RateLimiter.js        # Rate Limiting (Leaky Bucket)
+│   └── DataStorage.js        # JSON 파일 저장
 └── config/                   # 설정 파일 (TODO)
     └── default.js
 
