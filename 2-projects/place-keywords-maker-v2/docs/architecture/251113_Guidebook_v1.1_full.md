@@ -1,6 +1,10 @@
 # 42ment Naver Place SEO Guidebook_v1.1
 last_updated: 2025-11-14
 
+📎 **기술 구현 참조**: 이 Guidebook의 전략을 구현한 L1/L2/L3 파이프라인은 [GUIDEBOOK_MAPPING.md](../GUIDEBOOK_MAPPING.md) 참조
+
+---
+
 ## A. 전략 프레임 (Relevance · Popularity · Trust)
 
 ### A-0. 원칙
@@ -83,28 +87,36 @@ last_updated: 2025-11-14
 ## C-3. C-Sys (키워드 자동화 구조)
 
 ### C-Sys-0 | Meta 수집
-- keyword_meta_taxonomy.yaml 기반  
-  - 지역(Location)  
-  - 대상(Target)  
-  - 의도(Intent)  
-  - 감성(Tone)  
+- keyword_meta_taxonomy.yaml 기반
+  - 지역(Location)
+  - 대상(Target)
+  - 의도(Intent)
+  - 감성(Tone)
   - 시점(Time/Season)
 
+📎 **구현 참조**: L1 Step 1-3 데이터 수집 ([GUIDEBOOK_MAPPING.md](../GUIDEBOOK_MAPPING.md#c-sys-0--meta-수집))
+
 ### C-Sys-1 | 매핑
-- 리뷰·메뉴·소식·외부 채널에서 자연어 추출  
-- 유사어 클러스터링  
+- 리뷰·메뉴·소식·외부 채널에서 자연어 추출
+- 유사어 클러스터링
+
+📎 **구현 참조**: L1 Step 4-5 키워드 분류 (`AddressParser.js`, `KeywordClassifier.js`)
 
 ### C-Sys-2 | 효율지수
 ```
 Efficiency = log(검색량+1) / (경쟁도+1)
 ```
-※ 경쟁도 = 상권 내 동일 업종/키워드 매장 수  
+※ 경쟁도 = 상권 내 동일 업종/키워드 매장 수
 ※ 가중치는 미공개 → **확인 불가**
 
+📎 **구현 참조**: L2 검색량 조회 + 스코어링 ([l2-analysis.md](l2-analysis.md))
+
 ### C-Sys-3 | Improver 연동
-- tone/time/meta 기반 추천  
-- 중복·스태핑 차단  
-- 조합키워드 문장화  
+- tone/time/meta 기반 추천
+- 중복·스태핑 차단
+- 조합키워드 문장화
+
+📎 **구현 참조**: L2 AI 키워드 추천 (진행중) ([GUIDEBOOK_MAPPING.md](../GUIDEBOOK_MAPPING.md#c-sys-3--improver-연동))  
 
 ---
 
@@ -165,9 +177,12 @@ Efficiency = log(검색량+1) / (경쟁도+1)
 ---
 
 ## D-Sys (자동화 흐름)
-- Intro/News/Visual은 Analyzer → Improver로 tone/time/meta 최적화  
-- 중복/오류 정합성 검증  
-- BlogGuide 모듈로 연결  
+- Intro/News/Visual은 Analyzer → Improver로 tone/time/meta 최적화
+- 중복/오류 정합성 검증
+- BlogGuide 모듈로 연결
+
+📎 **구현 참조**: L3 콘텐츠 생성 파이프라인 ([l3-strategy.md](l3-strategy.md))
+📎 **데이터 흐름**: `L1 데이터 수집` → `L2 AI 분석` → `L3 Intro/News 생성`
 
 ---
 
@@ -228,28 +243,31 @@ Efficiency = log(검색량+1) / (경쟁도+1)
 ## E-Sys (External Sync Engine)
 
 ### E-Sys-1 입력
-- SNS 텍스트/해시태그  
-- 리뷰 표준 언어  
-- 시즌/상황 정보  
+- SNS 텍스트/해시태그
+- 리뷰 표준 언어
+- 시즌/상황 정보
 
 ### E-Sys-2 변환
-- tone/time/meta 자동 추출  
-- 감성/상황/대상 기반 패턴 분석  
+- tone/time/meta 자동 추출
+- 감성/상황/대상 기반 패턴 분석
 
 ### E-Sys-3 출력
-- 소식 주제 추천  
-- 소개문 보완 포인트  
-- 리뷰 답글 방향성  
-- 이미지 개선 포인트  
+- 소식 주제 추천
+- 소개문 보완 포인트
+- 리뷰 답글 방향성
+- 이미지 개선 포인트
 
 ### E-Sys-4 KPI
-- 브랜드 검색량(데이터랩)  
-- 클릭률(전화/길찾기/예약)  
-- 리뷰 증가량  
-- 소식 CTR  
+- 브랜드 검색량(데이터랩)
+- 클릭률(전화/길찾기/예약)
+- 리뷰 증가량
+- 소식 CTR
 
-※ 외부 지표의 정확 가중치는 **확인 불가**,  
+※ 외부 지표의 정확 가중치는 **확인 불가**,
    보조 참고만 가능.
+
+📎 **구현 상태**: ❌ 계획 단계 ([GUIDEBOOK_MAPPING.md](../GUIDEBOOK_MAPPING.md#e-외부-콘텐츠--리뷰-전략-e-sys))
+📎 **현재 구현**: L1에서 리뷰 데이터 수집까지만 완료
 
 ---
 
@@ -301,6 +319,14 @@ Efficiency = log(검색량+1) / (경쟁도+1)
 ### Pipeline
 ```
 Collector → Analyzer → SEOImprover → BlogGuide → External Sync(E-Sys)
+```
+
+📎 **기술 구현 매핑**:
+```
+L1 (데이터 수집) = Collector + Analyzer
+L2 (AI 분석)     = SEOImprover
+L3 (최종 전략)   = BlogGuide
+E-Sys (외부 동기화) = 계획 단계
 ```
 
 ### Data Flow
