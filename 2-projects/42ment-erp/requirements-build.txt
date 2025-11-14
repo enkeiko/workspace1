@@ -1,0 +1,8 @@
+# Build Dependencies for 42ment ERP
+# Use this file for building Windows executable
+
+# PyInstaller for creating executable
+pyinstaller>=6.0.0
+
+# All runtime dependencies
+-r requirements.txt
