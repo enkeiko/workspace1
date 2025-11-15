@@ -296,20 +296,53 @@ function extractServing(menuName) {
 function classifyMenu(menuName) {
   if (!menuName) return '기타';
 
-  const categories = {
-    '메인 요리': ['갈비', '삼겹살', '스테이크', '파스타', '피자', '돈까스', '치킨', '찜', '탕', '전골', '국밥'],
-    '사이드': ['샐러드', '감자튀김', '떡볶이', '튀김', '만두', '김치', '나물'],
-    '음료': ['커피', '주스', '차', '에이드', '스무디', '맥주', '소주', '와인', '음료', '콜라', '사이다'],
-    '디저트': ['케이크', '아이스크림', '빙수', '과일', '젤라또', '마카롱', '쿠키']
-  };
+  // M-2: 우선순위 기반 가중치 스코어링 (키워드 충돌 해결)
+  const categoryPatterns = [
+    {
+      category: '메인 요리',
+      weight: 3,
+      keywords: ['갈비', '삼겹살', '스테이크', '파스타', '피자', '돈까스', '치킨', '찜', '탕', '전골', '국밥']
+    },
+    {
+      category: '사이드',
+      weight: 2,
+      keywords: ['샐러드', '감자튀김', '떡볶이', '튀김', '만두', '김치', '나물']
+    },
+    {
+      category: '음료',
+      weight: 2,
+      keywords: ['커피', '주스', '차', '에이드', '스무디', '맥주', '소주', '와인', '음료', '콜라', '사이다']
+    },
+    {
+      category: '디저트',
+      weight: 1,
+      keywords: ['케이크', '아이스크림', '빙수', '과일', '젤라또', '마카롱', '쿠키']
+    }
+  ];
 
-  for (const [category, keywords] of Object.entries(categories)) {
-    if (keywords.some(keyword => menuName.includes(keyword))) {
-      return category;
+  const scores = {};
+
+  // 각 카테고리별 점수 계산
+  for (const pattern of categoryPatterns) {
+    let score = 0;
+    for (const keyword of pattern.keywords) {
+      if (menuName.includes(keyword)) {
+        score += pattern.weight;
+      }
+    }
+    if (score > 0) {
+      scores[pattern.category] = score;
     }
   }
 
-  return '메인 요리';  // 기본값
+  // 매칭된 카테고리가 없으면 기본값
+  if (Object.keys(scores).length === 0) {
+    return '메인 요리';
+  }
+
+  // 가장 높은 점수의 카테고리 반환
+  return Object.entries(scores)
+    .sort((a, b) => b[1] - a[1])[0][0];
 }
 
 /**

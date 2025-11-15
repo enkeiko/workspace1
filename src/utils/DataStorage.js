@@ -12,6 +12,30 @@ const fs = require('fs').promises;
 const path = require('path');
 const lockfile = require('proper-lockfile');  // C-2: Race Condition 방지
 
+/**
+ * M-3: 순환 참조를 안전하게 처리하는 JSON.stringify
+ * @param {object} obj - 직렬화할 객체
+ * @param {boolean} prettyPrint - pretty print 여부
+ * @returns {string} JSON 문자열
+ */
+function safeStringify(obj, prettyPrint = false) {
+  const seen = new WeakSet();
+
+  const replacer = (key, value) => {
+    if (typeof value === 'object' && value !== null) {
+      if (seen.has(value)) {
+        return '[Circular]';
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+
+  return prettyPrint
+    ? JSON.stringify(obj, replacer, 2)
+    : JSON.stringify(obj, replacer);
+}
+
 class DataStorage {
   constructor(options = {}) {
     this.config = {
@@ -54,10 +78,8 @@ class DataStorage {
     const fileName = `${placeId}.json`;
     const filePath = path.join(this.paths.places, fileName);
 
-    // JSON 저장
-    const content = this.config.prettyPrint
-      ? JSON.stringify(data, null, 2)
-      : JSON.stringify(data);
+    // JSON 저장 (M-3: safeStringify 사용)
+    const content = safeStringify(data, this.config.prettyPrint);
 
     await fs.writeFile(filePath, content, 'utf-8');
 
@@ -104,9 +126,8 @@ class DataStorage {
       places: dataArray
     };
 
-    const content = this.config.prettyPrint
-      ? JSON.stringify(batchData, null, 2)
-      : JSON.stringify(batchData);
+    // M-3: safeStringify 사용
+    const content = safeStringify(batchData, this.config.prettyPrint);
 
     await fs.writeFile(filePath, content, 'utf-8');
 
@@ -151,9 +172,8 @@ class DataStorage {
         ...summary
       };
 
-      const content = this.config.prettyPrint
-        ? JSON.stringify(mergedSummary, null, 2)
-        : JSON.stringify(mergedSummary);
+      // M-3: safeStringify 사용
+      const content = safeStringify(mergedSummary, this.config.prettyPrint);
 
       await fs.writeFile(filePath, content, 'utf-8');
 
@@ -186,9 +206,8 @@ class DataStorage {
       description: 'L1 Pipeline Data Schema Version'
     };
 
-    const content = this.config.prettyPrint
-      ? JSON.stringify(versionData, null, 2)
-      : JSON.stringify(versionData);
+    // M-3: safeStringify 사용
+    const content = safeStringify(versionData, this.config.prettyPrint);
 
     await fs.writeFile(filePath, content, 'utf-8');
 
@@ -204,9 +223,8 @@ class DataStorage {
     const fileName = 'field_mapping.json';
     const filePath = path.join(this.paths.metadata, fileName);
 
-    const content = this.config.prettyPrint
-      ? JSON.stringify(mapping, null, 2)
-      : JSON.stringify(mapping);
+    // M-3: safeStringify 사용
+    const content = safeStringify(mapping, this.config.prettyPrint);
 
     await fs.writeFile(filePath, content, 'utf-8');
 

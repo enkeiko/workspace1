@@ -443,8 +443,22 @@ class PlaceCrawler extends EventEmitter {
       // 페이지 완전 로드 대기
       await page.waitForFunction(() => document.readyState === 'complete');
 
-      // 추가 대기 (Lazy Loading)
-      await this._sleep(1000);
+      // M-1: 네트워크 유휴 상태 감지 (하드코딩된 1초 대기 제거)
+      await page.waitForFunction(() => {
+        // 최근 완료된 네트워크 요청 확인
+        const resources = performance.getEntriesByType('resource');
+        const placeRequests = resources.filter(r =>
+          r.name.includes('place.naver.com') ||
+          r.name.includes('map.naver.com')
+        );
+
+        // 모든 관련 요청이 완료되었는지 확인
+        return placeRequests.length === 0 ||
+               placeRequests.every(r => r.responseEnd > 0);
+      }, { timeout: 5000 }).catch(() => {
+        // 타임아웃되어도 계속 진행 (최대 5초만 대기)
+        console.warn('[PlaceCrawler] Network idle timeout - continuing anyway');
+      });
 
     } catch (error) {
       console.warn('[PlaceCrawler] Timeout waiting for selectors:', error.message);
