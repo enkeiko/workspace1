@@ -217,13 +217,25 @@ function cleanMenuName(menuName) {
 }
 
 /**
- * 가격 추출 함수
+ * 가격 추출 함수 (C-6: 상한선 설정 가능)
  * @param {string|number} priceString - 가격 문자열
+ * @param {object} options - 옵션 { maxPrice, minPrice }
  * @returns {number|null} 숫자 가격
  */
-function extractPrice(priceString) {
+function extractPrice(priceString, options = {}) {
+  const maxPrice = options.maxPrice || 100000000;  // 기본: 1억원
+  const minPrice = options.minPrice !== undefined ? options.minPrice : 0;
+
   if (!priceString) return null;
-  if (typeof priceString === 'number') return priceString;
+
+  // 숫자 타입이면 범위 검증만
+  if (typeof priceString === 'number') {
+    if (priceString >= minPrice && priceString <= maxPrice) {
+      return priceString;
+    }
+    console.warn(`[normalizers] Price ${priceString} out of range [${minPrice}, ${maxPrice}]`);
+    return null;
+  }
 
   // 숫자만 추출: "12,000원" -> "12000" -> 12000
   const numericString = priceString.toString()
@@ -234,8 +246,11 @@ function extractPrice(priceString) {
   const price = parseInt(numericString, 10);
 
   // 유효성 검증
-  if (isNaN(price) || price < 0 || price > 10000000) {
-    return null;  // 비정상적인 가격
+  if (isNaN(price) || price < minPrice || price > maxPrice) {
+    if (!isNaN(price)) {
+      console.warn(`[normalizers] Price ${price} out of range [${minPrice}, ${maxPrice}]`);
+    }
+    return null;
   }
 
   return price;
@@ -332,14 +347,15 @@ function extractMenuKeywords(menuName) {
 }
 
 /**
- * 메뉴 정규화 (메인 함수)
+ * 메뉴 정규화 (메인 함수) (C-6: 가격 옵션 추가)
  * @param {object} rawMenu - 원본 메뉴
+ * @param {object} options - 옵션 { maxPrice, minPrice }
  * @returns {object} 정규화된 메뉴
  */
-function normalizeMenu(rawMenu) {
+function normalizeMenu(rawMenu, options = {}) {
   if (!rawMenu) return null;
 
-  const price = extractPrice(rawMenu.price);
+  const price = extractPrice(rawMenu.price, options);
 
   return {
     // 메뉴명 정제

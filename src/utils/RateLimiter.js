@@ -31,10 +31,12 @@ class RateLimiter extends EventEmitter {
       LOW: []
     };
 
-    // 요청 이력 (Rate Limiting 계산용)
+    // 요청 이력 (Ring Buffer - C-4: 메모리 누수 방지)
     this.requestHistory = {
-      minute: [],
-      hour: []
+      minute: new Array(this.config.requestsPerMinute).fill(0),
+      hour: new Array(this.config.requestsPerHour).fill(0),
+      minuteIndex: 0,
+      hourIndex: 0
     };
 
     // 통계
@@ -146,13 +148,18 @@ class RateLimiter extends EventEmitter {
   async _executeTask(task) {
     this.inProgress.add(task.id);
 
-    // 요청 이력에 추가
+    // 요청 이력에 추가 (Ring Buffer - C-4)
     const now = Date.now();
-    this.requestHistory.minute.push(now);
-    this.requestHistory.hour.push(now);
 
-    // 이력 정리 (오래된 것 제거)
-    this._cleanupHistory();
+    // Minute ring buffer
+    this.requestHistory.minute[this.requestHistory.minuteIndex] = now;
+    this.requestHistory.minuteIndex =
+      (this.requestHistory.minuteIndex + 1) % this.requestHistory.minute.length;
+
+    // Hour ring buffer
+    this.requestHistory.hour[this.requestHistory.hourIndex] = now;
+    this.requestHistory.hourIndex =
+      (this.requestHistory.hourIndex + 1) % this.requestHistory.hour.length;
 
     this.emit('taskStarted', {
       taskId: task.id,
@@ -195,43 +202,34 @@ class RateLimiter extends EventEmitter {
   }
 
   /**
-   * Rate Limit 확인
+   * Rate Limit 확인 (Ring Buffer 기반 - C-4)
    * @private
    * @returns {boolean} 실행 가능 여부
    */
   _checkRateLimit() {
     const now = Date.now();
-
-    // 분당 요청 수 확인
     const minuteAgo = now - 60 * 1000;
-    const recentMinute = this.requestHistory.minute.filter(t => t > minuteAgo);
+    const hourAgo = now - 60 * 60 * 1000;
+
+    // Ring Buffer에서 유효한 타임스탬프만 카운트 (C-4)
+    // 0은 초기값이므로 제외하고, 시간 범위 내의 것만 카운트
+    const recentMinute = this.requestHistory.minute.filter(
+      t => t > 0 && t > minuteAgo
+    );
 
     if (recentMinute.length >= this.config.requestsPerMinute) {
       return false;
     }
 
-    // 시간당 요청 수 확인
-    const hourAgo = now - 60 * 60 * 1000;
-    const recentHour = this.requestHistory.hour.filter(t => t > hourAgo);
+    const recentHour = this.requestHistory.hour.filter(
+      t => t > 0 && t > hourAgo
+    );
 
     if (recentHour.length >= this.config.requestsPerHour) {
       return false;
     }
 
     return true;
-  }
-
-  /**
-   * 요청 이력 정리 (오래된 것 제거)
-   * @private
-   */
-  _cleanupHistory() {
-    const now = Date.now();
-    const minuteAgo = now - 60 * 1000;
-    const hourAgo = now - 60 * 60 * 1000;
-
-    this.requestHistory.minute = this.requestHistory.minute.filter(t => t > minuteAgo);
-    this.requestHistory.hour = this.requestHistory.hour.filter(t => t > hourAgo);
   }
 
   /**

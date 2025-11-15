@@ -12,6 +12,7 @@
 
 const puppeteer = require('puppeteer');
 const { EventEmitter } = require('events');
+const fs = require('fs').promises;  // C-5: Docker 환경 체크용
 const {
   normalizeAddress,
   normalizeMenu,
@@ -47,6 +48,12 @@ class PlaceCrawler extends EventEmitter {
       failureThreshold: options.failureThreshold || 5,
       successThreshold: options.successThreshold || 2,
       breakerTimeout: options.breakerTimeout || 60000, // 60초
+
+      // 가격 범위 설정 (C-6)
+      priceOptions: {
+        maxPrice: options.maxPrice || 100000000,  // 기본: 1억원
+        minPrice: options.minPrice !== undefined ? options.minPrice : 0
+      },
 
       ...options
     };
@@ -93,6 +100,27 @@ class PlaceCrawler extends EventEmitter {
   }
 
   /**
+   * Docker 환경 체크 (C-5)
+   * @private
+   * @returns {Promise<boolean>} Docker 환경 여부
+   */
+  async _isRunningInDocker() {
+    try {
+      // /.dockerenv 파일 존재 여부 확인
+      await fs.access('/.dockerenv');
+      return true;
+    } catch {
+      // /proc/self/cgroup에서 docker 문자열 확인 (fallback)
+      try {
+        const cgroup = await fs.readFile('/proc/self/cgroup', 'utf-8');
+        return cgroup.includes('docker');
+      } catch {
+        return false;
+      }
+    }
+  }
+
+  /**
    * 초기화: Puppeteer 브라우저 실행
    */
   async initialize() {
@@ -104,19 +132,35 @@ class PlaceCrawler extends EventEmitter {
       // DataStorage 초기화 (C-3)
       await this.storage.initialize();
 
+      // Docker 환경 체크 (C-5)
+      const isDocker = await this._isRunningInDocker();
+
+      // 기본 브라우저 인자
+      const args = [
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--disable-gpu'
+      ];
+
+      // Docker 환경에서만 --no-sandbox 사용 (C-5)
+      if (isDocker) {
+        console.warn('[PlaceCrawler] Running in Docker - using --no-sandbox (security risk)');
+        args.push('--no-sandbox', '--disable-setuid-sandbox');
+      } else {
+        console.log('[PlaceCrawler] Running in native environment - sandbox enabled');
+      }
+
       this.browser = await puppeteer.launch({
         headless: this.config.headless,
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-accelerated-2d-canvas',
-          '--disable-gpu'
-        ]
+        args
       });
 
       this.stats.startTime = Date.now();
-      this.emit('initialized', { browser: this.browser });
+      this.emit('initialized', {
+        browser: this.browser,
+        isDocker,
+        sandboxDisabled: isDocker
+      });
 
       console.log('[PlaceCrawler] Initialized successfully');
     } catch (error) {
@@ -430,7 +474,7 @@ class PlaceCrawler extends EventEmitter {
   }
 
   /**
-   * 메뉴 추출
+   * 메뉴 추출 (C-6: 가격 옵션 적용)
    * @private
    */
   async _extractMenus(page) {
@@ -443,7 +487,8 @@ class PlaceCrawler extends EventEmitter {
         }));
       }, selectors.name, selectors.price);
 
-      return menus.map(menu => normalizeMenu(menu)).filter(Boolean);
+      // priceOptions 전달 (C-6)
+      return menus.map(menu => normalizeMenu(menu, this.config.priceOptions)).filter(Boolean);
 
     } catch (error) {
       return [];
