@@ -39,6 +39,19 @@ class RateLimiter extends EventEmitter {
       hourIndex: 0
     };
 
+    // H-4: Weighted Fair Queuing (Priority Starvation 방지)
+    this.priorityWeights = {
+      HIGH: 5,    // 50% 확률
+      MEDIUM: 3,  // 30% 확률
+      LOW: 2      // 20% 확률
+    };
+
+    this.priorityCounters = {
+      HIGH: 0,
+      MEDIUM: 0,
+      LOW: 0
+    };
+
     // 통계
     this.stats = {
       totalRequests: 0,
@@ -124,16 +137,34 @@ class RateLimiter extends EventEmitter {
   }
 
   /**
-   * 다음 작업 가져오기 (우선순위 큐)
+   * 다음 작업 가져오기 (H-4: Weighted Fair Queuing)
    * @private
    * @returns {object|null} 작업
    */
   _getNextTask() {
-    // 우선순위: HIGH → MEDIUM → LOW
-    const priorities = ['HIGH', 'MEDIUM', 'LOW'];
+    // H-4: Weighted Fair Queuing - Priority Starvation 방지
+    const totalWeight = Object.values(this.priorityWeights).reduce((a, b) => a + b, 0);
+    const totalExecuted = this.priorityCounters.HIGH + this.priorityCounters.MEDIUM + this.priorityCounters.LOW;
 
-    for (const priority of priorities) {
+    // 각 우선순위의 실행 비율 계산하여 가장 부족한 것부터 실행
+    for (const [priority, weight] of Object.entries(this.priorityWeights)) {
+      const queue = this.queues[priority];
+      if (queue.length === 0) continue;
+
+      const expectedRatio = weight / totalWeight;
+      const actualRatio = totalExecuted > 0 ? this.priorityCounters[priority] / totalExecuted : 0;
+
+      // 예상보다 적게 실행되었으면 우선 실행
+      if (actualRatio < expectedRatio) {
+        this.priorityCounters[priority]++;
+        return queue.shift();
+      }
+    }
+
+    // Fallback: 일반 우선순위 순서 (모든 비율이 적절할 때)
+    for (const priority of ['HIGH', 'MEDIUM', 'LOW']) {
       if (this.queues[priority].length > 0) {
+        this.priorityCounters[priority]++;
         return this.queues[priority].shift();
       }
     }
@@ -293,6 +324,11 @@ class RateLimiter extends EventEmitter {
     this.queues.HIGH = [];
     this.queues.MEDIUM = [];
     this.queues.LOW = [];
+
+    // H-4: Priority counters 리셋
+    this.priorityCounters.HIGH = 0;
+    this.priorityCounters.MEDIUM = 0;
+    this.priorityCounters.LOW = 0;
 
     this.emit('queueCleared');
   }

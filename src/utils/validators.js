@@ -275,7 +275,7 @@ function validateMenuPrices(data) {
 }
 
 /**
- * 위치 좌표 유효성 검증 (한국 내부)
+ * 위치 좌표 유효성 검증 (H-5: 한국 내부, 더 정확한 경계)
  * @param {object} data - L1 출력 데이터
  * @returns {object} 검증 결과
  */
@@ -288,13 +288,38 @@ function validateLocationBounds(data) {
 
   const { lat, lng } = data.place.address.location;
 
-  // 대한민국 좌표 범위
-  // 위도: 33-43, 경도: 124-132
-  if (lat < 33 || lat > 43 || lng < 124 || lng > 132) {
+  // H-5: 더 정확한 대한민국 좌표 범위
+  // 본토와 제주도를 분리하여 검증 (북한 제외, 동해 한가운데 제외)
+  const KOREA_BOUNDS = {
+    mainland: {
+      lat: { min: 33.1, max: 38.6 },  // 제주도 ~ 강원도 북부
+      lng: { min: 125.0, max: 131.9 } // 서해안 ~ 동해안
+    },
+    jeju: {
+      lat: { min: 33.1, max: 33.6 },  // 제주도
+      lng: { min: 126.1, max: 126.9 }
+    }
+  };
+
+  // 본토 또는 제주도 범위 확인
+  const inMainland =
+    lat >= KOREA_BOUNDS.mainland.lat.min && lat <= KOREA_BOUNDS.mainland.lat.max &&
+    lng >= KOREA_BOUNDS.mainland.lng.min && lng <= KOREA_BOUNDS.mainland.lng.max;
+
+  const inJeju =
+    lat >= KOREA_BOUNDS.jeju.lat.min && lat <= KOREA_BOUNDS.jeju.lat.max &&
+    lng >= KOREA_BOUNDS.jeju.lng.min && lng <= KOREA_BOUNDS.jeju.lng.max;
+
+  if (!inMainland && !inJeju) {
     errors.push({
       field: 'place.address.location',
-      message: `Location (${lat}, ${lng}) is outside of South Korea`,
-      severity: 'ERROR'
+      message: `Location (${lat}, ${lng}) is outside of South Korea bounds`,
+      severity: 'ERROR',
+      details: {
+        lat,
+        lng,
+        bounds: KOREA_BOUNDS
+      }
     });
   }
 

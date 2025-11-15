@@ -59,11 +59,18 @@ class PlaceCrawler extends EventEmitter {
     };
 
     this.browser = null;
+
+    // H-1: 페이지 풀 (메모리 누수 방지)
+    this.pagePool = [];
+    this.maxPoolSize = options.maxPoolSize || 10;
+
     this.stats = {
       totalRequests: 0,
       successCount: 0,
       failureCount: 0,
-      startTime: null
+      startTime: null,
+      pagePoolHits: 0,    // 풀에서 재사용
+      pagePoolMisses: 0   // 새로 생성
     };
 
     // Circuit Breaker 상태
@@ -170,9 +177,70 @@ class PlaceCrawler extends EventEmitter {
   }
 
   /**
+   * 페이지 풀에서 페이지 가져오기 (H-1)
+   * @private
+   */
+  async _getPage() {
+    if (this.pagePool.length > 0) {
+      this.stats.pagePoolHits++;
+      return this.pagePool.pop();
+    }
+
+    this.stats.pagePoolMisses++;
+    return await this.browser.newPage();
+  }
+
+  /**
+   * 페이지 풀에 페이지 반환 (H-1)
+   * @private
+   */
+  async _releasePage(page) {
+    try {
+      // 페이지 초기화
+      await page.goto('about:blank');
+
+      // 스토리지 정리
+      await page.evaluate(() => {
+        localStorage.clear();
+        sessionStorage.clear();
+      });
+
+      // 쿠키 삭제
+      const cookies = await page.cookies();
+      if (cookies.length > 0) {
+        await page.deleteCookie(...cookies);
+      }
+
+      // 풀에 공간이 있으면 재사용, 없으면 닫기
+      if (this.pagePool.length < this.maxPoolSize) {
+        this.pagePool.push(page);
+      } else {
+        await page.close();
+      }
+    } catch (error) {
+      // 정리 실패 시 페이지 닫기 (메모리 누수 방지)
+      try {
+        await page.close();
+      } catch (closeError) {
+        console.warn('[PlaceCrawler] Failed to close page:', closeError.message);
+      }
+    }
+  }
+
+  /**
    * 종료: 리소스 정리
    */
   async shutdown() {
+    // 페이지 풀의 모든 페이지 닫기 (H-1)
+    while (this.pagePool.length > 0) {
+      const page = this.pagePool.pop();
+      try {
+        await page.close();
+      } catch (error) {
+        console.warn('[PlaceCrawler] Error closing pooled page:', error.message);
+      }
+    }
+
     if (this.browser) {
       await this.browser.close();
       this.browser = null;
@@ -301,7 +369,8 @@ class PlaceCrawler extends EventEmitter {
       await this.initialize();
     }
 
-    const page = await this.browser.newPage();
+    // H-1: 페이지 풀에서 페이지 가져오기
+    const page = await this._getPage();
     const startTime = Date.now();
 
     try {
@@ -357,7 +426,8 @@ class PlaceCrawler extends EventEmitter {
       throw error;
 
     } finally {
-      await page.close();
+      // H-1: 페이지 풀에 반환
+      await this._releasePage(page);
     }
   }
 
@@ -398,18 +468,29 @@ class PlaceCrawler extends EventEmitter {
       reviewCount: null
     };
 
-    // BASIC: 필수 필드만
-    data.name = await this._extractText(page, selectors.place.name) || 'Unknown';
-    data.category = await this._extractText(page, selectors.place.category);
+    // H-2: BASIC 필드 배치 추출 (성능 최적화)
+    const basicFields = await this._extractAllFields(page, {
+      name: selectors.place.name,
+      category: selectors.place.category,
+      phone: selectors.place.phone
+    });
+
+    data.name = basicFields.name || 'Unknown';
+    data.category = basicFields.category;
+    data.contact.phone = basicFields.phone;
     data.address = await this._extractAddress(page);
-    data.contact.phone = await this._extractText(page, selectors.place.phone);
 
     // STANDARD 이상: 추가 필드
     if (level === 'STANDARD' || level === 'COMPLETE') {
+      // H-2: STANDARD 필드 배치 추출
+      const standardFields = await this._extractAllFields(page, {
+        businessHours: selectors.place.businessHours
+      });
+
       data.rating = await this._extractRating(page);
       data.reviewCount = await this._extractReviewCount(page);
       data.menus = await this._extractMenus(page);
-      data.businessHours = await this._extractText(page, selectors.place.businessHours);
+      data.businessHours = standardFields.businessHours;
       data.images = await this._extractImages(page);
     }
 
@@ -420,6 +501,25 @@ class PlaceCrawler extends EventEmitter {
     }
 
     return data;
+  }
+
+  /**
+   * H-2: 여러 필드 배치 추출 (성능 최적화)
+   * @private
+   */
+  async _extractAllFields(page, selectors) {
+    return await page.evaluate((sels) => {
+      const result = {};
+      for (const [key, selector] of Object.entries(sels)) {
+        try {
+          const el = document.querySelector(selector);
+          result[key] = el ? el.textContent.trim() : null;
+        } catch (error) {
+          result[key] = null;
+        }
+      }
+      return result;
+    }, selectors);
   }
 
   /**
@@ -688,7 +788,17 @@ class PlaceCrawler extends EventEmitter {
         ...this.stats,
         uptime,
         successRate: `${successRate}%`,
-        circuitBreakerState: this.circuitBreaker.state
+        circuitBreakerState: this.circuitBreaker.state,
+        // H-1: 페이지 풀 통계
+        pagePool: {
+          size: this.pagePool.length,
+          maxSize: this.maxPoolSize,
+          hits: this.stats.pagePoolHits,
+          misses: this.stats.pagePoolMisses,
+          hitRate: this.stats.pagePoolHits + this.stats.pagePoolMisses > 0
+            ? ((this.stats.pagePoolHits / (this.stats.pagePoolHits + this.stats.pagePoolMisses)) * 100).toFixed(2) + '%'
+            : '0%'
+        }
       },
       rateLimiter: this.rateLimiter.getStatus(),
       storage: await this.storage.getStorageStats()
