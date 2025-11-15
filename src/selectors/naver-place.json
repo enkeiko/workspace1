@@ -1,0 +1,61 @@
+{
+  "version": "2024-11",
+  "updated_at": "2025-11-14",
+  "description": "네이버 플레이스 CSS 셀렉터 정의",
+  "comment": "네이버 UI 변경 시 이 파일만 수정하면 됩니다",
+
+  "selectors": {
+    "place": {
+      "name": ".place_section_name",
+      "category": ".category",
+      "address": ".address",
+      "phone": ".phone",
+      "rating": ".rating",
+      "reviewCount": ".review_count",
+      "businessHours": ".business_hours"
+    },
+
+    "menu": {
+      "container": ".menu_item",
+      "name": ".menu_name",
+      "price": ".menu_price",
+      "description": ".menu_description",
+      "image": ".menu_image"
+    },
+
+    "review": {
+      "container": ".review_item",
+      "author": ".author",
+      "rating": ".rating",
+      "content": ".content",
+      "date": ".date",
+      "image": ".review_img",
+      "verifiedBadge": ".verified_badge"
+    },
+
+    "image": {
+      "container": ".image_item",
+      "thumbnail": ".image_item img",
+      "fullsize": ".image_item a"
+    },
+
+    "loading": {
+      "spinner": ".loading_spinner",
+      "placeholder": ".place_section"
+    }
+  },
+
+  "fallbacks": {
+    "comment": "Primary 셀렉터가 실패할 경우 시도할 대체 셀렉터들",
+    "place": {
+      "name": [".place_section_name", ".place_title", "h1.title", ".name"],
+      "category": [".category", ".place_category", ".type"],
+      "address": [".address", ".place_address", ".location"]
+    }
+  },
+
+  "changelog": {
+    "2024-11": "Initial version - 현재 네이버 플레이스 모바일 기준",
+    "future": "UI 변경 시 여기에 변경 이력 기록"
+  }
+}

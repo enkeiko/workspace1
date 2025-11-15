@@ -17,6 +17,10 @@ const {
   normalizeMenu,
   normalizeReview
 } = require('../utils/normalizers');
+const { runQualityChecks } = require('../utils/validators');
+const RateLimiter = require('../utils/RateLimiter');
+const DataStorage = require('../utils/DataStorage');
+const SELECTORS = require('../selectors/naver-place.json');  // C-1
 
 class PlaceCrawler extends EventEmitter {
   constructor(options = {}) {
@@ -60,15 +64,32 @@ class PlaceCrawler extends EventEmitter {
       state: 'CLOSED', // CLOSED, OPEN, HALF_OPEN
       consecutiveFailures: 0,
       consecutiveSuccesses: 0,
-      lastFailureTime: null
+      lastFailureTime: null,
+      halfOpenTestInProgress: false  // C-7: Race Condition 방지
     };
 
-    // Rate Limiter 큐
-    this.queue = {
-      pending: [],
-      inProgress: new Set(),
-      maxConcurrent: this.config.maxConcurrent
-    };
+    // RateLimiter 통합 (C-3)
+    this.rateLimiter = new RateLimiter({
+      maxConcurrent: this.config.maxConcurrent,
+      requestsPerMinute: this.config.requestsPerMinute,
+      requestsPerHour: options.requestsPerHour || 1000
+    });
+
+    // DataStorage 통합 (C-3)
+    this.storage = new DataStorage({
+      basePath: options.storagePath || './data/output/l1',
+      prettyPrint: options.prettyPrint !== false
+    });
+
+    // 자동 저장 설정
+    this.config.autoSave = options.autoSave !== false;  // 기본: true
+    this.config.autoValidate = options.autoValidate !== false;  // 기본: true
+
+    // RateLimiter 이벤트 전달
+    this.rateLimiter.on('taskQueued', (data) => this.emit('taskQueued', data));
+    this.rateLimiter.on('taskStarted', (data) => this.emit('taskStarted', data));
+    this.rateLimiter.on('taskCompleted', (data) => this.emit('taskCompleted', data));
+    this.rateLimiter.on('rateLimited', (data) => this.emit('rateLimited', data));
   }
 
   /**
@@ -80,6 +101,9 @@ class PlaceCrawler extends EventEmitter {
     }
 
     try {
+      // DataStorage 초기화 (C-3)
+      await this.storage.initialize();
+
       this.browser = await puppeteer.launch({
         headless: this.config.headless,
         args: [
@@ -121,32 +145,80 @@ class PlaceCrawler extends EventEmitter {
    */
   async crawlPlace(placeId, options = {}) {
     const level = options.level || this.config.defaultLevel;
+    const priority = options.priority || 'MEDIUM';
+    const autoSave = options.autoSave !== undefined ? options.autoSave : this.config.autoSave;
+    const autoValidate = options.autoValidate !== undefined ? options.autoValidate : this.config.autoValidate;
 
-    // Circuit Breaker 체크
-    if (this.circuitBreaker.state === 'OPEN') {
-      const timeSinceLastFailure = Date.now() - this.circuitBreaker.lastFailureTime;
+    // RateLimiter를 통해 실행 (C-3)
+    return this.rateLimiter.add(async () => {
+      // Circuit Breaker 체크 (C-7: Race Condition 수정)
+      if (this.circuitBreaker.state === 'OPEN') {
+        const timeSinceLastFailure = Date.now() - this.circuitBreaker.lastFailureTime;
 
-      if (timeSinceLastFailure < this.config.breakerTimeout) {
-        throw new Error('Circuit Breaker is OPEN - crawling suspended');
+        if (timeSinceLastFailure < this.config.breakerTimeout) {
+          throw new Error('Circuit Breaker is OPEN - crawling suspended');
+        }
+
+        // Atomic 상태 전환 (첫 번째 요청만 성공)
+        if (this.circuitBreaker.state === 'OPEN') {
+          this.circuitBreaker.state = 'HALF_OPEN';
+          this.circuitBreaker.halfOpenTestInProgress = true;
+          this.emit('circuitBreakerStateChanged', { state: 'HALF_OPEN' });
+        }
       }
 
-      // Timeout 경과 -> HALF_OPEN으로 전환
-      this.circuitBreaker.state = 'HALF_OPEN';
-      this.emit('circuitBreakerStateChanged', { state: 'HALF_OPEN' });
-    }
+      // HALF_OPEN에서는 테스트 요청만 허용 (C-7)
+      if (this.circuitBreaker.state === 'HALF_OPEN' && this.circuitBreaker.halfOpenTestInProgress) {
+        throw new Error('Circuit Breaker test in progress - please wait');
+      }
 
-    this.stats.totalRequests++;
+      this.stats.totalRequests++;
 
-    try {
-      const data = await this._crawlWithRetry(placeId, level);
+      try {
+        // 데이터 수집
+        const data = await this._crawlWithRetry(placeId, level);
 
-      this._onSuccess();
-      return data;
+        // 데이터 검증 (C-3)
+        if (autoValidate) {
+          const validation = runQualityChecks(data);
 
-    } catch (error) {
-      this._onFailure(error);
-      throw error;
-    }
+          this.emit('dataValidated', {
+            placeId,
+            validation: validation.summary,
+            passed: validation.passed
+          });
+
+          if (!validation.shouldSave) {
+            const error = new Error(
+              `Data validation failed: ${validation.summary.critical} critical errors`
+            );
+            error.validation = validation;
+            throw error;
+          }
+
+          // 검증 이슈가 있으면 경고
+          if (validation.issues.warnings.length > 0) {
+            console.warn(
+              `[PlaceCrawler] ${placeId}: ${validation.issues.warnings.length} validation warnings`,
+              validation.issues.warnings
+            );
+          }
+        }
+
+        // 자동 저장 (C-3)
+        if (autoSave) {
+          const savedPath = await this.storage.savePlaceData(data);
+          this.emit('dataSaved', { placeId, path: savedPath });
+        }
+
+        this._onSuccess();
+        return data;
+
+      } catch (error) {
+        this._onFailure(error);
+        throw error;
+      }
+    }, { priority, id: placeId });
   }
 
   /**
@@ -251,8 +323,8 @@ class PlaceCrawler extends EventEmitter {
    */
   async _waitForPageLoad(page) {
     try {
-      // 주요 셀렉터 대기
-      await page.waitForSelector('.place_section', { timeout: 10000 });
+      // 주요 셀렉터 대기 (C-1: 외부 파일 사용)
+      await page.waitForSelector(SELECTORS.selectors.loading.placeholder, { timeout: 10000 });
 
       // 페이지 완전 로드 대기
       await page.waitForFunction(() => document.readyState === 'complete');
@@ -270,6 +342,8 @@ class PlaceCrawler extends EventEmitter {
    * @private
    */
   async _collectData(page, placeId, level) {
+    const selectors = SELECTORS.selectors;  // C-1: 외부 셀렉터 사용
+
     const data = {
       id: placeId,
       name: null,
@@ -281,17 +355,17 @@ class PlaceCrawler extends EventEmitter {
     };
 
     // BASIC: 필수 필드만
-    data.name = await this._extractText(page, '.place_section_name') || 'Unknown';
-    data.category = await this._extractText(page, '.category');
+    data.name = await this._extractText(page, selectors.place.name) || 'Unknown';
+    data.category = await this._extractText(page, selectors.place.category);
     data.address = await this._extractAddress(page);
-    data.contact.phone = await this._extractText(page, '.phone');
+    data.contact.phone = await this._extractText(page, selectors.place.phone);
 
     // STANDARD 이상: 추가 필드
     if (level === 'STANDARD' || level === 'COMPLETE') {
       data.rating = await this._extractRating(page);
       data.reviewCount = await this._extractReviewCount(page);
       data.menus = await this._extractMenus(page);
-      data.businessHours = await this._extractText(page, '.business_hours');
+      data.businessHours = await this._extractText(page, selectors.place.businessHours);
       data.images = await this._extractImages(page);
     }
 
@@ -324,7 +398,7 @@ class PlaceCrawler extends EventEmitter {
    * @private
    */
   async _extractAddress(page) {
-    const rawAddress = await this._extractText(page, '.address');
+    const rawAddress = await this._extractText(page, SELECTORS.selectors.place.address);  // C-1
 
     if (!rawAddress) return null;
 
@@ -336,7 +410,7 @@ class PlaceCrawler extends EventEmitter {
    * @private
    */
   async _extractRating(page) {
-    const ratingText = await this._extractText(page, '.rating');
+    const ratingText = await this._extractText(page, SELECTORS.selectors.place.rating);  // C-1
     if (!ratingText) return null;
 
     const rating = parseFloat(ratingText);
@@ -348,7 +422,7 @@ class PlaceCrawler extends EventEmitter {
    * @private
    */
   async _extractReviewCount(page) {
-    const countText = await this._extractText(page, '.review_count');
+    const countText = await this._extractText(page, SELECTORS.selectors.place.reviewCount);  // C-1
     if (!countText) return null;
 
     const count = parseInt(countText.replace(/[^0-9]/g, ''), 10);
@@ -360,13 +434,14 @@ class PlaceCrawler extends EventEmitter {
    * @private
    */
   async _extractMenus(page) {
+    const selectors = SELECTORS.selectors.menu;  // C-1
     try {
-      const menus = await page.$$eval('.menu_item', elements => {
+      const menus = await page.$$eval(selectors.container, (elements, menuNameSel, menuPriceSel) => {
         return elements.map(el => ({
-          name: el.querySelector('.menu_name')?.textContent.trim() || '',
-          price: el.querySelector('.menu_price')?.textContent.trim() || ''
+          name: el.querySelector(menuNameSel)?.textContent.trim() || '',
+          price: el.querySelector(menuPriceSel)?.textContent.trim() || ''
         }));
-      });
+      }, selectors.name, selectors.price);
 
       return menus.map(menu => normalizeMenu(menu)).filter(Boolean);
 
@@ -380,8 +455,9 @@ class PlaceCrawler extends EventEmitter {
    * @private
    */
   async _extractImages(page) {
+    const selectors = SELECTORS.selectors.image;  // C-1
     try {
-      return await page.$$eval('.image_item img', imgs => {
+      return await page.$$eval(selectors.thumbnail, imgs => {
         return imgs.map(img => img.src).filter(src => src && src.startsWith('http'));
       });
     } catch (error) {
@@ -394,17 +470,25 @@ class PlaceCrawler extends EventEmitter {
    * @private
    */
   async _extractReviews(page) {
+    const selectors = SELECTORS.selectors.review;  // C-1
     try {
       // TODO: 리뷰 페이지네이션 처리
-      const rawReviews = await page.$$eval('.review_item', elements => {
+      const rawReviews = await page.$$eval(selectors.container, (elements, reviewSelectors) => {
         return elements.slice(0, 100).map(el => ({
-          author: el.querySelector('.author')?.textContent.trim() || 'Anonymous',
-          rating: el.querySelector('.rating')?.textContent.trim() || '',
-          content: el.querySelector('.content')?.textContent.trim() || '',
-          date: el.querySelector('.date')?.textContent.trim() || '',
-          images: Array.from(el.querySelectorAll('.review_img')).map(img => img.src),
-          isVerified: el.querySelector('.verified_badge') !== null
+          author: el.querySelector(reviewSelectors.author)?.textContent.trim() || 'Anonymous',
+          rating: el.querySelector(reviewSelectors.rating)?.textContent.trim() || '',
+          content: el.querySelector(reviewSelectors.content)?.textContent.trim() || '',
+          date: el.querySelector(reviewSelectors.date)?.textContent.trim() || '',
+          images: Array.from(el.querySelectorAll(reviewSelectors.image)).map(img => img.src),
+          isVerified: el.querySelector(reviewSelectors.verifiedBadge) !== null
         }));
+      }, {
+        author: selectors.author,
+        rating: selectors.rating,
+        content: selectors.content,
+        date: selectors.date,
+        image: selectors.image,
+        verifiedBadge: selectors.verifiedBadge
       });
 
       return rawReviews.map(review => normalizeReview(review)).filter(Boolean);
@@ -505,6 +589,7 @@ class PlaceCrawler extends EventEmitter {
     this.stats.successCount++;
 
     if (this.circuitBreaker.state === 'HALF_OPEN') {
+      this.circuitBreaker.halfOpenTestInProgress = false;  // C-7: 테스트 완료
       this.circuitBreaker.consecutiveSuccesses++;
 
       if (this.circuitBreaker.consecutiveSuccesses >= this.config.successThreshold) {
@@ -547,17 +632,21 @@ class PlaceCrawler extends EventEmitter {
   /**
    * 통계 조회
    */
-  getStats() {
+  async getStats() {
     const uptime = this.stats.startTime ? Date.now() - this.stats.startTime : 0;
     const successRate = this.stats.totalRequests > 0
       ? (this.stats.successCount / this.stats.totalRequests * 100).toFixed(2)
       : 0;
 
     return {
-      ...this.stats,
-      uptime,
-      successRate: `${successRate}%`,
-      circuitBreakerState: this.circuitBreaker.state
+      crawler: {
+        ...this.stats,
+        uptime,
+        successRate: `${successRate}%`,
+        circuitBreakerState: this.circuitBreaker.state
+      },
+      rateLimiter: this.rateLimiter.getStatus(),
+      storage: await this.storage.getStorageStats()
     };
   }
 }

@@ -10,6 +10,7 @@
 
 const fs = require('fs').promises;
 const path = require('path');
+const lockfile = require('proper-lockfile');  // C-2: Race Condition 방지
 
 class DataStorage {
   constructor(options = {}) {
@@ -115,7 +116,7 @@ class DataStorage {
   }
 
   /**
-   * 수집 요약 저장
+   * 수집 요약 저장 (C-2: Race Condition 수정)
    * @param {object} summary - 수집 요약 정보
    * @returns {string} 저장된 파일 경로
    */
@@ -124,31 +125,50 @@ class DataStorage {
     const fileName = `collection_summary_${date}.json`;
     const filePath = path.join(this.paths.summary, fileName);
 
-    // 기존 요약이 있으면 로드
-    let existingSummary = {};
+    let release;
     try {
-      const content = await fs.readFile(filePath, 'utf-8');
-      existingSummary = JSON.parse(content);
-    } catch (error) {
-      // 파일 없으면 새로 생성
+      // 파일 잠금 획득 (C-2)
+      await fs.writeFile(filePath, '', { flag: 'a' });  // 파일이 없으면 생성
+      release = await lockfile.lock(filePath, {
+        retries: { retries: 5, minTimeout: 100, maxTimeout: 1000 }
+      });
+
+      // 기존 요약이 있으면 로드
+      let existingSummary = {};
+      try {
+        const content = await fs.readFile(filePath, 'utf-8');
+        if (content.trim()) {
+          existingSummary = JSON.parse(content);
+        }
+      } catch (error) {
+        // 파일 없으면 새로 생성
+      }
+
+      // 요약 병합
+      const mergedSummary = {
+        ...existingSummary,
+        last_updated: new Date().toISOString(),
+        ...summary
+      };
+
+      const content = this.config.prettyPrint
+        ? JSON.stringify(mergedSummary, null, 2)
+        : JSON.stringify(mergedSummary);
+
+      await fs.writeFile(filePath, content, 'utf-8');
+
+      console.log(`[DataStorage] Saved summary: ${fileName}`);
+
+      return filePath;
+
+    } finally {
+      // 잠금 해제
+      if (release) {
+        await release().catch(err => {
+          console.warn(`[DataStorage] Failed to release lock for ${filePath}:`, err.message);
+        });
+      }
     }
-
-    // 요약 병합
-    const mergedSummary = {
-      ...existingSummary,
-      last_updated: new Date().toISOString(),
-      ...summary
-    };
-
-    const content = this.config.prettyPrint
-      ? JSON.stringify(mergedSummary, null, 2)
-      : JSON.stringify(mergedSummary);
-
-    await fs.writeFile(filePath, content, 'utf-8');
-
-    console.log(`[DataStorage] Saved summary: ${fileName}`);
-
-    return filePath;
   }
 
   /**
