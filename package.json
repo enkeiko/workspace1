@@ -5,6 +5,9 @@
   "main": "src/crawlers/PlaceCrawler.js",
   "scripts": {
     "test": "jest",
+    "test:unit": "jest tests/unit",
+    "test:e2e": "RUN_E2E=true jest tests/e2e --runInBand",
+    "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
     "example": "node examples/basic-usage.js"
   },

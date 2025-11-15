@@ -103,8 +103,14 @@ LOG_EVENTS=true npm start
 # 전체 테스트 실행
 npm test
 
+# 단위 테스트만 실행
+npm run test:unit
+
+# E2E 테스트 실행 (Chrome 필요)
+npm run test:e2e
+
 # 커버리지 포함
-npm test -- --coverage
+npm run test:coverage
 
 # 특정 파일만 테스트
 npm test -- tests/unit/DataStorage.test.js
@@ -112,6 +118,23 @@ npm test -- tests/unit/DataStorage.test.js
 # Watch 모드
 npm test -- --watch
 ```
+
+### E2E 테스트 사전 준비
+
+E2E 테스트는 실제 브라우저(Chrome)가 필요합니다:
+
+```bash
+# Puppeteer Chrome 설치
+npx puppeteer browsers install chrome
+
+# 테스트 실행
+npm run test:e2e
+```
+
+**주의사항:**
+- E2E 테스트는 네트워크 연결 필요
+- 실제 네이버 플레이스 ID 설정 필요 (tests/e2e/PlaceCrawler.e2e.test.js)
+- CI 환경에서는 자동으로 건너뜀
 
 ### 테스트 커버리지
 

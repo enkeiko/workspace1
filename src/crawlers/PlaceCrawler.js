@@ -847,6 +847,36 @@ class PlaceCrawler extends EventEmitter {
       storage: await this.storage.getStorageStats()
     };
   }
+
+  /**
+   * 크롤러 종료 (브라우저 닫기)
+   */
+  async close() {
+    try {
+      // 페이지 풀의 모든 페이지 닫기
+      for (const page of this.pagePool) {
+        try {
+          await page.close();
+        } catch (error) {
+          console.warn('[PlaceCrawler] Failed to close pooled page:', error.message);
+        }
+      }
+      this.pagePool = [];
+
+      // 브라우저 닫기
+      if (this.browser) {
+        await this.browser.close();
+        console.log('[PlaceCrawler] Browser closed successfully');
+      }
+
+      // 모든 작업 완료 대기
+      await this.rateLimiter.waitForAll();
+
+    } catch (error) {
+      console.error('[PlaceCrawler] Error during close:', error);
+      throw error;
+    }
+  }
 }
 
 module.exports = PlaceCrawler;
