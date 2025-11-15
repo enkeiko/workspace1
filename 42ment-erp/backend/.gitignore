@@ -30,6 +30,9 @@ build/
 
 # Prisma
 prisma/migrations/
+*.backup
+dev.db
+dev.db-journal
 
 # Uploads (for development)
 uploads/
