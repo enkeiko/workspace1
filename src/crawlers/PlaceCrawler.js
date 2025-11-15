@@ -374,10 +374,8 @@ class PlaceCrawler extends EventEmitter {
     const startTime = Date.now();
 
     try {
-      // User-Agent 설정 (봇 탐지 회피)
-      await page.setUserAgent(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-      );
+      // L-2: 랜덤 User-Agent 설정 (봇 탐지 회피)
+      await page.setUserAgent(this._getRandomUserAgent());
 
       // 네이버 플레이스 URL
       const url = `https://m.place.naver.com/place/${placeId}`;
@@ -738,6 +736,37 @@ class PlaceCrawler extends EventEmitter {
     return retryableErrors.some(errType =>
       error.name === errType || error.message.includes(errType)
     );
+  }
+
+  /**
+   * L-2: 랜덤 User-Agent 생성 (봇 탐지 회피)
+   * @private
+   * @returns {string} 랜덤 User-Agent 문자열
+   */
+  _getRandomUserAgent() {
+    const userAgents = [
+      // Chrome on Windows
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+
+      // Chrome on macOS
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+
+      // Safari on macOS
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15',
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
+
+      // Firefox on Windows
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0',
+
+      // Edge on Windows
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0'
+    ];
+
+    return userAgents[Math.floor(Math.random() * userAgents.length)];
   }
 
   /**

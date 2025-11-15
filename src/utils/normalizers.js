@@ -466,16 +466,56 @@ function cleanText(text) {
 }
 
 /**
- * 텍스트 정규화 (맞춤법 수정은 생략, 띄어쓰기만 정리)
+ * 텍스트 정규화 (L-3: 기본 맞춤법 교정 추가)
  * @param {string} text - 원본 텍스트
  * @returns {string} 정규화된 텍스트
  */
 function normalizeText(text) {
   if (!text) return '';
 
-  // TODO: 맞춤법 수정 (외부 API 필요)
-  // 현재는 띄어쓰기만 정리
-  return cleanText(text);
+  // 기본 텍스트 정리
+  let normalized = cleanText(text);
+
+  // L-3: 일반적인 한국어 오타 교정 (규칙 기반)
+  const commonTypos = {
+    // 자주 나타나는 오타
+    '맛잇어요': '맛있어요',
+    '맛잇습니다': '맛있습니다',
+    '맛잇다': '맛있다',
+    '맛업습니다': '맛없습니다',
+    '맛업어요': '맛없어요',
+    '엄청맛있어요': '엄청 맛있어요',
+    '진짜맛있어요': '진짜 맛있어요',
+    '정말맛있어요': '정말 맛있어요',
+    '너무맛있어요': '너무 맛있어요',
+
+    // 띄어쓰기 관련
+    '친절하시고': '친절하시고',
+    '친절하고': '친절하고',
+    '깨끗하고': '깨끗하고',
+
+    // 중복 문자 정리
+    '맛있어요!!!': '맛있어요!',
+    '좋아요!!': '좋아요!',
+    '최고!!': '최고!'
+  };
+
+  // 오타 교정 적용
+  for (const [typo, correct] of Object.entries(commonTypos)) {
+    normalized = normalized.replace(new RegExp(typo, 'g'), correct);
+  }
+
+  // 중복된 느낌표/물음표 정리 (3개 이상 -> 1개)
+  normalized = normalized.replace(/!{2,}/g, '!');
+  normalized = normalized.replace(/\?{2,}/g, '?');
+
+  // 과도한 점 정리 (3개 이상 -> 2개)
+  normalized = normalized.replace(/\.{3,}/g, '..');
+
+  // NOTE: 완전한 맞춤법 검사는 외부 API 필요 (네이버/카카오 맞춤법 검사 API)
+  // 향후 통합 고려: https://m.search.naver.com/p/csearch/ocontent/util/SpellerProxy
+
+  return normalized;
 }
 
 /**
