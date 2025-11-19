@@ -1,0 +1,386 @@
+// Prisma Schema for 42ment ERP System
+// Database: SQLite (Development) / PostgreSQL (Production)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 1. 회사 정보
+model CompanyInfo {
+  id                        Int       @id @default(autoincrement())
+  companyName               String    @map("company_name") 
+  ceoName                   String?   @map("ceo_name") 
+  businessNumber            String?   @unique @map("business_number") 
+  address                   String?
+  phone                     String?   
+  email                     String?   
+  businessRegistrationFile  String?   @map("business_registration_file") 
+  createdAt                 DateTime  @default(now()) @map("created_at")
+  updatedAt                 DateTime  @updatedAt @map("updated_at")
+  createdBy                 String    @default("admin") @map("created_by") 
+
+  @@map("company_info")
+}
+
+// 2. 은행 계좌
+model BankAccount {
+  id             Int       @id @default(autoincrement())
+  bankName       String    @map("bank_name") 
+  accountNumber  String    @map("account_number") 
+  accountHolder  String    @map("account_holder") 
+  isDefault      String    @default("N") @map("is_default") 
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  payments       Payment[]
+
+  @@map("bank_account")
+}
+
+// 3. 고객
+model Client {
+  id                   Int       @id @default(autoincrement())
+  companyName          String    @map("company_name") 
+  ceoName              String    @map("ceo_name") 
+  contactName          String    @map("contact_name") 
+  phone                String    
+  email                String?   
+  businessNumber       String?   @map("business_number") 
+  address              String?
+  memo                 String?
+  status               String    @default("active") 
+  reportFrequency      String?   @map("report_frequency") 
+  reportDay            String?   @map("report_day") 
+  reportEmails         String?   @map("report_emails") 
+  reportTemplate       String?   @map("report_template") 
+  reportEnabled        String    @default("N") @map("report_enabled") 
+  deactivatedAt        DateTime? @map("deactivated_at")
+  deactivationReason   String?   @map("deactivation_reason")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  stores               Store[]
+  adAccounts           AdAccount[]
+  clientProductPrices  ClientProductPrice[]
+  quotes               Quote[]
+  orders               Order[]
+  contracts            Contract[]
+  invoices             Invoice[]
+  payments             Payment[]
+  reports              Report[]
+
+  @@map("client")
+}
+
+// 4. 광고 계정
+model AdAccount {
+  id           Int       @id @default(autoincrement())
+  clientId     Int       @map("client_id")
+  platform     String    
+  accountId    String    @map("account_id") 
+  password     String?   
+  apiKey       String?   @map("api_key") 
+  accessLevel  String?   @map("access_level") 
+  expiryDate   DateTime? @map("expiry_date") 
+  status       String    @default("active") 
+  memo         String?
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  client       Client    @relation(fields: [clientId], references: [id])
+
+  @@map("ad_account")
+}
+
+// 5. 매장
+model Store {
+  id           Int       @id @default(autoincrement())
+  clientId     Int       @map("client_id")
+  storeName    String    @map("store_name") 
+  address      String?
+  businessType String?   @map("business_type") 
+  phone        String?   
+  memo         String?
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  client       Client    @relation(fields: [clientId], references: [id])
+  quotes       Quote[]
+  orders       Order[]
+  contracts    Contract[]
+  reports      Report[]
+
+  @@map("store")
+}
+
+// 6. 상품 카테고리
+model ProductCategory {
+  id                  Int       @id @default(autoincrement())
+  categoryName        String    @map("category_name") 
+  defaultPrice        Decimal   @map("default_price") 
+  description         String?   
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+
+  clientProductPrices ClientProductPrice[]
+
+  @@map("product_category")
+}
+
+// 7. 고객별 특별 단가
+model ClientProductPrice {
+  id                Int       @id @default(autoincrement())
+  clientId          Int       @map("client_id")
+  productCategoryId Int       @map("product_category_id")
+  customPrice       Decimal   @map("custom_price") 
+  effectiveFrom     DateTime  @map("effective_from") 
+  effectiveUntil    DateTime? @map("effective_until") 
+  memo              String?   
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  client            Client          @relation(fields: [clientId], references: [id])
+  productCategory   ProductCategory @relation(fields: [productCategoryId], references: [id])
+
+  @@unique([clientId, productCategoryId, effectiveFrom])
+  @@map("client_product_price")
+}
+
+// 8. 견적서
+model Quote {
+  id           Int       @id @default(autoincrement())
+  quoteNumber  String    @unique @map("quote_number") 
+  clientId     Int       @map("client_id")
+  storeId      Int?      @map("store_id")
+  quoteDate    DateTime  @map("quote_date") 
+  status       String    @default("pending") 
+  subtotal     Decimal   
+  vat          Decimal   
+  total        Decimal   
+  vatIncluded  String    @default("N") @map("vat_included") 
+  memo         String?
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  client       Client     @relation(fields: [clientId], references: [id])
+  store        Store?     @relation(fields: [storeId], references: [id])
+  items        QuoteItem[]
+  order        Order?
+
+  @@map("quote")
+}
+
+// 9. 견적 품목
+model QuoteItem {
+  id          Int       @id @default(autoincrement())
+  quoteId     Int       @map("quote_id")
+  productName String    @map("product_name") 
+  quantity    Int
+  unitPrice   Decimal   @map("unit_price") 
+  subtotal    Decimal   
+  memo        String?   
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  quote       Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  @@map("quote_item")
+}
+
+// 10. 주문
+model Order {
+  id           Int       @id @default(autoincrement())
+  orderNumber  String    @unique @map("order_number") 
+  clientId     Int       @map("client_id")
+  storeId      Int?      @map("store_id")
+  quoteId      Int?      @unique @map("quote_id")
+  orderDate    DateTime  @map("order_date") 
+  deliveryDate DateTime? @map("delivery_date") 
+  status       String    @default("pending") 
+  subtotal     Decimal   
+  vat          Decimal   
+  total        Decimal   
+  vatIncluded  String    @default("N") @map("vat_included") 
+  memo         String?
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  client       Client     @relation(fields: [clientId], references: [id])
+  store        Store?     @relation(fields: [storeId], references: [id])
+  quote        Quote?     @relation(fields: [quoteId], references: [id])
+  items        OrderItem[]
+  invoices     Invoice[]
+
+  @@map("sales_order")
+}
+
+// 11. 주문 품목
+model OrderItem {
+  id          Int       @id @default(autoincrement())
+  orderId     Int       @map("order_id")
+  productName String    @map("product_name") 
+  quantity    Int
+  unitPrice   Decimal   @map("unit_price") 
+  subtotal    Decimal   
+  memo        String?   
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_item")
+}
+
+// 12. 계약서
+model Contract {
+  id                 Int       @id @default(autoincrement())
+  clientId           Int       @map("client_id")
+  storeId            Int?      @map("store_id")
+  contractName       String    @map("contract_name") 
+  startDate          DateTime  @map("start_date") 
+  endDate            DateTime  @map("end_date") 
+  contractAmount     Decimal   @map("contract_amount") 
+  contractSummary    String?   @map("contract_summary")
+  contractFile       String?   @map("contract_file") 
+  parentContractId   Int?      @map("parent_contract_id")
+  isAutoRenewal      String    @default("N") @map("is_auto_renewal") 
+  renewalCount       Int       @default(0) @map("renewal_count")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  client             Client    @relation(fields: [clientId], references: [id])
+  store              Store?    @relation(fields: [storeId], references: [id])
+  parentContract     Contract? @relation("ContractRenewal", fields: [parentContractId], references: [id])
+  renewedContracts   Contract[] @relation("ContractRenewal")
+
+  @@map("contract")
+}
+
+// 13. 세금계산서
+model Invoice {
+  id                Int       @id @default(autoincrement())
+  invoiceNumber     String    @unique @map("invoice_number") 
+  clientId          Int       @map("client_id")
+  orderId           Int?      @map("order_id")
+  issueDate         DateTime  @map("issue_date") 
+  subtotal          Decimal   
+  vat               Decimal   
+  total             Decimal   
+  paidAmount        Decimal   @default(0) @map("paid_amount") 
+  isPaid            String    @default("N") @map("is_paid") 
+  invoiceType       String    @default("normal") @map("invoice_type") 
+  originalInvoiceId Int?      @map("original_invoice_id")
+  invoiceFile       String?   @map("invoice_file") 
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  client            Client    @relation(fields: [clientId], references: [id])
+  order             Order?    @relation(fields: [orderId], references: [id])
+  originalInvoice   Invoice?  @relation("InvoiceModification", fields: [originalInvoiceId], references: [id])
+  modifiedInvoices  Invoice[] @relation("InvoiceModification")
+  payments          Payment[]
+
+  @@map("invoice")
+}
+
+// 14. 입금
+model Payment {
+  id             Int       @id @default(autoincrement())
+  clientId       Int       @map("client_id")
+  invoiceId      Int       @map("invoice_id")
+  paymentDate    DateTime  @map("payment_date") 
+  amount         Decimal   
+  bankAccountId  Int       @map("bank_account_id")
+  memo           String?   
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  client         Client      @relation(fields: [clientId], references: [id])
+  invoice        Invoice     @relation(fields: [invoiceId], references: [id])
+  bankAccount    BankAccount @relation(fields: [bankAccountId], references: [id])
+
+  @@map("payment")
+}
+
+// 15. 보고서
+model Report {
+  id                 Int       @id @default(autoincrement())
+  clientId           Int       @map("client_id")
+  storeId            Int       @map("store_id")
+  reportPeriodStart  DateTime  @map("report_period_start") 
+  reportPeriodEnd    DateTime  @map("report_period_end") 
+  template           String    
+  impressions        Int?
+  clicks             Int?
+  conversions        Int?
+  cost               Decimal?  
+  keywordRanking     String?   @map("keyword_ranking") 
+  reviewCount        Int?      @map("review_count")
+  rating             Decimal?  
+  summary            String?
+  improvements       String?
+  attachments        String?   
+  sentAt             DateTime? @map("sent_at")
+  sentTo             String?   @map("sent_to") 
+  sentMethod         String?   @map("sent_method") 
+  sentStatus         String?   @map("sent_status") 
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  client             Client    @relation(fields: [clientId], references: [id])
+  store              Store     @relation(fields: [storeId], references: [id])
+
+  @@map("report")
+}
+
+// 16. 번호 관리
+model SequenceCounter {
+  id           Int      @id @default(autoincrement())
+  sequenceType String   @map("sequence_type") 
+  prefix       String   
+  year         Int
+  month        Int
+  lastNumber   Int      @default(0) @map("last_number")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@unique([sequenceType, year, month])
+  @@map("sequence_counter")
+}
+
+// 17. 감사 로그
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  tableName  String   @map("table_name") 
+  recordId   Int      @map("record_id")
+  action     String   
+  fieldName  String?  @map("field_name") 
+  oldValue   String?  @map("old_value") 
+  newValue   String?  @map("new_value") 
+  userId     String   @map("user_id") 
+  userIp     String?  @map("user_ip") 
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([tableName, recordId, createdAt])
+  @@map("audit_log")
+}
+
+// 18. 알림
+model Notification {
+  id               Int       @id @default(autoincrement())
+  notificationType String    @map("notification_type") 
+  referenceType    String?   @map("reference_type") 
+  referenceId      Int?      @map("reference_id")
+  title            String    
+  message          String?   
+  priority         String    @default("normal") 
+  isRead           String    @default("N") @map("is_read") 
+  readAt           DateTime? @map("read_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+
+  @@index([isRead, createdAt])
+  @@map("notification")
+}
