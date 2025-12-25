@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>뉴스피드 - AI·자동화 & 자영업 마케팅</title>
+  <meta name="description" content="AI, 자동화, 바이브코딩, 자영업 마케팅, 네이버 플레이스 관련 최신 뉴스와 커뮤니티">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📰</text></svg>">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 헤더 -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">
+          <span class="logo-icon">📰</span>
+          <span class="logo-text">뉴스피드</span>
+        </div>
+        <div class="header-actions">
+          <button class="btn-icon" id="searchToggle" aria-label="검색">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </button>
+          <button class="btn-submit" id="submitBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"></path>
+            </svg>
+            <span>제출</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- 검색바 -->
+      <div class="search-bar" id="searchBar">
+        <input type="text" placeholder="기사 검색..." id="searchInput">
+        <button class="search-close" id="searchClose">취소</button>
+      </div>
+    </header>
+    
+    <!-- 탭 네비게이션 -->
+    <nav class="tabs">
+      <button class="tab active" data-category="ai-vibe">
+        <span class="tab-icon">🔵</span>
+        <span class="tab-text">AI·바이브코딩</span>
+      </button>
+      <button class="tab" data-category="local-biz">
+        <span class="tab-icon">🟢</span>
+        <span class="tab-text">자영업·플레이스</span>
+      </button>
+    </nav>
+    
+    <!-- 필터 & 정렬 -->
+    <div class="filters">
+      <div class="filter-group">
+        <button class="filter-btn active" data-sort="recent">최신순</button>
+        <button class="filter-btn" data-sort="popular">인기순</button>
+        <button class="filter-btn" data-sort="score">추천순</button>
+      </div>
+      <button class="filter-tags-btn" id="tagsToggle">
+        <span>#</span> 태그
+      </button>
+    </div>
+    
+    <!-- 태그 필터 -->
+    <div class="tags-filter" id="tagsFilter">
+      <div class="tags-list" id="tagsList">
+        <!-- 동적으로 태그 추가 -->
+      </div>
+    </div>
+    
+    <!-- 주요 기사 -->
+    <section class="featured-section" id="featuredSection">
+      <h2 class="section-title">
+        <span>⭐</span> 주요 기사
+      </h2>
+      <div class="featured-list" id="featuredList">
+        <!-- 동적으로 추가 -->
+      </div>
+    </section>
+    
+    <!-- 기사 목록 -->
+    <main class="articles-container">
+      <div class="articles-list" id="articlesList">
+        <!-- 동적으로 기사 카드 추가 -->
+      </div>
+      
+      <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <p>로딩 중...</p>
+      </div>
+      
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <p>📭 표시할 기사가 없습니다.</p>
+      </div>
+      
+      <button class="load-more" id="loadMore" style="display: none;">
+        더 보기
+      </button>
+    </main>
+    
+    <!-- 기사 상세 모달 -->
+    <div class="modal" id="articleModal">
+      <div class="modal-content">
+        <button class="modal-close" id="modalClose">&times;</button>
+        <div class="modal-body" id="modalBody">
+          <!-- 동적으로 내용 추가 -->
+        </div>
+      </div>
+    </div>
+    
+    <!-- 제출 모달 -->
+    <div class="modal" id="submitModal">
+      <div class="modal-content">
+        <button class="modal-close" id="submitModalClose">&times;</button>
+        <div class="modal-body">
+          <h2 class="modal-title">📝 기사/링크 제출</h2>
+          <p class="modal-desc">유용한 기사나 링크를 공유해주세요. 관리자 승인 후 게시됩니다.</p>
+          
+          <form id="submitForm" class="submit-form">
+            <div class="form-group">
+              <label>카테고리 *</label>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input type="radio" name="category" value="ai-vibe" checked>
+                  <span>🔵 AI·바이브코딩</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="category" value="local-biz">
+                  <span>🟢 자영업·플레이스</span>
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="submitTitle">제목 *</label>
+              <input type="text" id="submitTitle" name="title" placeholder="기사 제목" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="submitUrl">URL *</label>
+              <input type="url" id="submitUrl" name="url" placeholder="https://..." required>
+            </div>
+            
+            <div class="form-group">
+              <label for="submitDesc">설명 (선택)</label>
+              <textarea id="submitDesc" name="description" placeholder="간단한 설명을 추가해주세요" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="submitNickname">닉네임 (선택)</label>
+              <input type="text" id="submitNickname" name="nickname" placeholder="익명">
+            </div>
+            
+            <button type="submit" class="btn-primary">제출하기</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 업데이트 정보 배너 -->
+    <div class="update-banner" id="updateBanner">
+      <span class="update-time" id="updateTime"></span>
+      <span class="next-update" id="nextUpdate"></span>
+    </div>
+    
+    <!-- 푸터 -->
+    <footer class="footer">
+      <p>하루 4회 (07:00 / 12:00 / 18:00 / 23:00) 자동 업데이트</p>
+      <p class="footer-links">
+        <a href="/output/kakao_output.txt" target="_blank">📱 카카오톡용</a>
+        <a href="/output/web_output.html" target="_blank">📄 HTML</a>
+        <a href="/output/web_output.md" target="_blank">📝 Markdown</a>
+      </p>
+    </footer>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="/js/app.js"></script>
+</body>
+</html>
+

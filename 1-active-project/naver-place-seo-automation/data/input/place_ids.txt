@@ -1,0 +1,10 @@
+# Naver Place IDs (one per line)
+# 네이버 플레이스 ID (한 줄에 하나씩)
+# Format: Just the numeric ID
+# Lines starting with # are comments
+
+# Example IDs - Replace with actual Place IDs
+# 예시 ID - 실제 플레이스 ID로 교체하세요
+
+1768171911
+1265317185

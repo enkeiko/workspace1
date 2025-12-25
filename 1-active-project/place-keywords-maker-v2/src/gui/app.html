@@ -1,0 +1,2502 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Place Keywords Maker V2</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #000000;
+      --bg-secondary: #0a0a0a;
+      --bg-tertiary: #121212;
+      --border-color: #1a1a1a;
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0a0;
+      --text-tertiary: #666666;
+      --accent-primary: #00ff88;
+      --accent-secondary: #00cc6f;
+      --accent-glow: rgba(0, 255, 136, 0.2);
+      --error: #ff3366;
+      --warning: #ffaa00;
+      --info: #00aaff;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.4;
+      font-size: 13px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 15px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      margin-bottom: 15px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 5px;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    /* Quick Add Section */
+    .quick-add {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .quick-add h2 {
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+      color: var(--accent-primary);
+      font-weight: 600;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    textarea {
+      flex: 1;
+      padding: 8px 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-family: 'Consolas', monospace;
+      resize: vertical;
+      min-height: 60px;
+      transition: all 0.3s ease;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    textarea::placeholder {
+      color: var(--text-tertiary);
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* Buttons */
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent-primary);
+      color: var(--bg-primary);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-secondary);
+      box-shadow: 0 2px 10px var(--accent-glow);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-secondary);
+      border-color: var(--accent-primary);
+    }
+
+    .btn-danger {
+      background: var(--error);
+      color: white;
+      padding: 5px 10px;
+      font-size: 0.75rem;
+    }
+
+    .btn-danger:hover {
+      background: #cc2952;
+    }
+
+    .btn-small {
+      padding: 5px 10px;
+      font-size: 0.75rem;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .stat-card:hover {
+      border-color: var(--accent-primary);
+      box-shadow: 0 2px 15px var(--accent-glow);
+    }
+
+    .stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent-primary);
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Main Grid */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    @media (max-width: 1400px) {
+      .main-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Section */
+    .section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 6px 8px;
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    td {
+      padding: 8px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+
+    tr:hover td {
+      background: var(--bg-tertiary);
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    /* Checkbox */
+    input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+      accent-color: var(--accent-primary);
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge-success {
+      background: rgba(0, 255, 136, 0.2);
+      color: var(--accent-primary);
+      border: 1px solid var(--accent-primary);
+    }
+
+    .badge-error {
+      background: rgba(255, 51, 102, 0.2);
+      color: var(--error);
+      border: 1px solid var(--error);
+    }
+
+    .badge-processing {
+      background: rgba(0, 170, 255, 0.2);
+      color: var(--info);
+      border: 1px solid var(--info);
+    }
+
+    /* Progress Section */
+    #progress-section {
+      display: none;
+      margin-bottom: 15px;
+    }
+
+    #progress-section.active {
+      display: block;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 24px;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 10px 0;
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      transition: width 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--bg-primary);
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+    }
+
+    /* Logs */
+    .logs {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.75rem;
+    }
+
+    .logs::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .logs::-webkit-scrollbar-track {
+      background: var(--bg-tertiary);
+      border-radius: 3px;
+    }
+
+    .logs::-webkit-scrollbar-thumb {
+      background: var(--accent-primary);
+      border-radius: 3px;
+    }
+
+    .log-entry {
+      padding: 3px 0;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      gap: 8px;
+    }
+
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+
+    .log-time {
+      color: var(--text-tertiary);
+      white-space: nowrap;
+      font-size: 0.7rem;
+    }
+
+    .log-message {
+      flex: 1;
+      font-size: 0.75rem;
+    }
+
+    .log-info { color: var(--info); }
+    .log-success { color: var(--accent-primary); }
+    .log-error { color: var(--error); }
+    .log-warning { color: var(--warning); }
+
+    /* Debug Logs */
+    .debug-section {
+      margin-top: 15px;
+    }
+
+    .debug-logs {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px;
+      max-height: 250px;
+      overflow-y: auto;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.75rem;
+    }
+
+    .debug-logs::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .debug-logs::-webkit-scrollbar-track {
+      background: var(--bg-tertiary);
+      border-radius: 3px;
+    }
+
+    .debug-logs::-webkit-scrollbar-thumb {
+      background: var(--accent-primary);
+      border-radius: 3px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 30px 15px;
+      color: var(--text-tertiary);
+      font-size: 0.8rem;
+    }
+
+    .empty-state-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    /* Loading */
+    .loading {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 2px solid var(--bg-tertiary);
+      border-top-color: var(--accent-primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Status Indicator */
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      font-size: 0.75rem;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-primary);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Truncate */
+    .truncate {
+      max-width: 150px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Message */
+    .message {
+      margin-top: 8px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+
+    .message-success {
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
+    .message-error {
+      background: rgba(255, 51, 102, 0.1);
+      border: 1px solid var(--error);
+      color: var(--error);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      max-width: 90vw;
+      max-height: 90vh;
+      width: 1200px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0, 255, 136, 0.1);
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      font-size: 1.1rem;
+      color: var(--accent-primary);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-actions {
+      padding: 15px 20px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .data-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .data-summary-item {
+      background: var(--bg-tertiary);
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+    }
+
+    .data-summary-label {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .data-summary-value {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .json-viewer {
+      background: #000000;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 15px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      line-height: 1.6;
+      max-height: 400px;
+    }
+
+    .json-viewer pre {
+      margin: 0;
+      color: #a0a0a0;
+    }
+
+    /* Accordion Sections */
+    .accordion-section {
+      margin-top: 15px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--bg-tertiary);
+    }
+
+    .accordion-header {
+      padding: 12px 15px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s;
+      user-select: none;
+    }
+
+    .accordion-header:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .accordion-header.active {
+      background: var(--bg-tertiary);
+      border-bottom-color: var(--accent-primary);
+    }
+
+    .accordion-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .accordion-count {
+      background: var(--accent-primary);
+      color: var(--bg-primary);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .accordion-icon {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      transition: transform 0.2s;
+    }
+
+    .accordion-header.active .accordion-icon {
+      transform: rotate(180deg);
+    }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+
+    .accordion-content.active {
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .accordion-body {
+      padding: 15px;
+    }
+
+    /* Review Items */
+    .review-item {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .review-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
+    }
+
+    .review-author {
+      color: var(--accent-primary);
+      font-weight: 600;
+    }
+
+    .review-date {
+      color: var(--text-secondary);
+    }
+
+    .review-rating {
+      color: #FFD700;
+      margin-bottom: 8px;
+    }
+
+    .review-text {
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .review-keywords {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .keyword-tag {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .keyword-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Menu Items */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 10px;
+    }
+
+    .menu-item {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 12px;
+    }
+
+    .menu-name {
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .menu-price {
+      color: var(--accent-primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .menu-description {
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      margin-top: 6px;
+    }
+
+    /* Competitor Items */
+    .competitor-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .competitor-item {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .competitor-name {
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .competitor-distance {
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+    }
+
+    /* Keyword Stats */
+    .keyword-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+    }
+
+    .keyword-stat {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .keyword-stat-icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .keyword-stat-info {
+      flex: 1;
+    }
+
+    .keyword-stat-name {
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .keyword-stat-count {
+      color: var(--accent-primary);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>⚡ Place Keywords Maker V2</h1>
+      <p class="subtitle">네이버 플레이스 데이터 수집 시스템</p>
+    </header>
+
+    <!-- Quick Add -->
+    <div class="quick-add">
+      <h2>🚀 빠른 매장 추가 (자동 크롤링)</h2>
+      <div class="input-group">
+        <textarea
+          id="quick-input"
+          placeholder="네이버 플레이스 URL 또는 Place ID 입력 (여러 개는 줄바꿈/쉼표/공백으로 구분)&#10;예시:&#10;1716926393&#10;https://pcmap.place.naver.com/restaurant/2023037465/home&#10;1234567890, 9876543210&#10;&#10;※ 입력 즉시 전체 크롤링이 자동으로 시작됩니다"
+        ></textarea>
+        <button class="btn-primary" onclick="quickAdd()" style="height: 60px;">
+          <span id="add-btn-text">추가 + 크롤링</span>
+          <span id="add-btn-loading" style="display: none;">
+            <span class="loading"></span>
+          </span>
+        </button>
+      </div>
+      <div id="quick-add-message" style="display: none;"></div>
+    </div>
+
+    <!-- Keyword Rank Tracking -->
+    <div class="quick-add">
+      <h2>🎯 키워드 순위 추적</h2>
+      <div class="input-group" style="margin-bottom: 10px;">
+        <input
+          type="text"
+          id="rank-place-id"
+          placeholder="Place ID (예: 1768171911)"
+          style="flex: 1; padding: 8px 12px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-size: 0.85rem;"
+        />
+        <button class="btn-secondary" onclick="loadTrackedKeywords()" style="padding: 8px 16px;">불러오기</button>
+      </div>
+      <div class="input-group">
+        <textarea
+          id="rank-keywords-input"
+          placeholder="추적할 키워드 입력 (쉼표 또는 줄바꿈으로 구분)&#10;예시:&#10;강남 맛집, 역삼 맛집&#10;강남역 한식&#10;서울 음식점"
+          style="flex: 1; min-height: 60px;"
+        ></textarea>
+        <button class="btn-primary" onclick="addKeywords()" style="height: 60px;">키워드 추가</button>
+      </div>
+      <div style="margin-top: 10px; display: flex; gap: 8px;">
+        <button class="btn-secondary" onclick="checkAllRanks()">전체 순위 조회</button>
+        <button class="btn-secondary" onclick="exportRankHistory()">이력 다운로드</button>
+      </div>
+      <div id="rank-tracking-container" style="margin-top: 15px; display: none;">
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="background: var(--bg-tertiary); border-bottom: 2px solid var(--border-color);">
+              <th style="padding: 8px; text-align: left; color: var(--text-secondary); font-weight: 600;">키워드</th>
+              <th style="padding: 8px; text-align: center; color: var(--text-secondary); font-weight: 600;">최신 순위</th>
+              <th style="padding: 8px; text-align: center; color: var(--text-secondary); font-weight: 600;">변동</th>
+              <th style="padding: 8px; text-align: center; color: var(--text-secondary); font-weight: 600;">조회 횟수</th>
+              <th style="padding: 8px; text-align: center; color: var(--text-secondary); font-weight: 600;">마지막 조회</th>
+              <th style="padding: 8px; text-align: center; color: var(--text-secondary); font-weight: 600;">액션</th>
+            </tr>
+          </thead>
+          <tbody id="tracked-keywords-list">
+            <!-- 키워드 목록 -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="total-stores">0</div>
+        <div class="stat-label">Total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="active-stores">0</div>
+        <div class="stat-label">Active</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="total-crawls">0</div>
+        <div class="stat-label">Crawls</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="success-rate">0%</div>
+        <div class="stat-label">Success</div>
+      </div>
+    </div>
+
+    <!-- Progress Section -->
+    <div class="section" id="progress-section">
+      <div class="section-header">
+        <h3 class="section-title">⚡ 진행 상황</h3>
+        <button class="btn-danger" id="stop-btn" onclick="stopCrawl()" style="display: none;">⛔ 크롤링 중단</button>
+      </div>
+      <div class="progress-info">
+        <span id="progress-text">대기 중...</span>
+        <span id="progress-count">0 / 0</span>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar" style="width: 0%">
+          <span id="progress-percent">0%</span>
+        </div>
+      </div>
+      <div class="logs" id="logs">
+        <div class="log-entry">
+          <span class="log-time">00:00:00</span>
+          <span class="log-message log-info">시스템 준비 완료</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="main-grid">
+      <!-- Store List with Crawl Actions -->
+      <div class="section" style="grid-column: 1 / -1;">
+        <div class="section-header">
+          <h3 class="section-title">📋 매장 목록 및 크롤링</h3>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button class="btn-secondary" onclick="selectAll()">전체선택</button>
+            <button class="btn-primary" onclick="startCrawl()" id="crawl-btn">
+              <span id="crawl-btn-text">선택한 매장 크롤링</span>
+              <span id="crawl-btn-count" style="display: none; margin-left: 0.5rem; background: rgba(255,255,255,0.3); padding: 0.1rem 0.5rem; border-radius: 0.5rem; font-size: 0.8rem;"></span>
+            </button>
+            <div class="status-indicator">
+              <div class="status-dot"></div>
+              <span id="server-status">연결</span>
+            </div>
+          </div>
+        </div>
+        <div id="stores-container">
+          <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <p>등록된 매장이 없습니다</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent History with Changes -->
+      <div class="section" style="grid-column: 1 / -1;">
+        <div class="section-header">
+          <h3 class="section-title">📊 크롤링 이력 및 변경사항</h3>
+          <button class="btn-secondary" onclick="loadHistory()">새로고침</button>
+        </div>
+        <div id="history-container">
+          <div class="empty-state">
+            <div class="empty-state-icon">📝</div>
+            <p>크롤링 이력 없음</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Debug Logs -->
+    <div class="section debug-section">
+      <div class="section-header">
+        <h3 class="section-title">🐛 디버그 로그</h3>
+        <button class="btn-secondary" onclick="clearDebugLogs()">지우기</button>
+      </div>
+      <div class="debug-logs" id="debug-logs">
+        <div class="log-entry">
+          <span class="log-time">00:00:00</span>
+          <span class="log-message log-info">[SYSTEM] 서버 연결 대기 중...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let selectedStores = new Set();
+    let allStores = [];
+    let eventSource = null;
+
+    // SSE 연결
+    function connectSSE() {
+      eventSource = new EventSource('/events');
+
+      eventSource.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        handleSSEEvent(data);
+      };
+
+      eventSource.onerror = () => {
+        addDebugLog('error', '[SSE] 연결 끊김. 재연결 시도 중...');
+        setTimeout(connectSSE, 5000);
+      };
+    }
+
+    // SSE 이벤트 처리
+    function handleSSEEvent(data) {
+      addDebugLog('info', `[SSE] ${data.type}: ${JSON.stringify(data)}`);
+
+      if (data.type === 'connected') {
+        addDebugLog('success', '[SYSTEM] 서버 연결 성공');
+        document.getElementById('server-status').textContent = '연결';
+      } else if (data.type === 'store_added') {
+        addLog('success', data.message);
+        loadStores();
+        loadStats();
+      } else if (data.type === 'info') {
+        addLog('info', data.message);
+      } else if (data.type === 'start') {
+        document.getElementById('progress-section').classList.add('active');
+        document.getElementById('progress-text').textContent = data.message;
+        document.getElementById('stop-btn').style.display = 'block';  // 중단 버튼 표시
+        addLog('info', data.message);
+      } else if (data.type === 'progress') {
+        const percent = Math.round((data.current / data.total) * 100);
+        updateProgress(percent, data.current, data.total);
+        addLog('info', data.message);
+      } else if (data.type === 'success') {
+        addLog('success', data.message);
+      } else if (data.type === 'error') {
+        addLog('error', data.message);
+      } else if (data.type === 'complete') {
+        addLog('success', data.message);
+        // 중단 버튼 초기화
+        const stopBtn = document.getElementById('stop-btn');
+        stopBtn.style.display = 'none';
+        stopBtn.disabled = false;
+        stopBtn.textContent = '⛔ 크롤링 중단';
+        loadStores();
+        loadHistory();
+        loadStats();
+      }
+    }
+
+    // 크롤링 중단
+    async function stopCrawl() {
+      if (!confirm('정말 크롤링을 중단하시겠습니까?\n현재 진행 중인 매장 처리 완료 후 중단됩니다.')) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/crawl/stop', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          addDebugLog('info', '[STOP] 크롤링 중단 요청 전송');
+          document.getElementById('stop-btn').disabled = true;
+          document.getElementById('stop-btn').textContent = '⏳ 중단 중...';
+        } else {
+          alert(result.error || '중단 요청 실패');
+          addDebugLog('error', `[STOP] ${result.error}`);
+        }
+      } catch (error) {
+        alert('중단 요청 중 오류가 발생했습니다');
+        addDebugLog('error', `[STOP] ${error.message}`);
+      }
+    }
+
+    // 빠른 추가
+    async function quickAdd() {
+      const input = document.getElementById('quick-input').value.trim();
+
+      if (!input) {
+        showQuickAddMessage('error', 'URL 또는 Place ID를 입력하세요');
+        return;
+      }
+
+      const btnText = document.getElementById('add-btn-text');
+      const btnLoading = document.getElementById('add-btn-loading');
+
+      btnText.style.display = 'none';
+      btnLoading.style.display = 'inline-block';
+
+      try {
+        document.getElementById('progress-section').classList.add('active');
+
+        const response = await fetch('/api/quick-add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ input }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showQuickAddMessage('success', result.message);
+          document.getElementById('quick-input').value = '';
+        } else {
+          showQuickAddMessage('error', result.error);
+        }
+      } catch (error) {
+        showQuickAddMessage('error', '추가 중 오류가 발생했습니다');
+        addDebugLog('error', `[QUICK-ADD] ${error.message}`);
+      } finally {
+        btnText.style.display = 'inline';
+        btnLoading.style.display = 'none';
+      }
+    }
+
+    function showQuickAddMessage(type, message) {
+      const msgEl = document.getElementById('quick-add-message');
+      msgEl.textContent = message;
+      msgEl.style.display = 'block';
+      msgEl.className = type === 'success' ? 'message message-success' : 'message message-error';
+
+      setTimeout(() => {
+        msgEl.style.display = 'none';
+      }, 5000);
+    }
+
+    // 통계 로드
+    async function loadStats() {
+      try {
+        const response = await fetch('/api/stats');
+        const stats = await response.json();
+
+        document.getElementById('total-stores').textContent = stats.totalStores;
+        document.getElementById('active-stores').textContent = stats.activeStores;
+        document.getElementById('total-crawls').textContent = stats.totalCrawls;
+
+        const successRate = stats.totalCrawls > 0
+          ? Math.round((stats.successfulCrawls / stats.totalCrawls) * 100)
+          : 0;
+        document.getElementById('success-rate').textContent = successRate + '%';
+
+        addDebugLog('info', `[STATS] 통계 업데이트 완료`);
+      } catch (error) {
+        addDebugLog('error', `[STATS] 로드 실패: ${error.message}`);
+      }
+    }
+
+    // 매장 목록 로드
+    async function loadStores() {
+      try {
+        const response = await fetch('/api/stores');
+        allStores = await response.json();
+
+        renderStores();
+        // renderCrawlList() 제거됨 - 매장 목록에 통합
+
+        addDebugLog('info', `[STORES] ${allStores.length}개 매장 로드 완료`);
+      } catch (error) {
+        addDebugLog('error', `[STORES] 로드 실패: ${error.message}`);
+      }
+    }
+
+    function renderStores() {
+      const container = document.getElementById('stores-container');
+
+      if (allStores.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <p>등록된 매장이 없습니다</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 30px;">
+                <input type="checkbox" id="select-all-checkbox" onchange="toggleSelectAll(this)">
+              </th>
+              <th>매장명</th>
+              <th>ID</th>
+              <th>최종 크롤링</th>
+              <th>상태</th>
+              <th>작업</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${allStores.map(store => `
+              <tr>
+                <td>
+                  <input
+                    type="checkbox"
+                    value="${store.place_id}"
+                    onchange="toggleStore(this)"
+                    ${selectedStores.has(store.place_id) ? 'checked' : ''}
+                  >
+                </td>
+                <td><strong>${store.name}</strong></td>
+                <td><code style="font-size: 0.7rem;">${store.place_id}</code></td>
+                <td style="font-size: 0.75rem; color: var(--text-secondary);">
+                  ${store.last_crawl ? new Date(store.last_crawl).toLocaleString('ko-KR', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'N/A'}
+                </td>
+                <td>
+                  ${store.crawl_status === 'success' ? '<span class="badge badge-success">완료</span>' :
+                    store.crawl_status === 'failed' ? '<span class="badge badge-error">실패</span>' :
+                    store.crawl_status === 'processing' ? '<span class="badge badge-processing">진행중</span>' :
+                    '<span class="badge">대기</span>'}
+                </td>
+                <td class="table-actions">
+                  <button class="btn-primary btn-small" onclick="viewStoreData('${store.place_id}', '${store.name.replace(/'/g, "\\'")}')">상세</button>
+                  <button class="btn-secondary btn-small" onclick="reCrawlSingle('${store.place_id}')">재크롤링</button>
+                  <button class="btn-danger btn-small" onclick="deleteStore('${store.place_id}')">삭제</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+
+      updateCrawlButtonCount();
+    }
+
+    // 크롤링 버튼 카운트 업데이트
+    function updateCrawlButtonCount() {
+      const count = selectedStores.size;
+      const btnText = document.getElementById('crawl-btn-text');
+      const btnCount = document.getElementById('crawl-btn-count');
+
+      if (count > 0) {
+        btnText.textContent = '선택한 매장 크롤링';
+        btnCount.textContent = `${count}개`;
+        btnCount.style.display = 'inline';
+      } else {
+        btnText.textContent = '선택한 매장 크롤링';
+        btnCount.style.display = 'none';
+      }
+    }
+
+    // 단일 매장 재크롤링
+    async function reCrawlSingle(placeId) {
+      if (!confirm('이 매장을 재크롤링하시겠습니까?')) return;
+
+      try {
+        const response = await fetch('/api/crawl', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ placeIds: [placeId] })
+        });
+
+        if (response.ok) {
+          addLog('info', `재크롤링 시작: ${placeId}`);
+          addDebugLog('info', `[CRAWL] 단일 재크롤링 시작: ${placeId}`);
+        } else {
+          throw new Error('크롤링 시작 실패');
+        }
+      } catch (error) {
+        addLog('error', `재크롤링 실패: ${error.message}`);
+        addDebugLog('error', `[CRAWL] 재크롤링 실패: ${error.message}`);
+      }
+    }
+
+    function toggleStore(checkbox) {
+      if (checkbox.checked) {
+        selectedStores.add(checkbox.value);
+      } else {
+        selectedStores.delete(checkbox.value);
+      }
+      updateCrawlButtonCount();
+      addDebugLog('info', `[SELECT] ${checkbox.checked ? '선택' : '해제'}: ${checkbox.value} (총 ${selectedStores.size}개)`);
+    }
+
+    function toggleSelectAll(checkbox) {
+      selectedStores.clear();
+      if (checkbox.checked) {
+        allStores.forEach(store => selectedStores.add(store.place_id));
+      }
+
+      // 모든 체크박스 상태 동기화
+      document.querySelectorAll('#stores-container input[type="checkbox"]').forEach(cb => {
+        if (cb.id !== 'select-all-checkbox') {
+          cb.checked = checkbox.checked;
+        }
+      });
+
+      updateCrawlButtonCount();
+      addDebugLog('info', `[SELECT] 전체 ${checkbox.checked ? '선택' : '해제'} (${selectedStores.size}개)`);
+    }
+
+    function selectAll() {
+      const checkbox = document.getElementById('select-all-checkbox');
+      if (checkbox) {
+        checkbox.checked = !checkbox.checked;
+        toggleSelectAll(checkbox);
+      }
+    }
+
+    async function deleteStore(placeId) {
+      if (!confirm('정말 삭제하시겠습니까?')) return;
+
+      try {
+        await fetch(`/api/stores/${placeId}`, { method: 'DELETE' });
+        addDebugLog('success', `[DELETE] 매장 삭제: ${placeId}`);
+        loadStores();
+        loadStats();
+      } catch (error) {
+        addDebugLog('error', `[DELETE] 실패: ${error.message}`);
+      }
+    }
+
+    async function startCrawl() {
+      if (selectedStores.size === 0) {
+        alert('크롤링할 매장을 선택하세요');
+        return;
+      }
+
+      if (!confirm(`${selectedStores.size}개 매장을 크롤링하시겠습니까?`)) return;
+
+      try {
+        const response = await fetch('/api/crawl', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ placeIds: Array.from(selectedStores) }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          document.getElementById('progress-section').classList.add('active');
+          addDebugLog('success', `[CRAWL] 크롤링 시작: ${selectedStores.size}개 매장`);
+        } else {
+          addDebugLog('error', `[CRAWL] 시작 실패: ${result.error}`);
+          alert(result.error);
+        }
+      } catch (error) {
+        addDebugLog('error', `[CRAWL] 요청 실패: ${error.message}`);
+      }
+    }
+
+    // 이력 로드
+    async function loadHistory() {
+      try {
+        const response = await fetch('/api/history');
+        const history = await response.json();
+
+        const container = document.getElementById('history-container');
+
+        if (history.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">📝</div>
+              <p>크롤링 이력 없음</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th>매장명</th>
+                <th>시간</th>
+                <th>상태</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${history.slice(0, 10).map(h => `
+                <tr>
+                  <td>${h.store_name}</td>
+                  <td style="font-size: 0.7rem;">${new Date(h.started_at).toLocaleString('ko-KR', {month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'})}</td>
+                  <td>
+                    ${h.status === 'success' ? '<span class="badge badge-success">완료</span>' :
+                      h.status === 'failed' ? '<span class="badge badge-error">실패</span>' :
+                      '<span class="badge badge-processing">진행중</span>'}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+
+        addDebugLog('info', `[HISTORY] ${history.length}개 이력 로드 완료`);
+      } catch (error) {
+        addDebugLog('error', `[HISTORY] 로드 실패: ${error.message}`);
+      }
+    }
+
+    // 프로그레스 업데이트
+    function updateProgress(percent, current, total) {
+      document.getElementById('progress-bar').style.width = percent + '%';
+      document.getElementById('progress-percent').textContent = percent + '%';
+      document.getElementById('progress-count').textContent = `${current} / ${total}`;
+    }
+
+    // 로그 추가
+    function addLog(type, message) {
+      const logs = document.getElementById('logs');
+      const time = new Date().toLocaleTimeString();
+
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML = `
+        <span class="log-time">${time}</span>
+        <span class="log-message log-${type}">${message}</span>
+      `;
+
+      logs.insertBefore(entry, logs.firstChild);
+
+      while (logs.children.length > 50) {
+        logs.removeChild(logs.lastChild);
+      }
+    }
+
+    // 디버그 로그 추가
+    function addDebugLog(type, message) {
+      const logs = document.getElementById('debug-logs');
+      const time = new Date().toLocaleTimeString();
+
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML = `
+        <span class="log-time">${time}</span>
+        <span class="log-message log-${type}">${message}</span>
+      `;
+
+      logs.insertBefore(entry, logs.firstChild);
+
+      while (logs.children.length > 100) {
+        logs.removeChild(logs.lastChild);
+      }
+    }
+
+    function clearDebugLogs() {
+      document.getElementById('debug-logs').innerHTML = '';
+      addDebugLog('info', '[SYSTEM] 디버그 로그 초기화');
+    }
+
+    // 매장 데이터 상세보기
+    let currentStoreData = null;
+
+    async function viewStoreData(placeId, storeName) {
+      try {
+        const response = await fetch(`/api/stores/${placeId}/data`);
+        const data = await response.json();
+
+        if (!response.ok) {
+          addDebugLog('error', `[VIEW] 데이터 없음: ${placeId}`);
+          alert('크롤링 데이터가 없습니다.');
+          return;
+        }
+
+        currentStoreData = data;
+        showDataModal(storeName, data);
+        addDebugLog('info', `[VIEW] ${storeName} 데이터 로드`);
+      } catch (error) {
+        addDebugLog('error', `[VIEW] 로드 실패: ${error.message}`);
+        alert('데이터 로드 중 오류가 발생했습니다.');
+      }
+    }
+
+    function showDataModal(storeName, data) {
+      const modal = document.getElementById('data-modal');
+      const modalTitle = document.getElementById('modal-title');
+      const modalBody = document.getElementById('modal-body');
+
+      modalTitle.textContent = `📊 ${storeName} 데이터`;
+
+      // 요약 정보
+      const basic = data.basic || {};
+      const reviews = data.reviews || {};
+      const competitors = data.competitors || {};
+      const menus = data.menus || [];
+      const ranking = data.ranking || {};
+      const visitorReviews = data.visitorReviewItems || [];
+      const blogReviews = reviews.blogReviews || [];
+
+      // 대표 키워드 (Apollo State에서 추출)
+      const representativeKeywords = ranking.representativeKeywords || [];
+
+      // 개별 리뷰 키워드 집계
+      const keywordMap = new Map();
+      visitorReviews.forEach(review => {
+        if (review.votedKeywords && Array.isArray(review.votedKeywords)) {
+          review.votedKeywords.forEach(kw => {
+            const key = kw.code || kw.name;
+            if (keywordMap.has(key)) {
+              keywordMap.get(key).count++;
+            } else {
+              keywordMap.set(key, { ...kw, count: 1 });
+            }
+          });
+        }
+      });
+      const aggregatedKeywords = Array.from(keywordMap.values()).sort((a, b) => b.count - a.count);
+
+      // 외부 플랫폼 데이터 추출
+      const externalData = data.externalData || {};
+      const diningcode = externalData.diningcode || {};
+
+      modalBody.innerHTML = `
+        <!-- SEO 키워드를 최상단에 강조 표시 -->
+        ${basic.seoKeywords && basic.seoKeywords.length > 0 ? `
+          <div style="background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); border-radius: 8px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 20px var(--accent-glow);">
+            <h3 style="margin: 0 0 10px; font-size: 1rem; color: var(--bg-primary); font-weight: 700;">🏷️ SEO 대표 키워드</h3>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              ${basic.seoKeywords.map(kw => `<span style="display: inline-block; background: var(--bg-primary); color: var(--accent-primary); padding: 0.4rem 1rem; border-radius: 1.5rem; font-size: 0.9rem; font-weight: 700; border: 2px solid var(--bg-primary);">${kw}</span>`).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- 📍 기본 정보 섹션 -->
+        <h3 style="margin: 20px 0 10px; font-size: 1rem; color: var(--accent-primary); font-weight: 700; border-bottom: 2px solid var(--border-color); padding-bottom: 8px;">📍 기본 정보</h3>
+        <div class="data-summary">
+          <div class="data-summary-item">
+            <div class="data-summary-label">매장명</div>
+            <div class="data-summary-value">${basic.name || 'N/A'}</div>
+          </div>
+          <div class="data-summary-item">
+            <div class="data-summary-label">카테고리</div>
+            <div class="data-summary-value">${basic.category || 'N/A'}</div>
+          </div>
+          <div class="data-summary-item">
+            <div class="data-summary-label">전화번호</div>
+            <div class="data-summary-value">${basic.phone || 'N/A'}</div>
+          </div>
+          <div class="data-summary-item" style="grid-column: 1 / -1;">
+            <div class="data-summary-label">도로명 주소</div>
+            <div class="data-summary-value">${basic.address?.road || 'N/A'}</div>
+          </div>
+          <div class="data-summary-item" style="grid-column: 1 / -1;">
+            <div class="data-summary-label">지번 주소</div>
+            <div class="data-summary-value">${basic.address?.jibun || 'N/A'}</div>
+          </div>
+          <div class="data-summary-item" style="grid-column: 1 / -1;">
+            <div class="data-summary-label">Place URL</div>
+            <div class="data-summary-value">${basic.url ? `<a href="${basic.url}" target="_blank" style="color: var(--accent-primary); font-size: 0.8rem; word-break: break-all;">${basic.url}</a>` : 'N/A'}</div>
+          </div>
+          <div class="data-summary-item">
+            <div class="data-summary-label">홈페이지</div>
+            <div class="data-summary-value">${basic.homepage ? `<a href="${basic.homepage}" target="_blank" style="color: var(--accent-primary); font-size: 0.75rem;">링크</a>` : 'N/A'}</div>
+          </div>
+        </div>
+
+        <!-- ⏰ 영업시간 정보 (구조화) -->
+        <h3 style="margin: 20px 0 10px; font-size: 1rem; color: var(--accent-primary); font-weight: 700; border-bottom: 2px solid var(--border-color); padding-bottom: 8px;">⏰ 영업시간</h3>
+        <div class="data-summary">
+          <div class="data-summary-item">
+            <div class="data-summary-label">영업시간</div>
+            <div class="data-summary-value">${data.operationTime?.openingTime || basic.openingHours || 'N/A'} ~ ${data.operationTime?.closingTime || 'N/A'}</div>
+          </div>
+          <div class="data-summary-item">
+            <div class="data-summary-label">휴게시간 / 라스트오더</div>
+            <div class="data-summary-value">
+              ${data.operationTime?.breakTime?.length > 0 ? data.operationTime.breakTime.join(', ') : '없음'}
+              ${data.operationTime?.lastOrder ? ` / LO ${data.operationTime.lastOrder}` : ''}
+            </div>
+          </div>
+          <div class="data-summary-item">
+            <div class="data-summary-label">정기휴무</div>
+            <div class="data-summary-value">${data.operationTime?.holiday || 'N/A'}</div>
+          </div>
+        </div>
+
+        <!-- 🔗 SNS 링크 & 네이버 서비스 (표 형식) -->
+        <h3 style="margin: 20px 0 10px; font-size: 1rem; color: var(--accent-primary); font-weight: 700; border-bottom: 2px solid var(--border-color); padding-bottom: 8px;">🔗 SNS & 네이버 서비스</h3>
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 8px; background: var(--bg-tertiary); padding: 12px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 15px;">
+          <div style="font-weight: 600; color: var(--text-secondary);">📷 Instagram</div>
+          <div>${basic.sns?.instagram ? `<a href="${basic.sns.instagram}" target="_blank" style="color: var(--accent-primary); word-break: break-all;">${basic.sns.instagram}</a>` : '<span style="color: var(--text-tertiary);">사용하지 않음</span>'}</div>
+
+          <div style="font-weight: 600; color: var(--text-secondary);">👥 Facebook</div>
+          <div>${basic.sns?.facebook ? `<a href="${basic.sns.facebook}" target="_blank" style="color: var(--accent-primary); word-break: break-all;">${basic.sns.facebook}</a>` : '<span style="color: var(--text-tertiary);">사용하지 않음</span>'}</div>
+
+          <div style="font-weight: 600; color: var(--text-secondary);">✍️ Blog</div>
+          <div>${basic.sns?.blog ? `<a href="${basic.sns.blog}" target="_blank" style="color: var(--accent-primary); word-break: break-all;">${basic.sns.blog}</a>` : '<span style="color: var(--text-tertiary);">사용하지 않음</span>'}</div>
+
+          <div style="font-weight: 600; color: var(--text-secondary);">📺 YouTube</div>
+          <div>${basic.sns?.youtube ? `<a href="${basic.sns.youtube}" target="_blank" style="color: var(--accent-primary); word-break: break-all;">${basic.sns.youtube}</a>` : '<span style="color: var(--text-tertiary);">사용하지 않음</span>'}</div>
+
+          <div style="font-weight: 600; color: var(--text-secondary);">🐦 Twitter</div>
+          <div>${basic.sns?.twitter ? `<a href="${basic.sns.twitter}" target="_blank" style="color: var(--accent-primary); word-break: break-all;">${basic.sns.twitter}</a>` : '<span style="color: var(--text-tertiary);">사용하지 않음</span>'}</div>
+
+          <div style="border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 8px; grid-column: 1 / -1;"></div>
+
+          <div style="font-weight: 600; color: var(--text-secondary);">📅 네이버예약</div>
+          <div>${data.naverServices?.booking?.enabled ? `<span style="color: var(--accent-primary);">✅ 사용 중</span> ${data.naverServices.booking.url ? `- <a href="${data.naverServices.booking.url}" target="_blank" style="color: var(--info);">${data.naverServices.booking.url}</a>` : ''}` : '<span style="color: var(--text-tertiary);">사용하지 않음</span>'}</div>
+
+          <div style="font-weight: 600; color: var(--text-secondary);">📞 스마트콜</div>
+          <div>${data.naverServices?.smartCall?.enabled ? `<span style="color: var(--accent-primary);">✅ 사용 중</span> ${data.naverServices.smartCall.description ? `- ${data.naverServices.smartCall.description}` : ''}` : '<span style="color: var(--text-tertiary);">사용하지 않음</span>'}</div>
+
+          <div style="font-weight: 600; color: var(--text-secondary);">🛒 스마트오더</div>
+          <div>${data.naverServices?.smartOrder?.enabled ? '<span style="color: var(--accent-primary);">✅ 사용 중</span>' : '<span style="color: var(--text-tertiary);">사용하지 않음</span>'}</div>
+
+          <div style="font-weight: 600; color: var(--text-secondary);">⭐ 플레이스플러스</div>
+          <div>${data.naverServices?.placePlus?.enabled ? '<span style="color: var(--accent-primary);">✅ 사용 중</span>' : '<span style="color: var(--text-tertiary);">사용하지 않음</span>'}</div>
+
+          <div style="font-weight: 600; color: var(--text-secondary);">💳 네이버페이</div>
+          <div>${data.naverServices?.naverPay?.enabled ? '<span style="color: var(--accent-primary);">✅ 사용 중</span>' : '<span style="color: var(--text-tertiary);">사용하지 않음</span>'}</div>
+        </div>
+
+        <!-- 🍽️ 메뉴 섹션 (상단으로 이동) -->
+        ${buildMenusSection(menus)}
+
+        <!-- 🏪 편의시설 & 부가정보 (리뷰 위로 이동) -->
+        <h3 style="margin: 20px 0 10px; font-size: 1rem; color: var(--accent-primary); font-weight: 700; border-bottom: 2px solid var(--border-color); padding-bottom: 8px;">🏪 편의시설 & 부가정보</h3>
+        <div class="data-summary">
+          <div class="data-summary-item">
+            <div class="data-summary-label">편의시설</div>
+            <div class="data-summary-value">${data.facilities?.slice(0, 3).map(f => f.name || f).join(', ') || 'N/A'}${data.facilities?.length > 3 ? ' 외' : ''}</div>
+          </div>
+          <div class="data-summary-item">
+            <div class="data-summary-label">결제수단</div>
+            <div class="data-summary-value">${data.payments?.slice(0, 3).join(', ') || 'N/A'}${data.payments?.length > 3 ? ' 외' : ''}</div>
+          </div>
+          <div class="data-summary-item">
+            <div class="data-summary-label">주차</div>
+            <div class="data-summary-value">${data.directions?.parking || 'N/A'}</div>
+          </div>
+          <div class="data-summary-item">
+            <div class="data-summary-label">테이블 오더</div>
+            <div class="data-summary-value">${data.orderOptions?.isTableOrder ? '가능' : '불가'}</div>
+          </div>
+          <div class="data-summary-item">
+            <div class="data-summary-label">픽업</div>
+            <div class="data-summary-value">${data.orderOptions?.pickup ? '가능' : '불가'}</div>
+          </div>
+          <div class="data-summary-item">
+            <div class="data-summary-label">배달</div>
+            <div class="data-summary-value">${data.orderOptions?.delivery ? '가능' : '불가'}</div>
+          </div>
+        </div>
+
+        <!-- ⭐ 리뷰 통계 -->
+        <h3 style="margin: 20px 0 10px; font-size: 1rem; color: var(--accent-primary); font-weight: 700; border-bottom: 2px solid var(--border-color); padding-bottom: 8px;">⭐ 리뷰 통계</h3>
+        <div class="data-summary">
+          <div class="data-summary-item">
+            <div class="data-summary-label">평점</div>
+            <div class="data-summary-value">${basic.rating || data.reviewStats?.visitor?.averageScore || 'N/A'}</div>
+          </div>
+          <div class="data-summary-item">
+            <div class="data-summary-label">방문자 리뷰</div>
+            <div class="data-summary-value">${visitorReviews.length || data.reviewStats?.visitor?.total || 0}개</div>
+          </div>
+          <div class="data-summary-item">
+            <div class="data-summary-label">블로그 리뷰</div>
+            <div class="data-summary-value">${blogReviews.length || data.reviewStats?.blogCafe || reviews.stats?.blog || 0}개</div>
+          </div>
+        </div>
+
+        <!-- 리뷰 키워드 & 리뷰 -->
+        ${buildKeywordsSection(aggregatedKeywords)}
+        ${buildReviewsSection(visitorReviews, blogReviews)}
+
+        <!-- 경쟁자 & 다이닝코드 -->
+        ${buildCompetitorsSection(competitors, externalData)}
+        ${buildDiningcodeSummary(diningcode)}
+
+        <h3 style="margin: 20px 0 10px; font-size: 0.9rem; color: var(--accent-primary);">📄 전체 JSON 데이터</h3>
+        <div class="json-viewer">
+          <pre id="json-content">${JSON.stringify(data, null, 2)}</pre>
+        </div>
+      `;
+
+      // 아코디언 이벤트 리스너 등록
+      document.querySelectorAll('.accordion-header').forEach(header => {
+        header.addEventListener('click', () => {
+          header.classList.toggle('active');
+          const content = header.nextElementSibling;
+          content.classList.toggle('active');
+        });
+      });
+
+      modal.classList.add('active');
+    }
+
+    // 리뷰 키워드 섹션 (리뷰에서 집계)
+    function buildKeywordsSection(keywords) {
+      if (keywords.length === 0) {
+        return `
+          <div class="accordion-section">
+            <div class="accordion-header">
+              <div class="accordion-title">
+                <span>🏷️ 리뷰 키워드</span>
+                <span class="accordion-count">0</span>
+              </div>
+              <span class="accordion-icon">▼</span>
+            </div>
+            <div class="accordion-content">
+              <div class="accordion-body">
+                <div class="empty-state">리뷰 키워드 데이터가 없습니다</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      const keywordHTML = keywords.map(kw => `
+        <div class="keyword-stat">
+          ${kw.iconUrl ? `<img src="${kw.iconUrl}" class="keyword-stat-icon" alt="${kw.name}">` : ''}
+          <div class="keyword-stat-info">
+            <div class="keyword-stat-name">${kw.name}</div>
+            <div class="keyword-stat-count">${kw.count}회</div>
+          </div>
+        </div>
+      `).join('');
+
+      return `
+        <div class="accordion-section">
+          <div class="accordion-header">
+            <div class="accordion-title">
+              <span>🏷️ 리뷰 키워드</span>
+              <span class="accordion-count">${keywords.length}</span>
+            </div>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content">
+            <div class="accordion-body">
+              <div class="keyword-stats">${keywordHTML}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildReviewsSection(visitorReviews, blogReviews) {
+      const totalReviews = visitorReviews.length + blogReviews.length;
+
+      if (totalReviews === 0) {
+        return `
+          <div class="accordion-section">
+            <div class="accordion-header">
+              <div class="accordion-title">
+                <span>💬 리뷰</span>
+                <span class="accordion-count">0</span>
+              </div>
+              <span class="accordion-icon">▼</span>
+            </div>
+            <div class="accordion-content">
+              <div class="accordion-body">
+                <div class="empty-state">리뷰 데이터가 없습니다</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      let reviewsHTML = '';
+
+      // 방문자 리뷰
+      if (visitorReviews.length > 0) {
+        reviewsHTML += '<h4 style="margin: 0 0 10px; font-size: 0.85rem; color: var(--text-primary);">👤 방문자 리뷰</h4>';
+        reviewsHTML += visitorReviews.slice(0, 10).map(review => {
+          const keywords = review.votedKeywords || [];
+          const keywordsHTML = keywords.length > 0 ? `
+            <div class="review-keywords">
+              ${keywords.map(kw => `
+                <div class="keyword-tag">
+                  ${kw.iconUrl ? `<img src="${kw.iconUrl}" class="keyword-icon" alt="${kw.name}">` : ''}
+                  <span>${kw.name}</span>
+                </div>
+              `).join('')}
+            </div>
+          ` : '';
+
+          // 닉네임 추출: author.nickname 또는 author 직접 값 또는 '익명'
+          const authorName = review.author?.nickname || review.author || '익명';
+          const reviewDate = review.visited || review.created || review.visitDate || review.date || '';
+          const reviewText = review.body || review.text || review.content || '내용 없음';
+
+          return `
+            <div class="review-item">
+              <div class="review-header">
+                <span class="review-author">👤 ${authorName}</span>
+                <span class="review-date">${reviewDate}</span>
+              </div>
+              ${review.rating ? `<div class="review-rating">${'⭐'.repeat(review.rating)}</div>` : ''}
+              <div class="review-text">${reviewText}</div>
+              ${keywordsHTML}
+            </div>
+          `;
+        }).join('');
+
+        if (visitorReviews.length > 10) {
+          reviewsHTML += `<div class="empty-state">+ ${visitorReviews.length - 10}개 더 있음 (JSON 참조)</div>`;
+        }
+      }
+
+      // 블로그 리뷰
+      if (blogReviews.length > 0) {
+        reviewsHTML += '<h4 style="margin: 15px 0 10px; font-size: 0.85rem; color: var(--text-primary);">📝 블로그 리뷰</h4>';
+        reviewsHTML += blogReviews.slice(0, 10).map(review => {
+          // 닉네임 추출
+          const bloggerName = review.author?.nickname || review.bloggerName || review.author || '익명';
+          const reviewDate = review.date || review.created || '';
+          const reviewContent = review.content || review.text || review.title || '내용 없음';
+
+          return `
+            <div class="review-item">
+              <div class="review-header">
+                <span class="review-author">📝 ${bloggerName}</span>
+                <span class="review-date">${reviewDate}</span>
+              </div>
+              <div class="review-text">${reviewContent}</div>
+              ${review.url ? `<a href="${review.url}" target="_blank" style="color: var(--accent-primary); font-size: 0.75rem; margin-top: 5px; display: inline-block;">블로그 보기 →</a>` : ''}
+            </div>
+          `;
+        }).join('');
+
+        if (blogReviews.length > 10) {
+          reviewsHTML += `<div class="empty-state">+ ${blogReviews.length - 10}개 더 있음 (JSON 참조)</div>`;
+        }
+      }
+
+      return `
+        <div class="accordion-section">
+          <div class="accordion-header">
+            <div class="accordion-title">
+              <span>💬 리뷰</span>
+              <span class="accordion-count">${totalReviews}</span>
+            </div>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content">
+            <div class="accordion-body">${reviewsHTML}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildMenusSection(menus) {
+      if (menus.length === 0) {
+        return `
+          <div class="accordion-section">
+            <div class="accordion-header">
+              <div class="accordion-title">
+                <span>🍽️ 메뉴</span>
+                <span class="accordion-count">0</span>
+              </div>
+              <span class="accordion-icon">▼</span>
+            </div>
+            <div class="accordion-content">
+              <div class="accordion-body">
+                <div class="empty-state">메뉴 데이터가 없습니다</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      const menusHTML = menus.map(menu => `
+        <div class="menu-item">
+          <div class="menu-name">${menu.name}</div>
+          <div class="menu-price">${menu.price || '가격 미정'}</div>
+          ${menu.description ? `<div class="menu-description">${menu.description}</div>` : ''}
+        </div>
+      `).join('');
+
+      return `
+        <div class="accordion-section">
+          <div class="accordion-header">
+            <div class="accordion-title">
+              <span>🍽️ 메뉴</span>
+              <span class="accordion-count">${menus.length}</span>
+            </div>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content">
+            <div class="accordion-body">
+              <div class="menu-grid">${menusHTML}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildCompetitorsSection(competitors, externalData) {
+      const naverCompetitors = competitors.naver || [];
+      const diningcodeCompetitors = competitors.diningcode || [];
+      const totalCompetitors = naverCompetitors.length + diningcodeCompetitors.length;
+
+      if (totalCompetitors === 0) {
+        return `
+          <div class="accordion-section">
+            <div class="accordion-header">
+              <div class="accordion-title">
+                <span>🏢 경쟁자</span>
+                <span class="accordion-count">0</span>
+              </div>
+              <span class="accordion-icon">▼</span>
+            </div>
+            <div class="accordion-content">
+              <div class="accordion-body">
+                <div class="empty-state">경쟁자 데이터가 없습니다</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      let competitorsHTML = '';
+
+      if (naverCompetitors.length > 0) {
+        competitorsHTML += '<h4 style="margin: 0 0 10px; font-size: 0.85rem; color: var(--text-primary);">네이버 경쟁자</h4>';
+        competitorsHTML += '<div class="competitor-list">';
+        competitorsHTML += naverCompetitors.map(comp => {
+          const placeId = comp.placeId || comp.id || '';
+          const mid = placeId ? `<code style="font-size: 0.7rem; color: var(--text-tertiary); margin-left: 0.5rem;">MID: ${placeId}</code>` : '';
+
+          return `
+            <div class="competitor-item">
+              <div>
+                <span class="competitor-name">${comp.name || comp.title || 'N/A'}</span>
+                ${mid}
+              </div>
+              <span class="competitor-distance">${comp.distance || ''}</span>
+            </div>
+          `;
+        }).join('');
+        competitorsHTML += '</div>';
+      }
+
+      if (diningcodeCompetitors.length > 0) {
+        competitorsHTML += '<h4 style="margin: 15px 0 10px; font-size: 0.85rem; color: var(--text-primary);">다이닝코드 경쟁자</h4>';
+        competitorsHTML += '<div class="competitor-list">';
+        competitorsHTML += diningcodeCompetitors.map(comp => {
+          const rid = comp.restaurantId || comp.rid || comp.id || '';
+          const ridDisplay = rid ? `<code style="font-size: 0.7rem; color: var(--text-tertiary); margin-left: 0.5rem;">RID: ${rid}</code>` : '';
+
+          return `
+            <div class="competitor-item">
+              <div>
+                <span class="competitor-name">${comp.name || comp.title || 'N/A'}</span>
+                ${ridDisplay}
+              </div>
+              <span class="competitor-distance">${comp.distance || ''}</span>
+            </div>
+          `;
+        }).join('');
+        competitorsHTML += '</div>';
+      }
+
+      return `
+        <div class="accordion-section">
+          <div class="accordion-header">
+            <div class="accordion-title">
+              <span>🏢 경쟁자</span>
+              <span class="accordion-count">${totalCompetitors}</span>
+            </div>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content">
+            <div class="accordion-body">${competitorsHTML}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildDiningcodeSummary(diningcode) {
+      if (!diningcode || Object.keys(diningcode).length === 0) {
+        return '';
+      }
+
+      // 실제 데이터 구조에 맞게 수정
+      const name = diningcode.name || '';
+      const rating = diningcode.rating || 0;
+      const reviewCount = diningcode.reviewCount || 0;
+      const priceRange = diningcode.priceRange || '';
+      const operatingHours = diningcode.operatingHours || '';
+
+      // tags에서 유용한 키워드만 추출
+      const tags = (diningcode.tags || []).filter(tag =>
+        tag && tag.length < 50 && !tag.includes('더보기') && !tag.includes('위')
+      ).slice(0, 10);
+
+      return `
+        <div class="accordion-section">
+          <div class="accordion-header">
+            <div class="accordion-title">
+              <span>🍴 다이닝코드 정보</span>
+              <span class="accordion-count">1</span>
+            </div>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content">
+            <div class="accordion-body">
+              <div class="data-summary">
+                ${name ? `
+                  <div class="data-summary-item">
+                    <div class="data-summary-label">매장명</div>
+                    <div class="data-summary-value">${name}</div>
+                  </div>
+                ` : ''}
+                ${rating ? `
+                  <div class="data-summary-item">
+                    <div class="data-summary-label">평점</div>
+                    <div class="data-summary-value">${rating}점</div>
+                  </div>
+                ` : ''}
+                ${reviewCount ? `
+                  <div class="data-summary-item">
+                    <div class="data-summary-label">리뷰 수</div>
+                    <div class="data-summary-value">${reviewCount}개</div>
+                  </div>
+                ` : ''}
+                ${priceRange ? `
+                  <div class="data-summary-item">
+                    <div class="data-summary-label">가격대</div>
+                    <div class="data-summary-value">${priceRange}</div>
+                  </div>
+                ` : ''}
+                ${operatingHours ? `
+                  <div class="data-summary-item" style="grid-column: 1 / -1;">
+                    <div class="data-summary-label">영업시간</div>
+                    <div class="data-summary-value">${operatingHours}</div>
+                  </div>
+                ` : ''}
+              </div>
+              ${tags.length > 0 ? `
+                <h4 style="margin: 15px 0 10px; font-size: 0.85rem; color: var(--text-primary);">태그</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                  ${tags.map(tag => `
+                    <span style="background: var(--bg-secondary); color: var(--text-secondary); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem;">${tag}</span>
+                  `).join('')}
+                </div>
+              ` : ''}
+              ${diningcode.competitors && diningcode.competitors.length > 0 ? `
+                <h4 style="margin: 15px 0 10px; font-size: 0.85rem; color: var(--text-primary);">다이닝코드 유사 매장 (${diningcode.competitors.length}개)</h4>
+                <div class="competitor-list">
+                  ${diningcode.competitors.slice(0, 5).map(comp => `
+                    <div class="competitor-item">
+                      <span class="competitor-name">${comp.name || 'N/A'}</span>
+                      ${comp.distance ? `<span class="competitor-distance">${comp.distance}</span>` : ''}
+                    </div>
+                  `).join('')}
+                  ${diningcode.competitors.length > 5 ? `<div class="empty-state">+ ${diningcode.competitors.length - 5}개 더 있음</div>` : ''}
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function closeDataModal() {
+      document.getElementById('data-modal').classList.remove('active');
+      currentStoreData = null;
+    }
+
+    function copyJSON() {
+      if (!currentStoreData) {
+        alert('복사할 데이터가 없습니다.');
+        return;
+      }
+
+      const jsonString = JSON.stringify(currentStoreData, null, 2);
+
+      navigator.clipboard.writeText(jsonString).then(() => {
+        addDebugLog('success', '[COPY] JSON 데이터 복사 완료');
+        alert('JSON 데이터가 클립보드에 복사되었습니다.');
+      }).catch(error => {
+        addDebugLog('error', `[COPY] 복사 실패: ${error.message}`);
+        alert('복사 중 오류가 발생했습니다.');
+      });
+    }
+
+    // 모달 외부 클릭시 닫기
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-overlay')) {
+        closeDataModal();
+      }
+    });
+
+    // ===================================
+    // 키워드 순위 추적 기능
+    // ===================================
+
+    /**
+     * 키워드 추가
+     */
+    async function addKeywords() {
+      const placeId = document.getElementById('rank-place-id').value.trim();
+      const keywordsInput = document.getElementById('rank-keywords-input').value.trim();
+
+      if (!placeId) {
+        alert('Place ID를 입력하세요.');
+        return;
+      }
+
+      if (!keywordsInput) {
+        alert('키워드를 입력하세요.');
+        return;
+      }
+
+      // 쉼표, 줄바꿈, 공백으로 키워드 분리
+      const keywords = keywordsInput
+        .split(/[\n,]+/)
+        .map(k => k.trim())
+        .filter(k => k.length > 0);
+
+      if (keywords.length === 0) {
+        alert('유효한 키워드를 입력하세요.');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/rank/keywords/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ placeId, keywords }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          alert(`${data.keywords.length}개 키워드가 추가되었습니다.`);
+          document.getElementById('rank-keywords-input').value = '';
+          loadTrackedKeywords();
+        } else {
+          alert(`오류: ${data.error}`);
+        }
+      } catch (error) {
+        alert(`오류: ${error.message}`);
+      }
+    }
+
+    /**
+     * 추적 중인 키워드 목록 불러오기
+     */
+    async function loadTrackedKeywords() {
+      const placeId = document.getElementById('rank-place-id').value.trim();
+
+      if (!placeId) {
+        alert('Place ID를 입력하세요.');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/rank/keywords/${placeId}`);
+        const data = await response.json();
+
+        if (data.success) {
+          displayTrackedKeywords(data.keywords);
+        } else {
+          alert(`오류: ${data.error}`);
+        }
+      } catch (error) {
+        alert(`오류: ${error.message}`);
+      }
+    }
+
+    /**
+     * 키워드 목록 표시
+     */
+    function displayTrackedKeywords(keywords) {
+      const container = document.getElementById('rank-tracking-container');
+      const tbody = document.getElementById('tracked-keywords-list');
+
+      if (keywords.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
+
+      container.style.display = 'block';
+
+      tbody.innerHTML = keywords.map(kw => {
+        const latestRank = kw.latest_rank ? `${kw.latest_rank}위` : '미조회';
+        const historyCount = kw.history_count || 0;
+        const latestCheck = kw.latest_check ? new Date(kw.latest_check).toLocaleString('ko-KR') : '없음';
+
+        return `
+          <tr style="border-bottom: 1px solid var(--border-color);">
+            <td style="padding: 8px; color: var(--text-primary);">${kw.keyword}</td>
+            <td style="padding: 8px; text-align: center; color: var(--accent-primary); font-weight: 600;">${latestRank}</td>
+            <td style="padding: 8px; text-align: center; color: var(--text-secondary);">-</td>
+            <td style="padding: 8px; text-align: center; color: var(--text-secondary);">${historyCount}회</td>
+            <td style="padding: 8px; text-align: center; color: var(--text-secondary); font-size: 0.75rem;">${latestCheck}</td>
+            <td style="padding: 8px; text-align: center;">
+              <button class="btn-secondary btn-small" onclick="viewKeywordHistory(${kw.id})">이력</button>
+              <button class="btn-danger btn-small" onclick="deleteKeyword(${kw.id})">삭제</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    /**
+     * 모든 키워드 순위 재조회
+     */
+    async function checkAllRanks() {
+      const placeId = document.getElementById('rank-place-id').value.trim();
+
+      if (!placeId) {
+        alert('Place ID를 입력하세요.');
+        return;
+      }
+
+      if (!confirm('모든 추적 중인 키워드의 순위를 조회하시겠습니까?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/rank/check-all', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ placeId, maxPages: 20 }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          alert(`${data.keywords.length}개 키워드 순위 조회를 시작합니다.\n진행 상황 섹션에서 확인하세요.`);
+        } else {
+          alert(`오류: ${data.error}`);
+        }
+      } catch (error) {
+        alert(`오류: ${error.message}`);
+      }
+    }
+
+    /**
+     * 키워드 삭제
+     */
+    async function deleteKeyword(keywordId) {
+      if (!confirm('이 키워드를 삭제하시겠습니까?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/rank/keywords/${keywordId}`, {
+          method: 'DELETE',
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          loadTrackedKeywords();
+        } else {
+          alert(`오류: ${data.error}`);
+        }
+      } catch (error) {
+        alert(`오류: ${error.message}`);
+      }
+    }
+
+    /**
+     * 키워드 이력 보기
+     */
+    async function viewKeywordHistory(keywordId) {
+      try {
+        const response = await fetch(`/api/rank/history/${keywordId}`);
+        const data = await response.json();
+
+        if (data.success) {
+          displayKeywordHistory(data.history, data.stats);
+        } else {
+          alert(`오류: ${data.error}`);
+        }
+      } catch (error) {
+        alert(`오류: ${error.message}`);
+      }
+    }
+
+    /**
+     * 키워드 이력 표시 (모달)
+     */
+    function displayKeywordHistory(history, stats) {
+      const modal = document.getElementById('data-modal');
+      const title = document.getElementById('modal-title');
+      const body = document.getElementById('modal-body');
+
+      title.textContent = '키워드 순위 이력';
+
+      let html = '';
+
+      // 통계 표시
+      if (stats && stats.total_checks > 0) {
+        html += `
+          <div style="background: var(--bg-tertiary); padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+            <h3 style="margin-bottom: 10px; color: var(--accent-primary);">통계</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+              <div>
+                <div style="color: var(--text-secondary); font-size: 0.8rem;">조회 횟수</div>
+                <div style="color: var(--text-primary); font-size: 1.2rem; font-weight: 600;">${stats.total_checks}회</div>
+              </div>
+              <div>
+                <div style="color: var(--text-secondary); font-size: 0.8rem;">평균 순위</div>
+                <div style="color: var(--text-primary); font-size: 1.2rem; font-weight: 600;">${stats.avg_rank ? Math.round(stats.avg_rank) + '위' : '-'}</div>
+              </div>
+              <div>
+                <div style="color: var(--text-secondary); font-size: 0.8rem;">최고 순위</div>
+                <div style="color: var(--accent-primary); font-size: 1.2rem; font-weight: 600;">${stats.best_rank}위</div>
+              </div>
+              <div>
+                <div style="color: var(--text-secondary); font-size: 0.8rem;">최저 순위</div>
+                <div style="color: var(--error); font-size: 1.2rem; font-weight: 600;">${stats.worst_rank}위</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // 이력 표시
+      html += `
+        <h3 style="margin-bottom: 10px; color: var(--accent-primary);">조회 이력 (최근 100개)</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="background: var(--bg-tertiary); border-bottom: 2px solid var(--border-color);">
+              <th style="padding: 8px; text-align: left; color: var(--text-secondary);">조회 시각</th>
+              <th style="padding: 8px; text-align: center; color: var(--text-secondary);">순위</th>
+              <th style="padding: 8px; text-align: center; color: var(--text-secondary);">평점</th>
+              <th style="padding: 8px; text-align: center; color: var(--text-secondary);">리뷰</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${history.map((h, i) => {
+              const rankText = h.rank ? `${h.rank}위` : '순위권 밖';
+              const rankColor = h.rank ? (h.rank <= 10 ? 'var(--accent-primary)' : 'var(--text-primary)') : 'var(--text-tertiary)';
+              return `
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                  <td style="padding: 8px; color: var(--text-secondary); font-size: 0.8rem;">${new Date(h.checked_at).toLocaleString('ko-KR')}</td>
+                  <td style="padding: 8px; text-align: center; color: ${rankColor}; font-weight: 600;">${rankText}</td>
+                  <td style="padding: 8px; text-align: center; color: var(--text-secondary);">${h.rating || '-'}</td>
+                  <td style="padding: 8px; text-align: center; color: var(--text-secondary);">${h.review_count || '-'}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      `;
+
+      body.innerHTML = html;
+      modal.style.display = 'flex';
+    }
+
+    /**
+     * 이력 다운로드 (CSV)
+     */
+    async function exportRankHistory() {
+      const placeId = document.getElementById('rank-place-id').value.trim();
+
+      if (!placeId) {
+        alert('Place ID를 입력하세요.');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/rank/latest/${placeId}`);
+        const data = await response.json();
+
+        if (data.success && data.ranks.length > 0) {
+          // CSV 생성
+          let csv = '키워드,최신순위,이전순위,변동,평점,리뷰수,조회시각\n';
+
+          data.ranks.forEach(r => {
+            const rank = r.rank || '순위권밖';
+            const prevRank = r.previous_rank || '-';
+            const change = (r.rank && r.previous_rank) ? r.previous_rank - r.rank : '-';
+            const checkedAt = r.checked_at ? new Date(r.checked_at).toLocaleString('ko-KR') : '-';
+
+            csv += `"${r.keyword}",${rank},${prevRank},${change},${r.rating || '-'},${r.review_count || '-'},"${checkedAt}"\n`;
+          });
+
+          // 다운로드
+          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+          const link = document.createElement('a');
+          const url = URL.createObjectURL(blob);
+
+          link.setAttribute('href', url);
+          link.setAttribute('download', `rank-history-${placeId}-${Date.now()}.csv`);
+          link.style.visibility = 'hidden';
+
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          alert('다운로드할 이력이 없습니다.');
+        }
+      } catch (error) {
+        alert(`오류: ${error.message}`);
+      }
+    }
+
+    // ===================================
+    // 초기화
+    // ===================================
+
+    // 초기화
+    window.addEventListener('DOMContentLoaded', () => {
+      addDebugLog('info', '[SYSTEM] 페이지 로드 완료');
+      connectSSE();
+      loadStats();
+      loadStores();
+      loadHistory();
+    });
+  </script>
+
+  <!-- 데이터 상세보기 모달 -->
+  <div id="data-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-title">데이터 상세보기</h2>
+        <button class="modal-close" onclick="closeDataModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- 동적으로 채워짐 -->
+      </div>
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="copyJSON()">📋 JSON 복사</button>
+        <button class="btn-secondary" onclick="closeDataModal()">닫기</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,330 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id                        Int       @id @default(autoincrement())
+  name                      String
+  businessNumber            String?   @unique
+  businessRegistrationFile  String?
+  contactPerson             String?
+  email                     String?
+  phone                     String?
+  address                   String?
+  notes                     String?
+  tags                      String?   // JSON array as string in SQLite
+  createdAt                 DateTime  @default(now())
+  updatedAt                 DateTime  @updatedAt
+
+  stores        Store[]
+  orders        Order[]
+  quotations    Quotation[]
+  consultations Consultation[]
+  tasks         Task[]
+  documents     Document[]
+  settlements   Settlement[]
+  invoices      Invoice[]
+
+  @@index([businessNumber])
+  @@index([name])
+}
+
+model Store {
+  id          Int       @id @default(autoincrement())
+  customerId  Int
+  name        String
+  type        String?
+  address     String?
+  phone       String?
+  website     String?
+  description String?
+  metadata    String?   // JSON as string in SQLite
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  customer     Customer        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  orders       Order[]
+  quotations  Quotation[]
+  consultations Consultation[]
+  tasks        Task[]
+  documents    Document[]
+
+  @@index([customerId])
+  @@index([name])
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String
+  category    String?
+  description String?
+  unitPrice   Decimal   @default(0)
+  unit        String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  orderItems      OrderItem[]
+  quotationItems  QuotationItem[]
+
+  @@index([name])
+  @@index([category])
+  @@index([isActive])
+}
+
+model Order {
+  id           Int       @id @default(autoincrement())
+  customerId  Int
+  storeId      Int?
+  quotationId Int?
+  orderNumber  String    @unique
+  status       String    @default("pending")
+  orderDate    DateTime
+  dueDate      DateTime?
+  totalAmount  Decimal   @default(0)
+  paidAmount   Decimal   @default(0)
+  unpaidAmount Decimal   @default(0)
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  customer     Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  store        Store?        @relation(fields: [storeId], references: [id], onDelete: SetNull)
+  quotation    Quotation?    @relation(fields: [quotationId], references: [id], onDelete: SetNull)
+  items        OrderItem[]
+  invoices     Invoice[]
+  settlements  Settlement[]
+  consultations Consultation[]
+  tasks        Task[]
+  documents    Document[]
+
+  @@index([customerId])
+  @@index([storeId])
+  @@index([orderNumber])
+  @@index([orderDate])
+  @@index([status])
+}
+
+model OrderItem {
+  id         Int      @id @default(autoincrement())
+  orderId    Int
+  productId  Int?
+  productName String?
+  productDescription String?
+  quantity   Int      @default(1)
+  unitPrice  Decimal
+  totalPrice Decimal
+  notes      String?
+  // 광고 상품 특성: 진행일자 기반
+  startDate  DateTime? // 광고 시작일
+  endDate    DateTime? // 광고 종료일
+  dailyCount Int?      // 일일 건수/유입타수
+  totalDays  Int?      // 총 진행일수 (자동 계산)
+  createdAt  DateTime @default(now())
+
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([startDate])
+  @@index([endDate])
+}
+
+model Quotation {
+  id              Int       @id @default(autoincrement())
+  customerId      Int
+  storeId         Int?
+  quotationNumber String    @unique
+  quotationDate   DateTime
+  validUntil      DateTime?
+  status          String    @default("draft")
+  totalAmount     Decimal   @default(0)
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  customer        Customer        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  store           Store?          @relation(fields: [storeId], references: [id], onDelete: SetNull)
+  items           QuotationItem[]
+  orders          Order[]
+  consultations   Consultation[]
+
+  @@index([customerId])
+  @@index([quotationNumber])
+  @@index([status])
+}
+
+model QuotationItem {
+  id          Int      @id @default(autoincrement())
+  quotationId Int
+  productId   Int?
+  productName String?
+  productDescription String?
+  quantity    Int      @default(1)
+  unitPrice   Decimal
+  totalPrice  Decimal
+  description String?
+  // 광고 상품 특성: 진행일자 기반
+  startDate   DateTime? // 광고 시작일
+  endDate     DateTime? // 광고 종료일
+  dailyCount  Int?      // 일일 건수/유입타수
+  totalDays   Int?      // 총 진행일수 (자동 계산)
+
+  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  product   Product?   @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([quotationId])
+  @@index([startDate])
+  @@index([endDate])
+}
+
+model Invoice {
+  id           Int       @id @default(autoincrement())
+  orderId      Int
+  customerId   Int
+  invoiceNumber String   @unique
+  invoiceDate  DateTime
+  dueDate      DateTime?
+  status       String    @default("pending")
+  amount       Decimal
+  isPaid       Boolean   @default(false)
+  paidDate     DateTime?
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([customerId])
+  @@index([invoiceNumber])
+  @@index([status])
+  @@index([isPaid])
+}
+
+model Consultation {
+  id                 Int       @id @default(autoincrement())
+  customerId         Int
+  storeId            Int?
+  consultationChannel String
+  consultationDate   DateTime
+  consultationTopic  String?
+  consultationContent String?
+  actionItems        String?
+  consultationResult String?
+  relatedOrderId     Int?
+  relatedQuotationId Int?
+  attachments        String?   // JSON as string in SQLite
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  customer        Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  store           Store?     @relation(fields: [storeId], references: [id], onDelete: SetNull)
+  relatedOrder    Order?     @relation(fields: [relatedOrderId], references: [id], onDelete: SetNull)
+  relatedQuotation Quotation? @relation(fields: [relatedQuotationId], references: [id], onDelete: SetNull)
+
+  @@index([customerId])
+  @@index([storeId])
+  @@index([consultationDate])
+}
+
+model Task {
+  id          Int       @id @default(autoincrement())
+  customerId  Int
+  storeId     Int?
+  orderId     Int?
+  taskName    String
+  taskType    String?
+  description String?
+  status      String    @default("pending")
+  priority    String    @default("medium")
+  dueDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  customer    Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  store       Store?       @relation(fields: [storeId], references: [id], onDelete: SetNull)
+  order       Order?       @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  timeEntries TimeEntry[]
+
+  @@index([customerId])
+  @@index([storeId])
+  @@index([orderId])
+  @@index([status])
+  @@index([priority])
+  @@index([dueDate])
+}
+
+model TimeEntry {
+  id             Int       @id @default(autoincrement())
+  taskId         Int
+  entryDate      DateTime
+  startTime      DateTime
+  endTime        DateTime?
+  durationMinutes Int?
+  description    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([entryDate])
+}
+
+model Document {
+  id           Int       @id @default(autoincrement())
+  customerId   Int?
+  storeId      Int?
+  orderId      Int?
+  documentType String
+  fileName     String
+  filePath     String
+  fileSize     String?
+  mimeType     String?
+  description  String?
+  tags         String?   // JSON array as string in SQLite
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  customer Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  store    Store?    @relation(fields: [storeId], references: [id], onDelete: SetNull)
+  order    Order?    @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@index([customerId])
+  @@index([storeId])
+  @@index([orderId])
+  @@index([documentType])
+}
+
+model Settlement {
+  id             Int       @id @default(autoincrement())
+  orderId        Int
+  customerId     Int
+  settlementDate DateTime
+  settlementType String
+  amount         Decimal
+  status         String    @default("pending")
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([customerId])
+  @@index([settlementDate])
+  @@index([status])
+}
+

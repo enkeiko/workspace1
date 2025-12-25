@@ -1,0 +1,199 @@
+{
+  "placeId": "1716926393",
+  "competitors": {
+    "naver": [
+      {
+        "placeId": "2023037465",
+        "name": "그린보이즈",
+        "category": "",
+        "rating": "",
+        "reviewCount": "",
+        "distance": "240m",
+        "url": "https://m.place.naver.com/place/2023037465/home",
+        "source": "naver_similar"
+      },
+      {
+        "placeId": "1112303711",
+        "name": "프로티너 역삼역점",
+        "category": "",
+        "rating": "",
+        "reviewCount": "",
+        "distance": "120m",
+        "url": "https://m.place.naver.com/place/1112303711/home",
+        "source": "naver_similar"
+      },
+      {
+        "placeId": "1828095893",
+        "name": "밸런스",
+        "category": "",
+        "rating": "",
+        "reviewCount": "",
+        "distance": "200m",
+        "url": "https://m.place.naver.com/place/1828095893/home",
+        "source": "naver_similar"
+      },
+      {
+        "placeId": "1179511234",
+        "name": "포키토",
+        "category": "",
+        "rating": "",
+        "reviewCount": "",
+        "distance": "230m",
+        "url": "https://m.place.naver.com/place/1179511234/home",
+        "source": "naver_similar"
+      },
+      {
+        "placeId": "2075557921",
+        "name": "갓즈",
+        "category": "",
+        "rating": "",
+        "reviewCount": "",
+        "distance": "280m",
+        "url": "https://m.place.naver.com/place/2075557921/home",
+        "source": "naver_similar"
+      },
+      {
+        "placeId": "51825151",
+        "name": "주시브로스 GFC점",
+        "category": "",
+        "rating": "",
+        "reviewCount": "",
+        "distance": "120m",
+        "url": "https://m.place.naver.com/place/51825151/home",
+        "source": "naver_similar"
+      },
+      {
+        "placeId": "1730160336",
+        "name": "샐러그릭 역삼점",
+        "category": "",
+        "rating": "",
+        "reviewCount": "",
+        "distance": "",
+        "url": "https://m.place.naver.com/place/1730160336/home",
+        "source": "naver_similar"
+      },
+      {
+        "placeId": "37162723",
+        "name": "스노우폭스 역삼 GFC점",
+        "category": "",
+        "rating": "",
+        "reviewCount": "",
+        "distance": "130m",
+        "url": "https://m.place.naver.com/place/37162723/home",
+        "source": "naver_similar"
+      },
+      {
+        "placeId": "1395784103",
+        "name": "렌위치 역삼GFC점",
+        "category": "",
+        "rating": "",
+        "reviewCount": "",
+        "distance": "120m",
+        "url": "https://m.place.naver.com/place/1395784103/home",
+        "source": "naver_similar"
+      },
+      {
+        "placeId": "1482175039",
+        "name": "써니테르",
+        "category": "",
+        "rating": "",
+        "reviewCount": "",
+        "distance": "210m",
+        "url": "https://m.place.naver.com/place/1482175039/home",
+        "source": "naver_similar"
+      }
+    ],
+    "diningcode": [
+      {
+        "rid": "Cc87FqrdJGhv",
+        "name": "프로티너 역삼역점",
+        "category": "",
+        "rating": "",
+        "distance": "118m",
+        "url": "https://www.diningcode.com/profile.php",
+        "source": "diningcode_similar"
+      },
+      {
+        "rid": "01xGkvn6ujhz",
+        "name": "렌위치 역삼GFC점",
+        "category": "",
+        "rating": "",
+        "distance": "118m",
+        "url": "https://www.diningcode.com/profile.php",
+        "source": "diningcode_similar"
+      },
+      {
+        "rid": "EZv5EV4YulEF",
+        "name": "주시브로스",
+        "category": "",
+        "rating": "",
+        "distance": "123m",
+        "url": "https://www.diningcode.com/profile.php",
+        "source": "diningcode_similar"
+      },
+      {
+        "rid": "YTwaoF4p2o1H",
+        "name": "올라포케 역삼점",
+        "category": "",
+        "rating": "",
+        "distance": "169m",
+        "url": "https://www.diningcode.com/profile.php",
+        "source": "diningcode_similar"
+      },
+      {
+        "rid": "waGQ6eN3KDqe",
+        "name": "밸런스포케 역삼점",
+        "category": "",
+        "rating": "",
+        "distance": "196m",
+        "url": "https://www.diningcode.com/profile.php",
+        "source": "diningcode_similar"
+      },
+      {
+        "rid": "xGuygDiD4FU4",
+        "name": "샐러디 역삼점",
+        "category": "",
+        "rating": "",
+        "distance": "215m",
+        "url": "https://www.diningcode.com/profile.php",
+        "source": "diningcode_similar"
+      },
+      {
+        "rid": "SCTZYLy97AZk",
+        "name": "샐러디 역삼역점",
+        "category": "",
+        "rating": "",
+        "distance": "269m",
+        "url": "https://www.diningcode.com/profile.php",
+        "source": "diningcode_similar"
+      },
+      {
+        "rid": "tvIwrrMKt6sE",
+        "name": "알라보 강남점",
+        "category": "",
+        "rating": "",
+        "distance": "311m",
+        "url": "https://www.diningcode.com/profile.php",
+        "source": "diningcode_similar"
+      },
+      {
+        "rid": "WNRNwiEkfh1p",
+        "name": "온히어 온샐러드앤포케",
+        "category": "",
+        "rating": "",
+        "distance": "342m",
+        "url": "https://www.diningcode.com/profile.php",
+        "source": "diningcode_similar"
+      },
+      {
+        "rid": "Q0tGaaLF7QZR",
+        "name": "슬로우캘리 역삼점",
+        "category": "",
+        "rating": "",
+        "distance": "355m",
+        "url": "https://www.diningcode.com/profile.php",
+        "source": "diningcode_similar"
+      }
+    ]
+  }
+}

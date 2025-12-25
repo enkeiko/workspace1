@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>뉴스 업데이트 - 12:00</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+      color: #e0e0e0;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 50px;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header .date {
+      color: #888;
+      font-size: 14px;
+    }
+    .header .update-time {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 8px 20px;
+      background: rgba(96, 165, 250, 0.2);
+      border-radius: 20px;
+      font-size: 14px;
+      color: #60a5fa;
+    }
+    .section {
+      margin-bottom: 50px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    }
+    .section-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .section-icon.ai {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    }
+    .section-icon.biz {
+      background: linear-gradient(135deg, #10b981, #059669);
+    }
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .article-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    .article-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+    .article-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+    .article-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .article-title a:hover {
+      color: #60a5fa;
+    }
+    .article-summary {
+      color: #a0a0a0;
+      font-size: 14px;
+      margin-bottom: 15px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .article-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #666;
+    }
+    .article-source {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .article-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      padding: 4px 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      font-size: 11px;
+      color: #888;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+    .footer {
+      text-align: center;
+      padding: 30px;
+      color: #666;
+      font-size: 13px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 30px;
+    }
+    .footer a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>📰 오늘의 뉴스 업데이트</h1>
+      <p class="date">2025년 12월 5일 금요일</p>
+      <span class="update-time">⏰ 12:00 업데이트</span>
+    </header>
+    
+    <section class="section">
+      <div class="section-header">
+        <div class="section-icon ai">🔵</div>
+        <h2 class="section-title">AI · 바이브코딩 뉴스</h2>
+      </div>
+      
+    <article class="article-card">
+      <h3 class="article-title">
+        <a href="https://www.widedaily.com/news/articleView.html?idxno=284293" target="_blank" rel="noopener">
+          한미그룹 &quot;2030 매출 5조시대 연다&quot;…중장기 비전 발표
+        </a>
+      </h3>
+      <p class="article-summary">한미사이언스 계열사 JVM은 의약품 조제 자동화 장비 중심에서 로보틱스 기반의 신규 자동화 솔루션... 이를 위해 인공지능(AI), 바이오인포매틱스(BI), 오믹스(Omics) 등의 첨단 R&amp;D 인프라를 구축해 신규 타깃 발굴 및...</p>
+      <div class="article-meta">
+        <span class="article-source">
+          📰 네이버 뉴스
+        </span>
+        <div class="article-tags">
+          <span class="tag">#AI</span><span class="tag">#자동화</span><span class="tag">#매출</span>
+        </div>
+      </div>
+    </article>
+  
+    <article class="article-card">
+      <h3 class="article-title">
+        <a href="http://www.choicenews.co.kr/news/articleView.html?idxno=157735" target="_blank" rel="noopener">
+          KB국민은행, &#039;KB유니콘클럽&#039; 5기 성과공유회 개최
+        </a>
+      </h3>
+      <p class="article-summary">특히, 인공지능(AI)을 활용한 소상공인 BNPL(소액후불결제) 서비스를 제공하는 ㈜데일리페이는 신생기업임에도 연매출 25억원에 이르는 매출 성과와 후속 투자유치에 성공하며 빠른 성장성과 높은 잠재력을 입증했다....</p>
+      <div class="article-meta">
+        <span class="article-source">
+          📰 네이버 뉴스
+        </span>
+        <div class="article-tags">
+          <span class="tag">#AI</span><span class="tag">#자영업</span><span class="tag">#매출</span>
+        </div>
+      </div>
+    </article>
+  
+    <article class="article-card">
+      <h3 class="article-title">
+        <a href="http://www.bosa.co.kr/news/articleView.html?idxno=2264709" target="_blank" rel="noopener">
+          한미그룹, &#039;듀얼 모멘텀&#039; 전략…2030년 매출 5조원 목표
+        </a>
+      </h3>
+      <p class="article-summary">한미사이언스 계열사 JVM은 의약품 조제 자동화 장비 중심에서 로보틱스 기반의 신규 자동화 솔루션... 이를 위해 인공지능(AI), 바이오인포매틱스(BI), 오믹스(Omics) 등의 첨단 R&amp;D 인프라를 구축해 신규 타깃 발굴 및...</p>
+      <div class="article-meta">
+        <span class="article-source">
+          📰 네이버 뉴스
+        </span>
+        <div class="article-tags">
+          <span class="tag">#AI</span><span class="tag">#자동화</span><span class="tag">#매출</span>
+        </div>
+      </div>
+    </article>
+  
+    <article class="article-card">
+      <h3 class="article-title">
+        <a href="https://www.ngetnews.com/news/articleView.html?idxno=542627" target="_blank" rel="noopener">
+          &quot;2030년 매출 5조 목표&quot;…한미그룹, 중장기 비전 발표
+        </a>
+      </h3>
+      <p class="article-summary">한미사이언스 계열사 JVM은 의약품 조제 자동화 장비 중심에서 로보틱스 기반의 신규 자동화 솔루션... 이를 위해 인공지능(AI), 바이오인포매틱스(BI), 오믹스(Omics) 등의 첨단 R&amp;D 인프라를 구축해 신규 타깃 발굴 및...</p>
+      <div class="article-meta">
+        <span class="article-source">
+          📰 네이버 뉴스
+        </span>
+        <div class="article-tags">
+          <span class="tag">#AI</span><span class="tag">#자동화</span><span class="tag">#매출</span>
+        </div>
+      </div>
+    </article>
+  
+    <article class="article-card">
+      <h3 class="article-title">
+        <a href="http://www.enewstoday.co.kr/news/articleView.html?idxno=2364951" target="_blank" rel="noopener">
+          KB국민은행, &#039;KB유니콘클럽&#039; 성과공유회 개최
+        </a>
+      </h3>
+      <p class="article-summary">특히 인공지능(AI)를 활용한 소상공인 소액후불결제(BNPL) 서비스를 제공하는 데일리페이는 신생기업임에도 연매출 25억원에 이르는 매출 성과와 후속 투자유치에 성공하며 빠른 성장성과 높은 잠재력을 입증했다....</p>
+      <div class="article-meta">
+        <span class="article-source">
+          📰 네이버 뉴스
+        </span>
+        <div class="article-tags">
+          <span class="tag">#AI</span><span class="tag">#자영업</span><span class="tag">#매출</span>
+        </div>
+      </div>
+    </article>
+  
+    <article class="article-card">
+      <h3 class="article-title">
+        <a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=402937" target="_blank" rel="noopener">
+          핵심 기술 모두 자체 개발…큐리오시스, 빠른 시장 공급으로 승부
+        </a>
+      </h3>
+      <p class="article-summary">큐리오시스는 바이오엔지니어링과 자동화 제어 기술을 결합해 연구실 자동화(Lab Automation)를 구현할 수 있는... 뉴엔AI KB제32호스팩 엘에스스팩1호 하나35호스팩 한라캐스트 디비금융제14호스팩 삼익제약 싸이닉솔루션...</p>
+      <div class="article-meta">
+        <span class="article-source">
+          📰 네이버 뉴스
+        </span>
+        <div class="article-tags">
+          <span class="tag">#AI</span><span class="tag">#자동화</span>
+        </div>
+      </div>
+    </article>
+  
+    <article class="article-card">
+      <h3 class="article-title">
+        <a href="https://www.livesnews.com/news/article.html?no=57427" target="_blank" rel="noopener">
+          핏크닉, ‘실행 설계’ 교육 철학으로 부업 시장 선도...&quot;후기 잇따라&quot;
+        </a>
+      </h3>
+      <p class="article-summary">AI 실무 교육 플랫폼 핏크닉(Fitchnic)이 단순 정보 제공을 넘어 ‘실제 결과 창출’에 초점을 맞춘 ‘실행 설계’ 교육을 통해 온라인 부업 시장을 선도하고 있다고 밝혔다. 회사 측에 따르면 “그대로만 따라 했더니 매출이...</p>
+      <div class="article-meta">
+        <span class="article-source">
+          📰 네이버 뉴스
+        </span>
+        <div class="article-tags">
+          <span class="tag">#AI</span><span class="tag">#부업</span><span class="tag">#매출</span>
+        </div>
+      </div>
+    </article>
+  
+    <article class="article-card">
+      <h3 class="article-title">
+        <a href="https://www.ggilbo.com/news/articleView.html?idxno=1128458" target="_blank" rel="noopener">
+          로민, 진실화해위 조사 업무에 &#039;다큐먼트 AI 플랫폼&#039; 구축 완료
+        </a>
+      </h3>
+      <p class="article-summary">문서 AI의 활용 범위를 한층 넓힌 의미 있는 성과였다&quot;고 밝혔다. 이어 &quot;앞으로도 공공 기록물의 디지털 전환과 문서 자동화 확대에 기여하겠다&quot;고 말했다. 한편 로민의 솔루션은 특허청의 심판방식 자동화...</p>
+      <div class="article-meta">
+        <span class="article-source">
+          📰 네이버 뉴스
+        </span>
+        <div class="article-tags">
+          <span class="tag">#AI</span><span class="tag">#자동화</span>
+        </div>
+      </div>
+    </article>
+  
+    <article class="article-card">
+      <h3 class="article-title">
+        <a href="https://daily.hankooki.com/news/articleView.html?idxno=1305748" target="_blank" rel="noopener">
+          &quot;AI로 데브옵스·ITSM 바꾼다&quot;…플래티어, DT 인사이트 2026 성료
+        </a>
+      </h3>
+      <p class="article-summary">두 발표는 AI 기반 업무 자동화와 운영 효율화가 실제 데브옵스 및 IT 서비스 관리에 적용될 수 있는지에 대한 실질적 인사이트를 제공하며 참가자들의 높은 관심을 받았다. 장재웅 IDT 플래티어 사업부문장은...</p>
+      <div class="article-meta">
+        <span class="article-source">
+          📰 네이버 뉴스
+        </span>
+        <div class="article-tags">
+          <span class="tag">#AI</span><span class="tag">#자동화</span>
+        </div>
+      </div>
+    </article>
+  
+    <article class="article-card">
+      <h3 class="article-title">
+        <a href="http://www.thebigdata.co.kr/view.php?ud=20251205093327624002251a9c03_23" target="_blank" rel="noopener">
+          한미그룹, &#039;장기 뉴 비전&#039; 공개
+        </a>
+      </h3>
+      <p class="article-summary">한미사이언스 계열사 JVM은 의약품 조제 자동화 장비 중심에서 로보틱스 기반 신규 자동화 솔루션... 이를 위해 인공지능(AI), 바이오인포매틱스(BI), 오믹스(Omics) 등의 첨단 R&amp;D 인프라를 구축해 신규 대상 발굴과...</p>
+      <div class="article-meta">
+        <span class="article-source">
+          📰 네이버 뉴스
+        </span>
+        <div class="article-tags">
+          <span class="tag">#AI</span><span class="tag">#자동화</span>
+        </div>
+      </div>
+    </article>
+  
+    </section>
+    
+    <section class="section">
+      <div class="section-header">
+        <div class="section-icon biz">🟢</div>
+        <h2 class="section-title">자영업 · 네이버 플레이스 뉴스</h2>
+      </div>
+      
+    <article class="article-card">
+      <h3 class="article-title">
+        <a href="https://www.mediapen.com/news/view/1064017" target="_blank" rel="noopener">
+          생산적금융 집중하는 인뱅…개인사업자대출 성장세↑
+        </a>
+      </h3>
+      <p class="article-summary">이는 &#039;1분에 1명&#039;꼴로 자영업자·소상공인들이 카뱅의 개인사업자대출을 이용한 셈이다. 특히 20~40대의... 이와 함께 비금융 서비스의 일환으로 지난달 &#039;사장님 경영컨설팅&#039;을 출시해 창업준비, 매출확대, 비용관리...</p>
+      <div class="article-meta">
+        <span class="article-source">
+          📰 네이버 뉴스
+        </span>
+        <div class="article-tags">
+          <span class="tag">#자영업</span><span class="tag">#매출</span>
+        </div>
+      </div>
+    </article>
+  
+    <article class="article-card">
+      <h3 class="article-title">
+        <a href="http://news.lghellovision.net/news/articleView.html?idxno=528117" target="_blank" rel="noopener">
+          삼척시, &#039;소상공인 배달·택배비 지원&#039; 접수
+        </a>
+      </h3>
+      <p class="article-summary">지원금액은 최대 30만 원까지로 연 매출 3억 원 이하, 지난해 1월부터 현재까지 배달이나 택배 사용 실적이 있는 소상공인이 대상입니다. 지원은 예산소진 시까지로 &#039;소상공인배달택배비지원.kr&#039; 또는 &#039;소상공인24&#039;를 통해...</p>
+      <div class="article-meta">
+        <span class="article-source">
+          📰 네이버 뉴스
+        </span>
+        <div class="article-tags">
+          <span class="tag">#자영업</span><span class="tag">#매출</span>
+        </div>
+      </div>
+    </article>
+  
+    <article class="article-card">
+      <h3 class="article-title">
+        <a href="http://www.biztribune.co.kr/news/articleView.html?idxno=344899" target="_blank" rel="noopener">
+          [브리프]롯데유통 신세계백화점 현대백화점 이마트 롯데마트 CJ온스타일...
+        </a>
+      </h3>
+      <p class="article-summary">이마트 정양오 전략마케팅본부장은 &quot;이마트가 12월 고래잇 페스타 주말 행사로 장바구니 물가를 낮춘다&quot;며... 지난 9월에는 롯데월드 사업장을 방문한 고객이 네이버 플레이스에 리뷰를 남기면 기부금이 적립되는 &#039;굿...</p>
+      <div class="article-meta">
+        <span class="article-source">
+          📰 네이버 뉴스
+        </span>
+        <div class="article-tags">
+          <span class="tag">#네이버플레이스</span><span class="tag">#리뷰마케팅</span><span class="tag">#마케팅</span>
+        </div>
+      </div>
+    </article>
+  
+    <article class="article-card">
+      <h3 class="article-title">
+        <a href="https://gowithme.tistory.com/2028" target="_blank" rel="noopener">
+          남양주 별내동 미용실 오픈선물 좋은 가격과 후기 높은 제품 소개
+        </a>
+      </h3>
+      <p class="article-summary">중요한 마케팅 도구입니다. 고급스러운 선물은 미용실의 이미지와 서비스 품질을 높게 평가받도록... (네이버 뷰티 리뷰)&quot; , &quot;고급스러운 선물로 받아서 기분 좋았어요. (다음 카페 리뷰)&quot; 🎁 고객 감사 선물 세트...</p>
+      <div class="article-meta">
+        <span class="article-source">
+          📰 네이버 블로그
+        </span>
+        <div class="article-tags">
+          <span class="tag">#리뷰마케팅</span><span class="tag">#마케팅</span>
+        </div>
+      </div>
+    </article>
+  
+    </section>
+    
+    <footer class="footer">
+      <p>이 뉴스레터가 도움이 되셨다면 공유해주세요!</p>
+      <p style="margin-top: 10px;">
+        <a href="https://yourdomain.com">🔗 사이트 방문하기</a>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

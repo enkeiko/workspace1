@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reward Keyword Finder V2</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    h1 { text-align: center; margin-bottom: 20px; color: #2c3e50; }
+    .card { background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .card h2 { font-size: 16px; color: #666; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: 500; }
+    input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+    textarea { resize: vertical; min-height: 80px; }
+    button { background: #3498db; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+    button:hover { background: #2980b9; }
+    button:disabled { background: #bdc3c7; cursor: not-allowed; }
+    .btn-success { background: #27ae60; }
+    .btn-success:hover { background: #219a52; }
+    .btn-warning { background: #f39c12; }
+    .btn-warning:hover { background: #d68910; }
+    .progress { background: #ecf0f1; border-radius: 4px; height: 24px; margin: 15px 0; overflow: hidden; }
+    .progress-bar { background: #3498db; height: 100%; transition: width 0.3s; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; }
+    .results { margin-top: 20px; }
+    .result-item { padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .result-item:hover { background: #f8f9fa; }
+    .rank { font-weight: bold; color: #27ae60; }
+    .rank.top5 { color: #e74c3c; font-size: 18px; }
+    .tier { font-size: 11px; padding: 2px 6px; border-radius: 3px; margin-left: 8px; }
+    .tier.T1 { background: #e74c3c; color: white; }
+    .tier.T2 { background: #f39c12; color: white; }
+    .tier.T3 { background: #95a5a6; color: white; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: center; }
+    .stat-item { padding: 15px; background: #f8f9fa; border-radius: 4px; }
+    .stat-value { font-size: 24px; font-weight: bold; color: #3498db; }
+    .stat-label { font-size: 12px; color: #666; margin-top: 5px; }
+    .keyword-set { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    .keyword-category { background: #f8f9fa; padding: 10px; border-radius: 4px; }
+    .keyword-category h3 { font-size: 12px; color: #666; margin-bottom: 8px; }
+    .keyword-tag { display: inline-block; background: #3498db; color: white; padding: 2px 8px; border-radius: 3px; font-size: 12px; margin: 2px; }
+    .log { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto; }
+    .log-entry { margin: 2px 0; }
+    .log-entry.success { color: #2ecc71; }
+    .log-entry.error { color: #e74c3c; }
+    .log-entry.info { color: #3498db; }
+    .hidden { display: none; }
+    .flex { display: flex; gap: 10px; }
+    .flex-1 { flex: 1; }
+    .alert { padding: 15px; border-radius: 4px; margin-bottom: 15px; }
+    .alert-warning { background: #fcf8e3; border: 1px solid #f39c12; color: #8a6d3b; }
+    .alert-info { background: #d9edf7; border: 1px solid #3498db; color: #31708f; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Reward Keyword Finder V2</h1>
+
+    <!-- 입력 섹션 -->
+    <div class="card">
+      <h2>1. Place ID / URL 입력</h2>
+      <div class="flex">
+        <div class="form-group flex-1">
+          <label>Place ID 또는 URL</label>
+          <input type="text" id="placeInput" placeholder="예: 1234567890 또는 https://m.place.naver.com/restaurant/1234567890">
+        </div>
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button onclick="loadKeywords()" id="loadBtn">키워드 조회</button>
+        </div>
+      </div>
+      <!-- 크롤링 상태 표시 -->
+      <div id="crawlStatus" class="hidden">
+        <div class="alert alert-info">
+          <div id="crawlMessage">크롤링 중...</div>
+          <div class="log" id="crawlLog" style="margin-top: 10px; max-height: 100px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 키워드셋 표시 -->
+    <div class="card hidden" id="keywordSetCard">
+      <h2>2. 수집된 키워드 (5분류) - <span id="placeName"></span></h2>
+      <div class="keyword-set" id="keywordSet"></div>
+      <div style="margin-top: 15px; text-align: right;">
+        <button onclick="generateCombinations()">조합 생성</button>
+      </div>
+    </div>
+
+    <!-- 조합 결과 -->
+    <div class="card hidden" id="combinationsCard">
+      <h2>3. 생성된 조합</h2>
+      <div class="stats" id="combinationStats"></div>
+      <div style="margin-top: 15px; text-align: right;">
+        <button class="btn-success" onclick="startValidation()">순위 검증 시작</button>
+      </div>
+    </div>
+
+    <!-- 검증 진행 상황 -->
+    <div class="card hidden" id="progressCard">
+      <h2>4. 검증 진행 상황</h2>
+      <div class="progress">
+        <div class="progress-bar" id="progressBar" style="width: 0%">0%</div>
+      </div>
+      <div class="log" id="log"></div>
+    </div>
+
+    <!-- 결과 -->
+    <div class="card hidden" id="resultsCard">
+      <h2>5. 5위 이내 키워드 (Winners)</h2>
+      <div class="stats" id="resultStats"></div>
+      <div class="results" id="results"></div>
+      <div style="margin-top: 15px; text-align: right;">
+        <button onclick="exportResults()">결과 내보내기 (CSV)</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentPlaceId = '';
+    let currentKeywordSet = null;
+    let currentCombinations = [];
+    let winners = [];
+
+    // URL에서 Place ID 추출
+    function extractPlaceId(input) {
+      const match = input.match(/(\d{8,})/);
+      return match ? match[1] : input.trim();
+    }
+
+    // 크롤링 로그 추가
+    function addCrawlLog(message, type = '') {
+      const log = document.getElementById('crawlLog');
+      const entry = document.createElement('div');
+      entry.className = 'log-entry ' + type;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      log.appendChild(entry);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    // 크롤링 실행
+    async function crawlPlace(placeId) {
+      return new Promise((resolve, reject) => {
+        document.getElementById('crawlStatus').classList.remove('hidden');
+        document.getElementById('crawlLog').innerHTML = '';
+        document.getElementById('crawlMessage').textContent = `Place ID ${placeId} 크롤링 중...`;
+        document.getElementById('loadBtn').disabled = true;
+
+        addCrawlLog('SSE 연결 시작...', 'info');
+
+        // POST로 크롤링 시작
+        fetch(`/api/crawl/${placeId}`, { method: 'POST' })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}`);
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+
+            function read() {
+              reader.read().then(({ done, value }) => {
+                if (done) {
+                  document.getElementById('loadBtn').disabled = false;
+                  return;
+                }
+
+                const text = decoder.decode(value);
+                const lines = text.split('\n');
+
+                lines.forEach(line => {
+                  if (line.startsWith('data: ')) {
+                    try {
+                      const data = JSON.parse(line.slice(6));
+
+                      if (data.type === 'status') {
+                        addCrawlLog(data.message, 'info');
+                      } else if (data.type === 'complete') {
+                        addCrawlLog(`완료! ${data.name} (${data.category})`, 'success');
+                        document.getElementById('loadBtn').disabled = false;
+                        resolve(true);
+                      } else if (data.type === 'error') {
+                        addCrawlLog(`오류: ${data.message}`, 'error');
+                        if (data.stack) {
+                          addCrawlLog(`Stack: ${data.stack.split('\n')[0]}`, 'error');
+                        }
+                        document.getElementById('loadBtn').disabled = false;
+                        reject(new Error(data.message));
+                      }
+                    } catch (e) {
+                      console.log('Parse error:', e, line);
+                    }
+                  }
+                });
+
+                read();
+              });
+            }
+
+            read();
+          })
+          .catch(error => {
+            addCrawlLog(`연결 오류: ${error.message}`, 'error');
+            document.getElementById('loadBtn').disabled = false;
+            reject(error);
+          });
+      });
+    }
+
+    // 키워드 조회
+    async function loadKeywords() {
+      const input = document.getElementById('placeInput').value;
+      currentPlaceId = extractPlaceId(input);
+
+      if (!currentPlaceId) {
+        alert('Place ID를 입력해주세요.');
+        return;
+      }
+
+      // 카드 초기화
+      document.getElementById('keywordSetCard').classList.add('hidden');
+      document.getElementById('combinationsCard').classList.add('hidden');
+      document.getElementById('progressCard').classList.add('hidden');
+      document.getElementById('resultsCard').classList.add('hidden');
+      document.getElementById('crawlStatus').classList.add('hidden');
+
+      try {
+        const res = await fetch(`/api/keyword/${currentPlaceId}`);
+        const data = await res.json();
+
+        if (!res.ok) {
+          // 데이터 없음 - 크롤링 제안
+          const confirmCrawl = confirm(
+            `Place ID [${currentPlaceId}]의 크롤링 데이터가 없습니다.\n\n` +
+            `지금 크롤링을 실행할까요?\n` +
+            `(약 30초~1분 소요)`
+          );
+
+          if (confirmCrawl) {
+            try {
+              await crawlPlace(currentPlaceId);
+              // 크롤링 완료 후 다시 조회
+              await loadKeywords();
+            } catch (crawlError) {
+              alert('크롤링 실패: ' + crawlError.message);
+            }
+          }
+          return;
+        }
+
+        currentKeywordSet = data;
+        document.getElementById('placeName').textContent = data.name || currentPlaceId;
+        renderKeywordSet(currentKeywordSet);
+        document.getElementById('keywordSetCard').classList.remove('hidden');
+        document.getElementById('crawlStatus').classList.add('hidden');
+      } catch (error) {
+        alert('키워드를 불러올 수 없습니다: ' + error.message);
+      }
+    }
+
+    // 키워드셋 렌더링
+    function renderKeywordSet(set) {
+      const categories = ['CORE', 'LOCATION', 'MENU', 'ATTRIBUTE', 'SENTIMENT'];
+      const labels = { CORE: '업종', LOCATION: '지역', MENU: '메뉴', ATTRIBUTE: '속성', SENTIMENT: '감성' };
+
+      document.getElementById('keywordSet').innerHTML = categories.map(cat => `
+        <div class="keyword-category">
+          <h3>${labels[cat]} (${(set[cat] || []).length})</h3>
+          ${(set[cat] || []).slice(0, 10).map(k => `<span class="keyword-tag">${k.text || k}</span>`).join('')}
+          ${(set[cat] || []).length > 10 ? `<span style="font-size:11px;color:#999">+${(set[cat] || []).length - 10}개</span>` : ''}
+        </div>
+      `).join('');
+    }
+
+    // 조합 생성
+    async function generateCombinations() {
+      try {
+        const res = await fetch('/api/keyword/combine', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ placeId: currentPlaceId })
+        });
+
+        const data = await res.json();
+        currentCombinations = data.keywords;
+
+        document.getElementById('combinationStats').innerHTML = `
+          <div class="stat-item"><div class="stat-value">${data.total}</div><div class="stat-label">총 조합</div></div>
+          <div class="stat-item"><div class="stat-value">${data.byTier.T1}</div><div class="stat-label">T1 (필수)</div></div>
+          <div class="stat-item"><div class="stat-value">${data.byTier.T2}</div><div class="stat-label">T2 (권장)</div></div>
+          <div class="stat-item"><div class="stat-value">${data.byTier.T3}</div><div class="stat-label">T3 (선택)</div></div>
+        `;
+
+        document.getElementById('combinationsCard').classList.remove('hidden');
+      } catch (error) {
+        alert('조합 생성 실패: ' + error.message);
+      }
+    }
+
+    // 검증 시작 (SSE 스트리밍)
+    async function startValidation() {
+      document.getElementById('progressCard').classList.remove('hidden');
+      document.getElementById('resultsCard').classList.add('hidden');
+
+      const log = document.getElementById('log');
+      const progressBar = document.getElementById('progressBar');
+      log.innerHTML = '';
+      winners = [];
+
+      const eventSource = new EventSource(`/api/validate/stream/${currentPlaceId}?keywords=${encodeURIComponent(JSON.stringify(currentCombinations))}`);
+
+      eventSource.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        if (data.type === 'start') {
+          addLog(`검증 시작: ${data.total}개 키워드`);
+        } else if (data.type === 'progress') {
+          progressBar.style.width = data.percent + '%';
+          progressBar.textContent = `${data.current}/${data.total} (${data.percent}%)`;
+        } else if (data.type === 'winner') {
+          winners.push(data);
+          addLog(`[FOUND] "${data.keyword}" - ${data.rank}위`, 'success');
+        } else if (data.type === 'complete') {
+          eventSource.close();
+          addLog(`완료! 5위 이내: ${data.winners.length}개`);
+          showResults(data);
+        } else if (data.type === 'error') {
+          addLog(`오류: ${data.error}`, 'error');
+          eventSource.close();
+        }
+      };
+
+      eventSource.onerror = () => {
+        eventSource.close();
+        addLog('연결 종료', 'error');
+      };
+    }
+
+    // 로그 추가
+    function addLog(message, type = '') {
+      const log = document.getElementById('log');
+      const entry = document.createElement('div');
+      entry.className = 'log-entry ' + type;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      log.appendChild(entry);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    // 결과 표시
+    function showResults(data) {
+      document.getElementById('resultsCard').classList.remove('hidden');
+
+      document.getElementById('resultStats').innerHTML = `
+        <div class="stat-item"><div class="stat-value">${data.total}</div><div class="stat-label">검증 완료</div></div>
+        <div class="stat-item"><div class="stat-value" style="color:#e74c3c">${data.winners.length}</div><div class="stat-label">5위 이내</div></div>
+        <div class="stat-item"><div class="stat-value">${data.winners.filter(w => w.rank === 1).length}</div><div class="stat-label">1위</div></div>
+        <div class="stat-item"><div class="stat-value">${Math.round((data.winners.length / data.total) * 100)}%</div><div class="stat-label">성공률</div></div>
+      `;
+
+      document.getElementById('results').innerHTML = data.winners.map(w => `
+        <div class="result-item">
+          <div>
+            <span class="rank ${w.rank <= 5 ? 'top5' : ''}">${w.rank}위</span>
+            ${w.keyword}
+            <span class="tier ${w.tier}">${w.tier}</span>
+          </div>
+          <div style="font-size:12px;color:#999">${w.fromCache ? '(캐시)' : ''}</div>
+        </div>
+      `).join('');
+
+      winners = data.winners;
+    }
+
+    // CSV 내보내기
+    function exportResults() {
+      if (winners.length === 0) {
+        alert('내보낼 결과가 없습니다.');
+        return;
+      }
+
+      const csv = 'Rank,Keyword,Tier\n' + winners.map(w => `${w.rank},"${w.keyword}",${w.tier}`).join('\n');
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `keywords_${currentPlaceId}_${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+    }
+  </script>
+</body>
+</html>

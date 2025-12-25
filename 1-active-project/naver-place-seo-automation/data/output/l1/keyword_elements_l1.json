@@ -1,0 +1,65 @@
+{
+  "1768171911": {
+    "core_elements": {
+      "category": "닭갈비",
+      "brand_name": "히도 강남점"
+    },
+    "region_elements": {
+      "si": "서울특별시",
+      "gu": "강남구",
+      "dong": null,
+      "station": "강남역"
+    },
+    "menu_elements": {
+      "all_menus": [
+        "철판닭갈비",
+        "치즈닭갈비",
+        "닭갈비정식",
+        "막국수"
+      ],
+      "recommended": [
+        "철판닭갈비",
+        "치즈닭갈비"
+      ],
+      "representative": [
+        "철판닭갈비",
+        "치즈닭갈비"
+      ]
+    },
+    "attribute_elements": {
+      "facilities": [
+        "주차가능",
+        "단체석",
+        "포장가능",
+        "예약가능"
+      ],
+      "specialties": [
+        "런치 세트 인기, 직장인 고객 많음"
+      ]
+    },
+    "current_keywords": {
+      "primary_keywords": [
+        "강남 닭갈비",
+        "히도 강남점"
+      ],
+      "secondary_keywords": [
+        "강남 맛집",
+        "닭갈비 맛집"
+      ],
+      "last_updated": "2025-09-15",
+      "performance": {
+        "avg_monthly_searches": 5000,
+        "avg_click_rate": 0.15,
+        "conversion_rate": 0.05
+      },
+      "notes": "9월 이후 '히도 강남점' 검색량 감소 추세"
+    },
+    "business_context": {
+      "target_keywords": [
+        "닭갈비",
+        "강남맛집"
+      ],
+      "goals": "회식 고객 확대, 저녁 매출 증대"
+    }
+  }
+}

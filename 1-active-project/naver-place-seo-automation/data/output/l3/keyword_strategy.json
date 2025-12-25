@@ -1,0 +1,308 @@
+{
+  "timestamp": "2025-11-12T08:15:52.007Z",
+  "places": {
+    "1768171911": {
+      "place_id": "1768171911",
+      "timestamp": "2025-11-12T08:15:52.006Z",
+      "primary_keywords": [
+        {
+          "keyword": "포장 닭갈비",
+          "type": "short_term",
+          "search_volume": 6981,
+          "competition": "low",
+          "composite_score": 72.92,
+          "rationale": "높은 검색량, 낮은 경쟁도로 상위 노출 유리, 단기 효과 기대, 핵심 키워드로 우선 최적화 권장"
+        },
+        {
+          "keyword": "강남역 닭갈비",
+          "type": "short_term",
+          "search_volume": 6466,
+          "competition": "low",
+          "composite_score": 70.86,
+          "rationale": "높은 검색량, 낮은 경쟁도로 상위 노출 유리, 단기 효과 기대, 핵심 키워드로 우선 최적화 권장"
+        },
+        {
+          "keyword": "강남구 철판닭갈비",
+          "type": "short_term",
+          "search_volume": 6004,
+          "competition": "low",
+          "composite_score": 69.02,
+          "rationale": "높은 검색량, 낮은 경쟁도로 상위 노출 유리, 단기 효과 기대, 핵심 키워드로 우선 최적화 권장"
+        },
+        {
+          "keyword": "서울특별시 닭갈비 철판닭갈비",
+          "type": "long_term",
+          "search_volume": 8229,
+          "competition": "medium",
+          "composite_score": 65.92,
+          "rationale": "높은 검색량, 적정 경쟁도, 장기 안정적 유입, 핵심 키워드로 우선 최적화 권장"
+        },
+        {
+          "keyword": "서울특별시 닭갈비",
+          "type": "short_term",
+          "search_volume": 8103,
+          "competition": "medium",
+          "composite_score": 65.41,
+          "rationale": "높은 검색량, 적정 경쟁도, 단기 효과 기대, 핵심 키워드로 우선 최적화 권장"
+        }
+      ],
+      "secondary_keywords": [
+        {
+          "keyword": "강남구 닭갈비",
+          "type": "short_term",
+          "search_volume": 8000,
+          "competition": "medium",
+          "composite_score": 65,
+          "rationale": "높은 검색량, 적정 경쟁도, 단기 효과 기대, 보조 키워드로 추가 노출 확보"
+        },
+        {
+          "keyword": "단체석 닭갈비",
+          "type": "short_term",
+          "search_volume": 7396,
+          "competition": "medium",
+          "composite_score": 62.58,
+          "rationale": "높은 검색량, 적정 경쟁도, 단기 효과 기대, 보조 키워드로 추가 노출 확보"
+        },
+        {
+          "keyword": "주차 닭갈비",
+          "type": "short_term",
+          "search_volume": 9390,
+          "competition": "high",
+          "composite_score": 61.56,
+          "rationale": "높은 검색량, 높은 경쟁도지만 전략적 가치, 단기 효과 기대, 보조 키워드로 추가 노출 확보"
+        },
+        {
+          "keyword": "히도 강남점 닭갈비",
+          "type": "long_term",
+          "search_volume": 6882,
+          "competition": "medium",
+          "composite_score": 60.53,
+          "rationale": "높은 검색량, 적정 경쟁도, 장기 안정적 유입, 보조 키워드로 추가 노출 확보"
+        },
+        {
+          "keyword": "강남역 닭갈비 철판닭갈비",
+          "type": "long_term",
+          "search_volume": 3806,
+          "competition": "low",
+          "composite_score": 60.22,
+          "rationale": "중간 검색량, 낮은 경쟁도로 상위 노출 유리, 장기 안정적 유입, 보조 키워드로 추가 노출 확보"
+        },
+        {
+          "keyword": "강남구 닭갈비 철판닭갈비",
+          "type": "long_term",
+          "search_volume": 4996,
+          "competition": "medium",
+          "composite_score": 52.98,
+          "rationale": "중간 검색량, 적정 경쟁도, 장기 안정적 유입, 보조 키워드로 추가 노출 확보"
+        },
+        {
+          "keyword": "강남구 치즈닭갈비",
+          "type": "short_term",
+          "search_volume": 1872,
+          "competition": "low",
+          "composite_score": 52.49,
+          "rationale": "중간 검색량, 낮은 경쟁도로 상위 노출 유리, 단기 효과 기대, 보조 키워드로 추가 노출 확보"
+        },
+        {
+          "keyword": "닭갈비 철판닭갈비",
+          "type": "short_term",
+          "search_volume": 7048,
+          "competition": "high",
+          "composite_score": 52.19,
+          "rationale": "높은 검색량, 높은 경쟁도지만 전략적 가치, 단기 효과 기대, 보조 키워드로 추가 노출 확보"
+        },
+        {
+          "keyword": "강남역 치즈닭갈비",
+          "type": "short_term",
+          "search_volume": 1717,
+          "competition": "low",
+          "composite_score": 51.87,
+          "rationale": "중간 검색량, 낮은 경쟁도로 상위 노출 유리, 단기 효과 기대, 보조 키워드로 추가 노출 확보"
+        },
+        {
+          "keyword": "강남구 닭갈비 치즈닭갈비",
+          "type": "long_term",
+          "search_volume": 6919,
+          "competition": "high",
+          "composite_score": 51.68,
+          "rationale": "높은 검색량, 높은 경쟁도지만 전략적 가치, 장기 안정적 유입, 보조 키워드로 추가 노출 확보"
+        }
+      ],
+      "strategy": {
+        "focus": "short_term",
+        "approach": "단기 성과 중심: 검색량이 높은 키워드로 빠른 유입 확대",
+        "expected_impact": "중간: 점진적인 검색 노출 개선 및 유입 증가 예상",
+        "metrics": {
+          "avg_search_volume": 6254,
+          "avg_composite_score": 61.02,
+          "total_keywords": 15
+        }
+      },
+      "application_guide": {
+        "overview": "네이버 플레이스에 키워드를 적용하여 검색 노출을 최적화하는 단계별 가이드입니다.",
+        "steps": [
+          {
+            "step": 1,
+            "title": "네이버 플레이스 관리자 접속",
+            "description": "https://m.place.naver.com/my/place 접속 후 로그인",
+            "action": "업체 선택"
+          },
+          {
+            "step": 2,
+            "title": "업체 정보 수정",
+            "description": "업체명, 카테고리, 소개 영역에 핵심 키워드 자연스럽게 포함",
+            "action": "Primary 키워드 활용: 포장 닭갈비, 강남역 닭갈비, 강남구 철판닭갈비",
+            "tips": [
+              "업체명은 변경 불가하므로 소개 문구에 키워드 배치",
+              "과도한 키워드 반복은 스팸으로 간주될 수 있으니 자연스럽게 작성"
+            ]
+          },
+          {
+            "step": 3,
+            "title": "메뉴 및 상품 정보 최적화",
+            "description": "메뉴명, 메뉴 설명에 지역+메뉴 키워드 포함",
+            "action": "Secondary 키워드 활용: 강남구 닭갈비, 단체석 닭갈비, 주차 닭갈비",
+            "tips": [
+              "대표 메뉴에 키워드 집중 배치",
+              "가격, 설명란을 적극 활용"
+            ]
+          },
+          {
+            "step": 4,
+            "title": "사진 및 게시글 업로드",
+            "description": "게시글 제목과 본문에 키워드 자연스럽게 포함",
+            "action": "주 1-2회 정기적으로 게시글 업로드 (키워드 활용)",
+            "tips": [
+              "사진 설명란에도 키워드 포함",
+              "이벤트, 신메뉴 소식에 키워드 활용"
+            ]
+          },
+          {
+            "step": 5,
+            "title": "리뷰 답글에 키워드 활용",
+            "description": "고객 리뷰에 답글 작성 시 키워드 자연스럽게 포함",
+            "action": "긍정적 리뷰에 감사 인사와 함께 키워드 언급",
+            "tips": [
+              "예: \"강남역 닭갈비 맛집으로 찾아주셔서 감사합니다\"",
+              "부정적 리뷰에도 정중하게 대응하며 개선 의지 표현"
+            ]
+          },
+          {
+            "step": 6,
+            "title": "효과 모니터링",
+            "description": "2-4주 후 네이버 플레이스 통계에서 검색 유입 확인",
+            "action": "검색 키워드 유입 분석 및 추가 최적화",
+            "tips": [
+              "유입이 높은 키워드는 더 강조",
+              "유입이 낮은 키워드는 교체 검토"
+            ]
+          }
+        ],
+        "primary_keywords": [
+          {
+            "keyword": "포장 닭갈비",
+            "usage": "업체 소개, 메뉴명, 게시글 제목에 우선 사용",
+            "frequency": "주 2-3회 노출"
+          },
+          {
+            "keyword": "강남역 닭갈비",
+            "usage": "업체 소개, 메뉴명, 게시글 제목에 우선 사용",
+            "frequency": "주 2-3회 노출"
+          },
+          {
+            "keyword": "강남구 철판닭갈비",
+            "usage": "업체 소개, 메뉴명, 게시글 제목에 우선 사용",
+            "frequency": "주 2-3회 노출"
+          },
+          {
+            "keyword": "서울특별시 닭갈비 철판닭갈비",
+            "usage": "업체 소개, 메뉴명, 게시글 제목에 우선 사용",
+            "frequency": "주 2-3회 노출"
+          },
+          {
+            "keyword": "서울특별시 닭갈비",
+            "usage": "업체 소개, 메뉴명, 게시글 제목에 우선 사용",
+            "frequency": "주 2-3회 노출"
+          }
+        ],
+        "secondary_keywords": [
+          {
+            "keyword": "강남구 닭갈비",
+            "usage": "메뉴 설명, 게시글 본문, 리뷰 답글에 사용",
+            "frequency": "주 1-2회 노출"
+          },
+          {
+            "keyword": "단체석 닭갈비",
+            "usage": "메뉴 설명, 게시글 본문, 리뷰 답글에 사용",
+            "frequency": "주 1-2회 노출"
+          },
+          {
+            "keyword": "주차 닭갈비",
+            "usage": "메뉴 설명, 게시글 본문, 리뷰 답글에 사용",
+            "frequency": "주 1-2회 노출"
+          },
+          {
+            "keyword": "히도 강남점 닭갈비",
+            "usage": "메뉴 설명, 게시글 본문, 리뷰 답글에 사용",
+            "frequency": "주 1-2회 노출"
+          },
+          {
+            "keyword": "강남역 닭갈비 철판닭갈비",
+            "usage": "메뉴 설명, 게시글 본문, 리뷰 답글에 사용",
+            "frequency": "주 1-2회 노출"
+          },
+          {
+            "keyword": "강남구 닭갈비 철판닭갈비",
+            "usage": "메뉴 설명, 게시글 본문, 리뷰 답글에 사용",
+            "frequency": "주 1-2회 노출"
+          },
+          {
+            "keyword": "강남구 치즈닭갈비",
+            "usage": "메뉴 설명, 게시글 본문, 리뷰 답글에 사용",
+            "frequency": "주 1-2회 노출"
+          },
+          {
+            "keyword": "닭갈비 철판닭갈비",
+            "usage": "메뉴 설명, 게시글 본문, 리뷰 답글에 사용",
+            "frequency": "주 1-2회 노출"
+          },
+          {
+            "keyword": "강남역 치즈닭갈비",
+            "usage": "메뉴 설명, 게시글 본문, 리뷰 답글에 사용",
+            "frequency": "주 1-2회 노출"
+          },
+          {
+            "keyword": "강남구 닭갈비 치즈닭갈비",
+            "usage": "메뉴 설명, 게시글 본문, 리뷰 답글에 사용",
+            "frequency": "주 1-2회 노출"
+          }
+        ],
+        "warnings": [
+          "키워드 스터핑(과도한 반복)은 네이버 검색 품질 정책 위반",
+          "허위 정보나 과장된 표현은 신고 및 제재 대상",
+          "업체와 무관한 키워드 사용 금지",
+          "경쟁사 브랜드명 무단 사용 금지"
+        ],
+        "expected_timeline": {
+          "1-2주": "초기 키워드 인덱싱 시작",
+          "2-4주": "검색 노출 증가 시작",
+          "1-2개월": "유입 안정화 및 효과 측정",
+          "3개월+": "장기 전략 평가 및 키워드 조정"
+        }
+      },
+      "metadata": {
+        "total_candidates_analyzed": 19,
+        "primary_count": 5,
+        "secondary_count": 10,
+        "avg_primary_score": 68.83,
+        "avg_secondary_score": 57.11
+      }
+    }
+  },
+  "statistics": {
+    "total_places": 1,
+    "successful": 1,
+    "failed": 0
+  },
+  "errors": []
+}

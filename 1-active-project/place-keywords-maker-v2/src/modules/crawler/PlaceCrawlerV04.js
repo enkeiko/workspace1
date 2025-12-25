@@ -1,0 +1,2176 @@
+/**
+ * PlaceCrawler v0.4 - 네이버 플레이스 데이터 크롤러 (랭킹 피처 확장)
+ *
+ * v0.4 신규 기능:
+ * - categoryCodeList, gdid 수집
+ * - votedKeywords (GraphQL 보조)
+ * - visitCategories, visitorReviewStats
+ * - isTableOrder, pickup, bookingBusinessId
+ * - breakTime, lastOrder
+ */
+
+import puppeteer from 'puppeteer';
+import path from 'path';
+import { CircuitBreaker } from '../../utils/CircuitBreaker.js';
+import { exponentialBackoff } from '../../utils/retry.js';
+import { logger } from '../../utils/logger.js';
+import { GraphQLFetcher } from './GraphQLFetcher.js';
+import { RankFeatureParser } from '../parser/RankFeatureParser.js';
+import { DataMerger } from '../merger/DataMerger.js';
+import { SearchRankCrawler } from './SearchRankCrawler.js';
+import { CompetitorCollector } from './CompetitorCollector.js';
+import { getCategoryMapper } from '../../utils/CategoryMapper.js';
+
+export class PlaceCrawlerV04 {
+  constructor(config = {}) {
+    this.config = {
+      timeout: config.timeout || 30000,
+      headless: config.headless !== false,
+      userAgent: config.userAgent || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      retryAttempts: config.retryAttempts || 3,
+      retryDelay: config.retryDelay || 2000,
+      headlessNew: config.headlessNew === true || process.env.PPTR_HEADLESS_NEW === '1',
+      executablePath: config.executablePath || process.env.PUPPETEER_EXECUTABLE_PATH || process.env.CHROME_PATH || process.env.EDGE_PATH || '',
+      userDataDir: config.userDataDir || path.join(process.cwd(), 'data', 'cache', 'puppeteer-profile'),
+      enableGraphQL: config.enableGraphQL !== false, // GraphQL 수집 활성화
+    };
+
+    this.browser = null;
+    this.circuitBreaker = new CircuitBreaker({
+      failureThreshold: 5,
+      resetTimeout: 60000,
+    });
+
+    // v0.4 모듈
+    this.graphqlFetcher = new GraphQLFetcher(config.graphql);
+    this.rankFeatureParser = new RankFeatureParser();
+    this.dataMerger = new DataMerger(config.merger);
+  }
+
+  /**
+   * 브라우저 초기화
+   */
+  async initialize() {
+    try {
+      const launchOptions = {
+        headless: 'new',  // 항상 new headless 모드 사용
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-gpu',
+        ],
+        // userDataDir 제거 - 캐시 문제 방지
+      };
+      if (this.config.executablePath) {
+        launchOptions.executablePath = this.config.executablePath;
+      }
+      this.browser = await puppeteer.launch(launchOptions);
+      logger.info('PlaceCrawler v0.4 initialized successfully');
+    } catch (error) {
+      logger.error('Failed to initialize crawler:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 단일 매장 데이터 크롤링 (v0.4)
+   * @param {string} placeId - 네이버 플레이스 ID
+   * @returns {Promise<Object>} 크롤링된 매장 데이터
+   */
+  async crawlPlace(placeId) {
+    return this.circuitBreaker.execute(async () => {
+      return exponentialBackoff(
+        async () => this._crawlPlaceV04(placeId),
+        this.config.retryAttempts,
+        this.config.retryDelay
+      );
+    });
+  }
+
+  /**
+   * v0.4 크롤링 로직 - GraphQL 네트워크 캡처 방식
+   * @private
+   */
+  async _crawlPlaceV04(placeId) {
+    const page = await this.browser.newPage();
+    const graphqlResponses = [];
+
+    try {
+      await page.setUserAgent(this.config.userAgent);
+
+      // GraphQL 응답 캡처를 위한 Promise 배열
+      const responsePromises = [];
+
+      // GraphQL API로 직접 place 상세 정보 요청 (기본 정보, 메뉴, 키워드 등)
+      // pcmap.place.naver.com에서 직접 GraphQL 응답 캡처
+      const directData = await this._fetchPlaceDetailDirect(page, placeId);
+
+      // 빈 parsedData 생성 (directData로 모두 채울 것)
+      const parsedData = {
+        basic: {
+          id: placeId,
+          name: '',
+          category: '',
+          address: {},
+          phone: '',
+          description: '',
+          openingHours: '',
+          homepage: '',
+          tags: [],
+          seoKeywords: [], // SEO 대표 키워드
+          sns: { instagram: '', facebook: '', blog: '', youtube: '', twitter: '' }, // SNS 링크
+          url: `https://m.place.naver.com/restaurant/${placeId}/home` // 플레이스 URL 추가
+        },
+        menus: [],
+        reviewStats: { total: 0, visitor: 0, blog: 0, average: 0 },
+        blogReviews: [], // 블로그 리뷰
+        reviewSummary: { keywords: [], positive: [], negative: [] },
+        images: [],
+        facilities: [],
+        payments: [],
+        categories: [], // 카테고리 코드 + 명칭 (2025-11-27)
+        categoryCodeList: [], // 레거시 호환용
+        categoryHierarchy: '', // 카테고리 계층 구조 (2025-12-05)
+        categoryType: 'TYPE_A', // TYPE_A: 서비스업, TYPE_B: 음식점 (2025-12-05)
+        mappedCategoryCodes: [], // 매핑된 카테고리 코드 (2025-12-05)
+        gdid: { raw: null, type: null, placeId: null, isValid: false },
+        votedKeywords: [],
+        representativeKeywords: [], // 대표 키워드 (Apollo State에서 추출)
+        visitCategories: [],
+        visitorReviewStats: { total: 0, withPhoto: 0, withContent: 0, averageScore: 0, imageReviewCount: 0 },
+        blogCafeReviewCount: 0,
+        visitorReviewItems: [],
+        reviewThemes: [],
+        reviewMenus: [],
+        orderOptions: { isTableOrder: false, pickup: false, delivery: false, bookingBusinessId: null, options: [] },
+        operationTime: { breakTime: [], lastOrder: null, holiday: null },
+        // 추가 데이터 (2025-11-27)
+        directions: { parking: '', publicTransit: '', walking: '', car: '', additionalInfo: '' },
+        notices: [],
+        detailedIntro: '',
+        placeNotices: [],
+        aiBriefing: null,
+        externalData: {},
+        competitors: { naver: [], diningcode: [] },
+        naverServices: { // 네이버 서비스
+          booking: { enabled: false, businessId: null, url: null },
+          smartCall: { enabled: false, description: '' },
+          smartOrder: { enabled: false, hasTableOrder: false, hasPickup: false, hasDelivery: false },
+          placePlus: { enabled: false },
+          naverPay: { enabled: false }
+        },
+      };
+
+      // 직접 요청 데이터로 기본 정보 보완
+      if (directData.basic.name) parsedData.basic.name = directData.basic.name;
+      if (directData.basic.category) parsedData.basic.category = directData.basic.category;
+      if (directData.basic.address?.road) parsedData.basic.address = directData.basic.address;
+      if (directData.basic.phone) parsedData.basic.phone = directData.basic.phone;
+      if (directData.basic.openingHours) parsedData.basic.openingHours = directData.basic.openingHours;
+      if (directData.basic.homepage) parsedData.basic.homepage = directData.basic.homepage;
+      if (directData.basic.description) parsedData.basic.description = directData.basic.description;
+      if (directData.basic.seoKeywords && directData.basic.seoKeywords.length > 0) {
+        parsedData.basic.seoKeywords = directData.basic.seoKeywords;
+      }
+      if (directData.basic.sns) {
+        parsedData.basic.sns = directData.basic.sns;
+      }
+
+      // 네이버 서비스
+      if (directData.naverServices) {
+        parsedData.naverServices = directData.naverServices;
+      }
+
+      // 메뉴 데이터
+      if (directData.menus.length > 0) parsedData.menus = directData.menus;
+
+      // 랭킹 데이터
+      if (directData.categories && directData.categories.length > 0) {
+        parsedData.categories = directData.categories;
+        parsedData.categoryCodeList = directData.categories.map(c => c.code); // 레거시 호환
+      } else if (directData.categoryCodeList && directData.categoryCodeList.length > 0) {
+        parsedData.categoryCodeList = directData.categoryCodeList;
+      }
+
+      // 카테고리 매핑 데이터 (2025-12-05)
+      if (directData.categoryHierarchy) parsedData.categoryHierarchy = directData.categoryHierarchy;
+      if (directData.categoryType) parsedData.categoryType = directData.categoryType;
+      if (directData.mappedCategoryCodes && directData.mappedCategoryCodes.length > 0) {
+        parsedData.mappedCategoryCodes = directData.mappedCategoryCodes;
+      }
+
+      if (directData.gdid.isValid) parsedData.gdid = directData.gdid;
+      if (directData.votedKeywords.length > 0) parsedData.votedKeywords = directData.votedKeywords;
+      if (directData.representativeKeywords && directData.representativeKeywords.length > 0) {
+        parsedData.representativeKeywords = directData.representativeKeywords;
+      }
+
+      // 주문/운영 옵션
+      if (directData.orderOptions.bookingBusinessId) parsedData.orderOptions = directData.orderOptions;
+      if (directData.operationTime.lastOrder) parsedData.operationTime = directData.operationTime;
+
+      // 이미지, 편의시설, 결제수단
+      if (directData.images.length > 0) parsedData.images = directData.images;
+      if (directData.facilities.length > 0) parsedData.facilities = directData.facilities;
+      if (directData.payments.length > 0) parsedData.payments = directData.payments;
+
+      // visitorReviewItems, reviewThemes, reviewMenus, blogReviews
+      if (directData.visitorReviewItems && directData.visitorReviewItems.length > 0) {
+        parsedData.visitorReviewItems = directData.visitorReviewItems;
+      }
+      if (directData.reviewThemes && directData.reviewThemes.length > 0) {
+        parsedData.reviewThemes = directData.reviewThemes;
+      }
+      if (directData.reviewMenus && directData.reviewMenus.length > 0) {
+        parsedData.reviewMenus = directData.reviewMenus;
+      }
+      if (directData.blogReviews && directData.blogReviews.length > 0) {
+        parsedData.blogReviews = directData.blogReviews;
+      }
+
+      // 추가 데이터 (2025-11-27)
+      if (directData.directions) parsedData.directions = directData.directions;
+      if (directData.notices && directData.notices.length > 0) parsedData.notices = directData.notices;
+      if (directData.detailedIntro) parsedData.detailedIntro = directData.detailedIntro;
+      if (directData.placeNotices && directData.placeNotices.length > 0) parsedData.placeNotices = directData.placeNotices;
+      if (directData.aiBriefing) parsedData.aiBriefing = directData.aiBriefing;
+      if (directData.externalData) parsedData.externalData = directData.externalData;
+      if (directData.competitors) parsedData.competitors = directData.competitors;
+
+      // DOM에서 기본 정보 추출 (백업용)
+      const domData = await this._extractFromDOM(page, placeId);
+
+      // DOM 데이터로 기본 정보 보완
+      if (domData.name) parsedData.basic.name = domData.name;
+      if (domData.category) parsedData.basic.category = domData.category;
+      if (domData.address) parsedData.basic.address = { road: domData.address, jibun: '', detail: '' };
+      if (domData.phone) parsedData.basic.phone = domData.phone;
+      if (domData.openingHours) parsedData.basic.openingHours = domData.openingHours;
+
+      // 기본 정보 구성
+      const placeData = {
+        placeId,
+        crawledAt: new Date().toISOString(),
+        basic: parsedData.basic,
+        menus: parsedData.menus,
+        reviews: {
+          stats: parsedData.reviewStats,
+          blogReviews: parsedData.blogReviews,
+          summary: parsedData.reviewSummary,
+        },
+        images: parsedData.images,
+        facilities: parsedData.facilities,
+        payments: parsedData.payments,
+        categories: parsedData.categories, // 카테고리 코드 + 명칭 (2025-11-27)
+        categoryHierarchy: parsedData.categoryHierarchy || '', // 카테고리 계층 구조 (2025-12-05)
+        categoryType: parsedData.categoryType || 'TYPE_A', // TYPE_A: 서비스업, TYPE_B: 음식점 (2025-12-05)
+        mappedCategoryCodes: parsedData.mappedCategoryCodes || [], // 매핑된 카테고리 코드 (2025-12-05)
+        ranking: {
+          categoryCodeList: parsedData.categoryCodeList,
+          gdid: parsedData.gdid,
+          votedKeywords: parsedData.votedKeywords,
+          representativeKeywords: parsedData.representativeKeywords || [], // 대표 키워드 (Apollo State)
+          visitCategories: parsedData.visitCategories,
+        },
+        reviewStats: {
+          visitor: parsedData.visitorReviewStats,
+          blogCafe: parsedData.blogCafeReviewCount,
+        },
+        visitorReviewItems: parsedData.visitorReviewItems,
+        reviewThemes: parsedData.reviewThemes,
+        reviewMenus: parsedData.reviewMenus,
+        orderOptions: parsedData.orderOptions,
+        operationTime: parsedData.operationTime,
+        // 추가 데이터 (2025-11-27)
+        directions: parsedData.directions,
+        notices: parsedData.notices,
+        detailedIntro: parsedData.detailedIntro,
+        placeNotices: parsedData.placeNotices,
+        // AI 브리핑 및 외부 연동 데이터 (2025-11-27)
+        aiBriefing: parsedData.aiBriefing || null,
+        externalData: parsedData.externalData || null,
+        competitors: parsedData.competitors || { naver: [], diningcode: [] },
+        // 네이버 서비스 (2025-12-05)
+        naverServices: parsedData.naverServices || {
+          booking: { enabled: false, businessId: null, url: null },
+          smartCall: { enabled: false, description: '' },
+          smartOrder: { enabled: false, hasTableOrder: false, hasPickup: false, hasDelivery: false },
+          placePlus: { enabled: false },
+          naverPay: { enabled: false }
+        },
+        _version: '0.4',
+        _graphqlResponseCount: graphqlResponses.length,
+      };
+
+      logger.info(`Successfully crawled place v0.4: ${placeId} (GraphQL: ${graphqlResponses.length})`);
+      return placeData;
+
+    } catch (error) {
+      logger.error(`Failed to crawl place ${placeId}:`, error);
+      throw error;
+    } finally {
+      await page.close();
+    }
+  }
+
+  /**
+   * GraphQL 응답 파싱
+   * @private
+   */
+  _parseGraphQLResponses(responses, placeId) {
+    const result = {
+      basic: { id: placeId, name: '', category: '', address: {}, phone: '', description: '', openingHours: '', homepage: '', tags: [] },
+      menus: [],
+      reviewStats: { total: 0, visitor: 0, blog: 0, average: 0 },
+      blogReviews: [],
+      reviewSummary: { keywords: [], positive: [], negative: [] },
+      images: [],
+      facilities: [],
+      payments: [],
+      categoryCodeList: [],
+      gdid: { raw: null, type: null, placeId: null, isValid: false },
+      votedKeywords: [],
+      visitCategories: [],
+      visitorReviewStats: { total: 0, withPhoto: 0, withContent: 0, averageScore: 0, imageReviewCount: 0 },
+      visitorReviewItems: [],
+      reviewThemes: [],
+      reviewMenus: [],
+      blogCafeReviewCount: 0,
+      orderOptions: { isTableOrder: false, pickup: false, delivery: false, bookingBusinessId: null, options: [] },
+      operationTime: { breakTime: [], lastOrder: null, holiday: null },
+    };
+
+    // 모든 GraphQL 응답을 순회하며 데이터 추출
+    for (const responseArray of responses) {
+      if (!Array.isArray(responseArray)) continue;
+
+      for (const item of responseArray) {
+        if (!item.data) continue;
+        const data = item.data;
+
+        // 기본 정보 (place)
+        if (data.place) {
+          const p = data.place;
+          result.basic.name = p.name || result.basic.name;
+          result.basic.category = p.category || result.basic.category;
+          result.basic.address = {
+            road: p.roadAddress || p.address || '',
+            jibun: p.jibunAddress || '',
+            detail: p.addressDetail || '',
+          };
+          result.basic.phone = p.virtualPhone || p.phone || result.basic.phone;
+          result.basic.description = p.description || p.intro || result.basic.description;
+          result.basic.openingHours = p.businessHours || result.basic.openingHours;
+          result.basic.homepage = p.homepage || p.homepageUrl || result.basic.homepage;
+          result.basic.tags = p.tags || result.basic.tags;
+
+          // 랭킹 데이터
+          if (p.categoryCodeList) result.categoryCodeList = p.categoryCodeList;
+          if (p.gdid) {
+            result.gdid = this._parseGdid(p.gdid);
+          }
+
+          // 주문 옵션
+          result.orderOptions.isTableOrder = p.isTableOrder || false;
+          result.orderOptions.pickup = p.pickup || p.isPickup || false;
+          result.orderOptions.delivery = p.delivery || p.isDelivery || false;
+          result.orderOptions.bookingBusinessId = p.bookingBusinessId || null;
+
+          // 운영 시간
+          if (p.businessHoursInfo) {
+            result.operationTime.breakTime = this._parseBreakTime(p.businessHoursInfo.breakTime);
+            result.operationTime.lastOrder = p.businessHoursInfo.lastOrder || null;
+            result.operationTime.holiday = p.businessHoursInfo.holiday || null;
+          }
+        }
+
+        // PlaceDetailBase
+        if (data.placeDetail) {
+          const pd = data.placeDetail;
+          result.basic.name = pd.name || result.basic.name;
+          result.basic.category = pd.category || result.basic.category;
+          result.basic.phone = pd.virtualPhone || pd.phone || result.basic.phone;
+          if (pd.categoryCodeList) result.categoryCodeList = pd.categoryCodeList;
+          if (pd.gdid) result.gdid = this._parseGdid(pd.gdid);
+        }
+
+        // 메뉴
+        if (data.menus || data.menu) {
+          const menus = data.menus?.items || data.menu?.items || [];
+          menus.forEach(m => {
+            result.menus.push({
+              id: m.id || '',
+              name: m.name || m.menuName || '',
+              price: this._parsePrice(m.price || m.priceText),
+              description: m.description || '',
+              image: m.imageUrl || m.image?.url || null,
+              isRecommended: m.isRecommended || m.isSignature || false,
+              isPopular: m.isPopular || false,
+            });
+          });
+        }
+
+        // 리뷰 통계 및 상세 리뷰
+        if (data.visitorReviews) {
+          const vr = data.visitorReviews;
+          result.reviewStats.visitor = vr.total || vr.totalCount || 0;
+          result.reviewStats.total = result.reviewStats.visitor;
+          result.visitorReviewStats.total = vr.totalCount || 0;
+          result.visitorReviewStats.averageScore = vr.averageRating || 0;
+
+          // 방문자 리뷰 상세 추출
+          const items = vr.items || [];
+          items.forEach(review => {
+            result.visitorReviewItems.push({
+              id: review.id || '',
+              body: review.body || '',
+              author: {
+                nickname: review.author?.nickname || '',
+                imageUrl: review.author?.imageUrl || '',
+              },
+              visitCount: review.visitCount || 0,
+              viewCount: review.viewCount || 0,
+              visited: review.visited || review.visitedDate || '',
+              created: review.created || '',
+              mediaCount: review.media?.length || 0,
+              hasReply: !!review.reply,
+              themes: (review.themes || []).map(t => ({
+                theme: t.theme,
+                pattern: t.pattern,
+                value: t.miningValue,
+              })),
+              originType: review.originType || '',
+            });
+          });
+        }
+
+        // 리뷰 통계 상세 (visitorReviewStats)
+        if (data.visitorReviewStats) {
+          const stats = data.visitorReviewStats;
+
+          // 기본 통계
+          if (stats.review) {
+            result.visitorReviewStats.total = stats.review.totalCount || result.visitorReviewStats.total;
+            result.visitorReviewStats.averageScore = stats.review.avgRating || 0;
+            result.visitorReviewStats.imageReviewCount = stats.review.imageReviewCount || 0;
+          }
+
+          // 테마 분석 (맛, 서비스, 분위기 등)
+          if (stats.analysis?.themes) {
+            result.reviewThemes = stats.analysis.themes.map(t => ({
+              code: t.code,
+              label: t.label,
+              count: t.count,
+            }));
+          }
+
+          // 메뉴 분석 (리뷰에서 언급된 메뉴)
+          if (stats.analysis?.menus) {
+            result.reviewMenus = stats.analysis.menus.map(m => ({
+              code: m.code,
+              label: m.label,
+              count: m.count,
+            }));
+          }
+        }
+
+        if (data.reviewSummary) {
+          const rs = data.reviewSummary;
+          result.reviewStats.total = rs.totalCount || result.reviewStats.total;
+          result.reviewStats.average = rs.averageRating || 0;
+        }
+
+        // 블로그 리뷰
+        if (data.blogReviews) {
+          result.blogCafeReviewCount = data.blogReviews.total || data.blogReviews.totalCount || 0;
+          result.reviewStats.blog = result.blogCafeReviewCount;
+
+          const blogs = data.blogReviews.items || [];
+          blogs.forEach(b => {
+            if ((b.content?.length || 0) >= 500) {
+              result.blogReviews.push({
+                id: b.id || '',
+                title: b.title || '',
+                content: b.content || b.description || '',
+                author: b.author || b.bloggerName || '',
+                date: b.date || b.createdAt || '',
+                url: b.url || b.blogUrl || '',
+                wordCount: (b.content || '').length,
+              });
+            }
+          });
+        }
+
+        // 투표된 키워드
+        if (data.visitorKeywords || data.votedKeywords) {
+          const keywords = data.visitorKeywords?.items || data.votedKeywords?.items || [];
+          keywords.forEach(k => {
+            result.votedKeywords.push({
+              name: k.keyword || k.name || '',
+              count: k.count || k.voteCount || 0,
+              iconUrl: k.iconUrl || null,
+            });
+          });
+        }
+
+        // aiBriefing에서 리뷰 및 키워드 추출
+        if (data.aiBriefing) {
+          const briefing = data.aiBriefing;
+
+          // videoSources에서 방문자 리뷰와 키워드 추출
+          const videoSources = briefing.videoSources || [];
+          const keywordCounts = {};
+          const visitorReviews = [];
+
+          videoSources.forEach(source => {
+            // 리뷰 내용 추출 (방문자 리뷰만)
+            if (source.photoType === 'visitor' && source.text) {
+              visitorReviews.push({
+                id: source.logId || '',
+                content: source.text,
+                author: source.author?.nickname || '',
+                date: source.date || '',
+                visitCount: source.visitCount || 0,
+              });
+            }
+
+            // 키워드 추출 및 집계
+            if (source.votedKeywords && Array.isArray(source.votedKeywords)) {
+              source.votedKeywords.forEach(kw => {
+                const name = kw.name || '';
+                if (name) {
+                  if (!keywordCounts[name]) {
+                    keywordCounts[name] = { name, count: 0, iconUrl: kw.iconUrl || null, code: kw.code || '' };
+                  }
+                  keywordCounts[name].count++;
+                }
+              });
+            }
+          });
+
+          // 키워드 집계 결과를 votedKeywords에 추가 (중복 방지)
+          const existingKeywords = new Set(result.votedKeywords.map(k => k.name));
+          Object.values(keywordCounts).forEach(kw => {
+            if (!existingKeywords.has(kw.name)) {
+              result.votedKeywords.push(kw);
+            }
+          });
+
+          // 키워드를 count 기준 내림차순 정렬
+          result.votedKeywords.sort((a, b) => b.count - a.count);
+
+          // 리뷰 요약 키워드 추출 (textSummaries에서)
+          if (briefing.textSummaries && Array.isArray(briefing.textSummaries)) {
+            briefing.textSummaries.forEach(summary => {
+              if (summary.sentence && !summary.sentence.includes('정리하면')) {
+                result.reviewSummary.keywords.push(summary.sentence);
+              }
+            });
+          }
+
+          // 이미지 요약에서 메뉴 이미지 추출
+          if (briefing.imageSummaries && Array.isArray(briefing.imageSummaries)) {
+            briefing.imageSummaries.forEach(img => {
+              if (img.imageUrl) {
+                result.images.push({
+                  id: img.logId || '',
+                  url: img.imageUrl,
+                  thumbnail: '',
+                  category: img.code?.includes('MENU') ? 'menu' : (img.code === 'INTERIOR' ? 'interior' : (img.code === 'EXTERIOR' ? 'exterior' : 'etc')),
+                  caption: img.caption || '',
+                });
+              }
+            });
+          }
+        }
+
+        // 방문 목적
+        if (data.visitPurposes) {
+          const purposes = data.visitPurposes.items || [];
+          purposes.forEach(p => {
+            result.visitCategories.push({
+              name: p.name || '',
+              count: p.count || 0,
+            });
+          });
+        }
+
+        // 이미지
+        if (data.images || data.photos) {
+          const images = data.images?.items || data.photos?.items || [];
+          images.slice(0, 20).forEach(img => {
+            result.images.push({
+              id: img.id || '',
+              url: img.url || img.imageUrl || '',
+              thumbnail: img.thumbnail || img.thumbnailUrl || '',
+              category: img.category || 'etc',
+            });
+          });
+        }
+
+        // 편의시설
+        if (data.facilities) {
+          const facilities = data.facilities.items || data.facilities || [];
+          facilities.forEach(f => {
+            result.facilities.push({
+              name: f.name || f.label || '',
+              available: f.available !== false,
+              description: f.description || '',
+            });
+          });
+        }
+
+        // 결제수단
+        if (data.payments) {
+          const payments = data.payments.items || data.payments || [];
+          payments.forEach(p => {
+            const name = typeof p === 'string' ? p : (p.name || p.label || '');
+            if (name) result.payments.push(name);
+          });
+        }
+      }
+    }
+
+    // 대표 키워드 추가 (HTML 소스에서 수집한 데이터)
+    if (representativeKeywords.length > 0) {
+      result.reviewSummary.keywords = representativeKeywords;
+    }
+
+    return result;
+  }
+
+  /**
+   * gdid 파싱
+   * @private
+   */
+  _parseGdid(gdid) {
+    if (!gdid) return { raw: null, type: null, placeId: null, isValid: false };
+
+    const match = gdid.match(/^(N\d):(\d+)$/);
+    if (match) {
+      return {
+        raw: gdid,
+        type: match[1],
+        placeId: match[2],
+        isValid: true,
+      };
+    }
+    return { raw: gdid, type: null, placeId: null, isValid: false };
+  }
+
+  // 완성도 계산 제거됨 (2025-11-27)
+
+  /**
+   * 모바일 페이지에서 __NEXT_DATA__를 통해 place 상세 정보 추출
+   * @private
+   */
+  async _fetchPlaceDetailDirect(page, placeId) {
+    const result = {
+      basic: {
+        name: '',
+        category: '',
+        address: {},
+        phone: '',
+        openingHours: '',
+        homepage: '',
+        description: '',
+        seoKeywords: [],
+        sns: { instagram: '', facebook: '', blog: '', youtube: '', twitter: '' } // SNS 링크 추가
+      },
+      menus: [],
+      categories: [], // 카테고리 코드 + 명칭 (2025-11-27)
+      categoryCodeList: [], // 레거시
+      categoryHierarchy: '', // 카테고리 계층 구조 (2025-12-05)
+      categoryType: 'TYPE_A', // TYPE_A: 서비스업, TYPE_B: 음식점 (2025-12-05)
+      mappedCategoryCodes: [], // 매핑된 카테고리 코드 (2025-12-05)
+      gdid: { raw: null, type: null, placeId: null, isValid: false },
+      votedKeywords: [],
+      representativeKeywords: [], // 대표 키워드 (Apollo State에서 추출)
+      orderOptions: { isTableOrder: false, pickup: false, delivery: false, bookingBusinessId: null },
+      operationTime: { breakTime: [], lastOrder: null, holiday: null },
+      images: [],
+      facilities: [],
+      payments: [],
+      visitorReviewItems: [],
+      visitorReviewStats: { total: 0, withPhoto: 0, withContent: 0, averageScore: 0, imageReviewCount: 0 },
+      reviewThemes: [],
+      reviewMenus: [],
+      blogReviews: [], // 블로그 리뷰 (2025-11-27)
+      // 추가 데이터 (2025-11-27)
+      directions: { parking: '', publicTransit: '', walking: '', car: '', additionalInfo: '' },
+      notices: [],
+      detailedIntro: '',
+      placeNotices: [],
+      aiBriefing: null, // AI 브리핑 (2025-11-27)
+      externalData: {}, // 외부 연동 데이터 (다이닝코드 등) (2025-11-27)
+      naverServices: { // 네이버 서비스 사용 여부 추가
+        booking: { enabled: false, businessId: null, url: null },
+        smartCall: { enabled: false, description: '' },
+        smartOrder: { enabled: false, hasTableOrder: false, hasPickup: false, hasDelivery: false },
+        placePlus: { enabled: false },
+        naverPay: { enabled: false }
+      },
+    };
+
+    try {
+      // 모바일 페이지로 직접 접근 (__NEXT_DATA__ 사용)
+      const mobileUrl = `https://m.place.naver.com/restaurant/${placeId}/home`;
+
+      await page.goto(mobileUrl, {
+        waitUntil: 'networkidle2',
+        timeout: 25000,
+      });
+
+      await new Promise(r => setTimeout(r, 1000));
+
+      // __APOLLO_STATE__ 추출 (모바일 페이지에 직접 존재)
+      const apolloState = await page.evaluate(() => {
+        return window.__APOLLO_STATE__ || null;
+      });
+
+      // Apollo State에서 대표 키워드(Representative Keywords) 추출
+      const representativeKeywords = [];
+
+      try {
+        if (apolloState) {
+          // PlaceDetailBase 엔티티에서 reviewSettings.keywords 확인
+          const placeDetailKey = `PlaceDetailBase:${placeId}`;
+          if (apolloState[placeDetailKey]) {
+            const placeDetail = apolloState[placeDetailKey];
+
+            // reviewSettings.keywords 확인
+            if (placeDetail.reviewSettings && placeDetail.reviewSettings.keywords) {
+              const keywords = placeDetail.reviewSettings.keywords;
+              if (Array.isArray(keywords)) {
+                keywords.forEach(kw => {
+                  representativeKeywords.push({
+                    name: kw.keyword || kw.name || '',
+                    count: kw.count || kw.frequency || 0,
+                    code: kw.code || '',
+                  });
+                });
+              }
+            }
+          }
+
+          // VisitorReviewStatsResult에서 votedVisitorKeywords 확인 (대표 키워드로 사용)
+          const reviewStatsKey = `VisitorReviewStatsResult:${placeId}`;
+          if (apolloState[reviewStatsKey]) {
+            const reviewStats = apolloState[reviewStatsKey];
+
+            // votedVisitorKeywords 배열 추출
+            if (reviewStats.votedVisitorKeywords && Array.isArray(reviewStats.votedVisitorKeywords)) {
+              reviewStats.votedVisitorKeywords.forEach(kw => {
+                // 중복 방지
+                const exists = representativeKeywords.some(existing =>
+                  (existing.name === (kw.keyword || kw.name)) ||
+                  (existing.code && existing.code === kw.code)
+                );
+                if (!exists) {
+                  representativeKeywords.push({
+                    name: kw.keyword || kw.name || '',
+                    count: kw.count || 0,
+                    code: kw.code || '',
+                    iconUrl: kw.iconUrl || '',
+                  });
+                }
+              });
+            }
+
+            // __ref 참조를 따라가서 실제 데이터 추출 (Apollo Client의 정규화된 데이터 구조)
+            if (reviewStats.votedVisitorKeywords && reviewStats.votedVisitorKeywords.__ref) {
+              const refKey = reviewStats.votedVisitorKeywords.__ref;
+              if (apolloState[refKey] && apolloState[refKey].items) {
+                apolloState[refKey].items.forEach(item => {
+                  let kwData = item;
+                  // item이 __ref인 경우 실제 데이터를 찾아감
+                  if (item.__ref && apolloState[item.__ref]) {
+                    kwData = apolloState[item.__ref];
+                  }
+
+                  const exists = representativeKeywords.some(existing =>
+                    (existing.name === (kwData.keyword || kwData.name)) ||
+                    (existing.code && existing.code === kwData.code)
+                  );
+                  if (!exists && (kwData.keyword || kwData.name)) {
+                    representativeKeywords.push({
+                      name: kwData.keyword || kwData.name || '',
+                      count: kwData.count || 0,
+                      code: kwData.code || '',
+                      iconUrl: kwData.iconUrl || '',
+                    });
+                  }
+                });
+              }
+            }
+          }
+
+          // 다른 키워드 엔티티 검색 (KeywordList, RepresentativeKeyword 등)
+          Object.keys(apolloState).forEach(key => {
+            if (key.includes('KeywordList') || key.includes('RepresentativeKeyword') || key.includes('PlaceKeyword')) {
+              const data = apolloState[key];
+              if (data && typeof data === 'object') {
+                // 배열인 경우
+                if (Array.isArray(data)) {
+                  data.forEach(kw => {
+                    const exists = representativeKeywords.some(existing =>
+                      (existing.name === (kw.keyword || kw.name)) ||
+                      (existing.code && existing.code === kw.code)
+                    );
+                    if (!exists && (kw.keyword || kw.name)) {
+                      representativeKeywords.push({
+                        name: kw.keyword || kw.name || '',
+                        count: kw.count || kw.frequency || 0,
+                        code: kw.code || '',
+                        iconUrl: kw.iconUrl || '',
+                      });
+                    }
+                  });
+                }
+                // 객체이면서 keyword 속성이 있는 경우
+                else if (data.keyword || data.name) {
+                  const exists = representativeKeywords.some(existing =>
+                    (existing.name === (data.keyword || data.name)) ||
+                    (existing.code && existing.code === data.code)
+                  );
+                  if (!exists) {
+                    representativeKeywords.push({
+                      name: data.keyword || data.name || '',
+                      count: data.count || data.frequency || 0,
+                      code: data.code || '',
+                      iconUrl: data.iconUrl || '',
+                    });
+                  }
+                }
+              }
+            }
+          });
+
+          if (representativeKeywords.length > 0) {
+            // count 기준 내림차순 정렬
+            representativeKeywords.sort((a, b) => (b.count || 0) - (a.count || 0));
+            logger.info(`[${placeId}] 대표 키워드 ${representativeKeywords.length}개 수집`);
+          } else {
+            logger.warn(`[${placeId}] Apollo State에서 대표 키워드를 찾지 못함`);
+          }
+        }
+      } catch (error) {
+        logger.warn(`[${placeId}] Apollo State 키워드 파싱 실패:`, error.message);
+      }
+
+      // ROOT_QUERY에서 공식 SEO 대표 키워드 추출 (informationTab.keywordList)
+      let seoKeywords = [];
+      try {
+        if (apolloState && apolloState.ROOT_QUERY) {
+          const rootQuery = apolloState.ROOT_QUERY;
+
+          // placeDetail 쿼리 찾기
+          const placeDetailKey = Object.keys(rootQuery).find(key =>
+            key.startsWith('placeDetail(') && key.includes(`"id":"${placeId}"`)
+          );
+
+          if (placeDetailKey && rootQuery[placeDetailKey]) {
+            const placeDetail = rootQuery[placeDetailKey];
+
+            // informationTab 찾기
+            const informationTabKey = Object.keys(placeDetail).find(key =>
+              key.startsWith('informationTab(')
+            );
+
+            if (informationTabKey && placeDetail[informationTabKey]) {
+              const informationTab = placeDetail[informationTabKey];
+
+              // __ref로 참조된 경우
+              if (informationTab.__ref && apolloState[informationTab.__ref]) {
+                const refData = apolloState[informationTab.__ref];
+                if (refData.keywordList && Array.isArray(refData.keywordList)) {
+                  seoKeywords = refData.keywordList;
+                }
+              }
+              // 직접 데이터가 있는 경우
+              else if (informationTab.keywordList && Array.isArray(informationTab.keywordList)) {
+                seoKeywords = informationTab.keywordList;
+              }
+            }
+          }
+
+          if (seoKeywords.length > 0) {
+            logger.info(`[${placeId}] 공식 SEO 대표 키워드 ${seoKeywords.length}개 수집: ${seoKeywords.join(', ')}`);
+          } else {
+            logger.warn(`[${placeId}] ROOT_QUERY에서 SEO 키워드를 찾지 못함`);
+          }
+        }
+      } catch (error) {
+        logger.warn(`[${placeId}] SEO 키워드 추출 실패:`, error.message);
+      }
+
+      // SEO 키워드를 result에 저장
+      if (seoKeywords.length > 0) {
+        result.basic.seoKeywords = seoKeywords;
+      }
+
+      // ROOT_QUERY에서 SNS 링크 및 네이버 서비스 추출
+      try {
+        if (apolloState && apolloState.ROOT_QUERY) {
+          const rootQuery = apolloState.ROOT_QUERY;
+          const placeDetailKey = Object.keys(rootQuery).find(key =>
+            key.startsWith('placeDetail(') && key.includes(`"id":"${placeId}"`)
+          );
+
+          if (placeDetailKey && rootQuery[placeDetailKey]) {
+            const placeDetail = rootQuery[placeDetailKey];
+
+            // SNS 링크 추출 (homepages)
+            if (placeDetail.homepages) {
+              const homepages = placeDetail.homepages;
+
+              // 대표 홈페이지
+              if (homepages.repr) {
+                result.basic.homepage = homepages.repr;
+              }
+
+              // 기타 링크 (SNS 포함)
+              if (homepages.etc && Array.isArray(homepages.etc)) {
+                homepages.etc.forEach(link => {
+                  const url = link.url || link;
+                  if (typeof url === 'string') {
+                    if (url.includes('instagram.com')) result.basic.sns.instagram = url;
+                    else if (url.includes('facebook.com')) result.basic.sns.facebook = url;
+                    else if (url.includes('blog.naver.com') || url.includes('blog.')) result.basic.sns.blog = url;
+                    else if (url.includes('youtube.com') || url.includes('youtu.be')) result.basic.sns.youtube = url;
+                    else if (url.includes('twitter.com') || url.includes('x.com')) result.basic.sns.twitter = url;
+                  }
+                });
+              }
+            }
+
+            // 네이버 블로그 (base.naverBlog)
+            if (placeDetail.base && placeDetail.base.__ref) {
+              const baseData = apolloState[placeDetail.base.__ref];
+              if (baseData && baseData.naverBlog) {
+                result.basic.sns.blog = baseData.naverBlog;
+              }
+            }
+
+            // 네이버 서비스 추출
+            // 1. 네이버 예약
+            const naverBookingKey = Object.keys(placeDetail).find(k => k.startsWith('naverBooking('));
+            if (naverBookingKey && placeDetail[naverBookingKey]) {
+              const booking = placeDetail[naverBookingKey];
+              result.naverServices.booking = {
+                enabled: !!booking.bookingBusinessId,
+                businessId: booking.bookingBusinessId,
+                url: booking.naverBookingUrl
+              };
+            }
+
+            // 2. 비즈니스 도구 (스마트콜, 주문 등)
+            if (placeDetail.businessTools && placeDetail.businessTools.tools) {
+              placeDetail.businessTools.tools.forEach(tool => {
+                if (tool.type === 'smartCall') {
+                  result.naverServices.smartCall = {
+                    enabled: tool.using === true,
+                    description: tool.description || ''
+                  };
+                } else if (tool.type === 'smartOrder') {
+                  result.naverServices.smartOrder.enabled = tool.using === true;
+                } else if (tool.type === 'naverBooking') {
+                  result.naverServices.booking.enabled = tool.using === true;
+                }
+              });
+            }
+
+            // 3. 스마트 오더 상세
+            if (placeDetail.naverOrder) {
+              result.naverServices.smartOrder.enabled = true;
+            }
+
+            logger.info(`[${placeId}] SNS 및 네이버 서비스 정보 수집 완료`);
+          }
+        }
+      } catch (error) {
+        logger.warn(`[${placeId}] SNS/네이버 서비스 추출 실패:`, error.message);
+      }
+
+      // Apollo State에서 직접 데이터 추출
+      let placeData = null;
+      const menus = [];
+      let visitorReviewStats = null;
+
+      if (apolloState) {
+        // PlaceDetailBase 엔티티 찾기
+        const placeKey = `PlaceDetailBase:${placeId}`;
+        if (apolloState[placeKey]) {
+          placeData = apolloState[placeKey];
+        }
+
+        // 메뉴 엔티티 찾기
+        Object.keys(apolloState).forEach(key => {
+          if (key.startsWith(`Menu:${placeId}_`)) {
+            const menu = apolloState[key];
+            menus.push({
+              name: menu.name,
+              price: menu.price,
+              description: menu.description || '',
+              images: menu.images || [],
+              recommend: menu.recommend || false,
+            });
+          }
+        });
+
+        // VisitorReviewStatsResult 찾기
+        const reviewStatsKey = `VisitorReviewStatsResult:${placeId}`;
+        if (apolloState[reviewStatsKey]) {
+          visitorReviewStats = apolloState[reviewStatsKey];
+        }
+
+        // 추가 데이터 수집 (2025-11-27)
+        // 찾아오시는 길 정보
+        const directionsKeys = Object.keys(apolloState).filter(key =>
+          key.includes('Direction') || key.includes('Transport') || key.includes('Access')
+        );
+        directionsKeys.forEach(key => {
+          const data = apolloState[key];
+          if (data.parking) result.directions.parking = data.parking;
+          if (data.publicTransit) result.directions.publicTransit = data.publicTransit;
+          if (data.walking) result.directions.walking = data.walking;
+          if (data.car) result.directions.car = data.car;
+          if (data.additionalInfo) result.directions.additionalInfo = data.additionalInfo;
+        });
+
+        // 소식/공지사항
+        const noticeKeys = Object.keys(apolloState).filter(key =>
+          key.includes('Notice') || key.includes('News') || key.includes('Announcement')
+        );
+        noticeKeys.forEach(key => {
+          const data = apolloState[key];
+          if (data.title || data.content) {
+            result.notices.push({
+              title: data.title || '',
+              content: data.content || data.description || '',
+              date: data.date || data.createdAt || '',
+              type: data.type || 'general',
+            });
+          }
+        });
+
+        // 상세 소개글 (placeIntro, detailedDescription 등)
+        const introKeys = Object.keys(apolloState).filter(key =>
+          key.includes('Intro') || key.includes('Description') || key.includes(`PlaceDetailBase:${placeId}`)
+        );
+        introKeys.forEach(key => {
+          const data = apolloState[key];
+          if (data.detailedIntro) result.detailedIntro = data.detailedIntro;
+          if (data.introduction) result.detailedIntro = data.introduction;
+          if (data.longDescription) result.detailedIntro = data.longDescription;
+        });
+      }
+
+      // Apollo State에서 place 정보를 찾지 못한 경우 DOM에서 추출
+      if (!placeData) {
+        placeData = await page.evaluate(() => {
+          const data = {};
+
+          // 이름 - 여러 선택자 시도
+          const nameEl = document.querySelector('.GHAhO, .Fc1rA, .place_title_name, h1, [class*="name"] span');
+          if (nameEl) data.name = nameEl.textContent.trim();
+
+          // 카테고리
+          const catEl = document.querySelector('.lnJFt, .place_category_text, [class*="category"]');
+          if (catEl) data.category = catEl.textContent.trim();
+
+          // 주소
+          const addrEl = document.querySelector('.LDgIH, .place_address_text, [class*="address"]');
+          if (addrEl) data.roadAddress = addrEl.textContent.trim();
+
+          // 전화번호
+          const phoneEl = document.querySelector('.xlx7Q, .place_phone, [class*="phone"]');
+          if (phoneEl) data.virtualPhone = phoneEl.textContent.trim();
+
+          // 영업시간
+          const hoursEl = document.querySelector('.A_cdD, .place_business_hours, [class*="bizHour"]');
+          if (hoursEl) data.businessHours = hoursEl.textContent.trim();
+
+          return Object.keys(data).length > 0 ? data : null;
+        });
+      }
+
+      if (!placeData) {
+        logger.warn(`No place data found for ${placeId}`);
+        return result;
+      }
+
+      // 추출된 place 데이터 처리
+      if (placeData) {
+        result.basic.name = placeData.name || '';
+        result.basic.category = placeData.category || '';
+        result.basic.address = {
+          road: placeData.roadAddress || placeData.address || '',
+          jibun: placeData.jibunAddress || placeData.address || '',
+          detail: '',
+        };
+        result.basic.phone = placeData.virtualPhone || placeData.phone || '';
+        result.basic.openingHours = placeData.businessHours || '';
+        result.basic.homepage = placeData.homepage || '';
+        result.basic.description = placeData.description || placeData.microReview || '';
+
+        // 랭킹 데이터
+        // 카테고리 정보 (코드 + 명칭) - 2025-11-27
+        // 카테고리 매핑 추가 - 2025-12-05
+        if (placeData.category && typeof placeData.category === 'string') {
+          // basic.category는 "다이어트,샐러드" 형태
+          const categoryNames = placeData.category.split(',').map(c => c.trim());
+
+          // CategoryMapper 사용하여 카테고리 정보 보강
+          try {
+            const categoryMapper = getCategoryMapper();
+            const categoryInfo = categoryMapper.process(placeData.category);
+
+            if (placeData.categoryCodeList && Array.isArray(placeData.categoryCodeList)) {
+              // 코드와 명칭 매핑
+              result.categories = placeData.categoryCodeList.map((code, idx) => ({
+                code: code,
+                name: categoryNames[idx] || '', // 순서대로 매핑
+              }));
+              result.categoryCodeList = placeData.categoryCodeList;
+            } else {
+              // 코드가 없으면 이름만
+              result.categories = categoryNames.map(name => ({
+                code: '',
+                name: name,
+              }));
+            }
+
+            // 카테고리 매핑 결과 추가
+            result.categoryHierarchy = categoryInfo.hierarchy || '';
+            result.categoryType = categoryInfo.type || 'TYPE_A';
+
+            // 매핑된 카테고리 코드가 있으면 추가
+            if (categoryInfo.codes.length > 0) {
+              result.mappedCategoryCodes = categoryInfo.codes;
+            }
+
+            logger.info(`[${placeId}] Category mapping: ${categoryInfo.matchCount} matches, type: ${categoryInfo.type}`);
+          } catch (error) {
+            logger.warn(`[${placeId}] Category mapping error:`, error.message);
+            // 매핑 실패 시 기본값 설정
+            if (placeData.categoryCodeList && Array.isArray(placeData.categoryCodeList)) {
+              result.categories = placeData.categoryCodeList.map((code, idx) => ({
+                code: code,
+                name: categoryNames[idx] || '',
+              }));
+              result.categoryCodeList = placeData.categoryCodeList;
+            } else {
+              result.categories = categoryNames.map(name => ({
+                code: '',
+                name: name,
+              }));
+            }
+          }
+        } else if (placeData.categoryCodeList) {
+          // 코드만 있는 경우
+          result.categoryCodeList = placeData.categoryCodeList;
+          result.categories = placeData.categoryCodeList.map(code => ({
+            code: code,
+            name: '', // 이름은 나중에 매핑 필요
+          }));
+        }
+
+        if (placeData.gdid) {
+          result.gdid = this._parseGdid(placeData.gdid);
+        }
+
+        // 주문 옵션
+        result.orderOptions.isTableOrder = placeData.isTableOrder || false;
+        result.orderOptions.pickup = placeData.isPickup || placeData.pickup || false;
+        result.orderOptions.delivery = placeData.isDelivery || placeData.delivery || false;
+        result.orderOptions.bookingBusinessId = placeData.bookingBusinessId || null;
+
+        // 추가 데이터 수집 from placeData (2025-11-27)
+        // 찾아오시는 길
+        if (placeData.directions) {
+          result.directions = {
+            parking: placeData.directions.parking || placeData.parking || '',
+            publicTransit: placeData.directions.publicTransit || placeData.publicTransit || '',
+            walking: placeData.directions.walking || '',
+            car: placeData.directions.car || '',
+            additionalInfo: placeData.directions.additionalInfo || placeData.wayToGo || '',
+          };
+        } else if (placeData.parking || placeData.publicTransit || placeData.wayToGo) {
+          result.directions.parking = placeData.parking || '';
+          result.directions.publicTransit = placeData.publicTransit || '';
+          result.directions.additionalInfo = placeData.wayToGo || '';
+        }
+
+        // 상세 소개글
+        if (placeData.detailedIntro) result.detailedIntro = placeData.detailedIntro;
+        else if (placeData.introduction) result.detailedIntro = placeData.introduction;
+        else if (placeData.longDescription) result.detailedIntro = placeData.longDescription;
+        else if (placeData.microReview) result.detailedIntro = placeData.microReview;
+
+        // 공지사항
+        if (placeData.notices && Array.isArray(placeData.notices)) {
+          result.notices = placeData.notices.map(n => ({
+            title: n.title || '',
+            content: n.content || n.description || '',
+            date: n.date || n.createdAt || '',
+            type: n.type || 'general',
+          }));
+        }
+
+        // 플레이스 공지 (placeNotices)
+        if (placeData.placeNotices && Array.isArray(placeData.placeNotices)) {
+          result.placeNotices = placeData.placeNotices;
+        }
+      }
+
+      // 메뉴 데이터 (Apollo State에서 추출한 메뉴 우선 사용)
+      if (menus.length > 0) {
+        result.menus = menus;
+      } else if (placeData.menus && Array.isArray(placeData.menus)) {
+        result.menus = placeData.menus.map(m => ({
+          name: m.name || '',
+          price: this._parsePrice(m.price),
+          image: m.images?.[0] || m.imageUrl || null,
+          isRecommended: m.isRecommended || m.isSignature || false,
+          isPopular: m.isPopular || false,
+        }));
+      }
+
+      // 키워드 데이터 (placeData에서 직접)
+      if (placeData.keywords && Array.isArray(placeData.keywords)) {
+        result.votedKeywords = placeData.keywords.map(k => ({
+          name: k.keyword || k.name || '',
+          count: k.count || k.voteCount || 0,
+        }));
+      } else if (placeData.votedKeywords && Array.isArray(placeData.votedKeywords)) {
+        result.votedKeywords = placeData.votedKeywords.map(k => ({
+          name: k.keyword || k.name || '',
+          count: k.count || k.voteCount || 0,
+        }));
+      }
+
+      // 대표 키워드를 result에 저장 (Apollo State에서 추출한 데이터)
+      if (representativeKeywords.length > 0) {
+        result.representativeKeywords = representativeKeywords;
+      }
+
+      // 운영 시간
+      if (placeData.businessHoursInfo) {
+        result.operationTime.breakTime = placeData.businessHoursInfo.breakTime || [];
+        result.operationTime.lastOrder = placeData.businessHoursInfo.lastOrder || null;
+        result.operationTime.holiday = placeData.businessHoursInfo.holiday || null;
+      }
+
+      // 이미지
+      if (placeData.images && Array.isArray(placeData.images)) {
+        result.images = placeData.images.slice(0, 20).map((img, idx) => ({
+          id: img.id || `img_${idx}`,
+          url: img.url || img.imageUrl || img || '',
+          thumbnail: img.thumbnail || '',
+          category: img.category || 'etc',
+        }));
+      }
+
+      // 편의시설
+      if (placeData.facilities && Array.isArray(placeData.facilities)) {
+        result.facilities = placeData.facilities.map(f => ({
+          name: typeof f === 'string' ? f : (f.name || ''),
+          available: true,
+        }));
+      }
+
+      // 결제수단
+      if (placeData.payments && Array.isArray(placeData.payments)) {
+        result.payments = placeData.payments.map(p => typeof p === 'string' ? p : (p.name || ''));
+      } else if (placeData.paymentInfo && Array.isArray(placeData.paymentInfo)) {
+        result.payments = placeData.paymentInfo;
+      }
+
+      // 편의시설 (conveniences)
+      if (placeData.conveniences && Array.isArray(placeData.conveniences)) {
+        result.facilities = placeData.conveniences.map(f => ({
+          name: typeof f === 'string' ? f : (f.name || ''),
+          available: true,
+        }));
+      }
+
+      // Apollo State에서 추출한 visitorReviewStats 처리
+      if (visitorReviewStats) {
+        // 리뷰 통계
+        if (visitorReviewStats.review) {
+          result.visitorReviewStats.total = visitorReviewStats.review.totalCount || 0;
+          result.visitorReviewStats.averageScore = visitorReviewStats.review.avgRating || 0;
+          result.visitorReviewStats.imageReviewCount = visitorReviewStats.review.imageReviewCount || 0;
+        }
+
+        // 테마 분석
+        if (visitorReviewStats.analysis?.themes) {
+          result.reviewThemes = visitorReviewStats.analysis.themes.map(t => ({
+            code: t.code,
+            label: t.label,
+            count: t.count,
+          }));
+        }
+
+        // 메뉴 분석
+        if (visitorReviewStats.analysis?.menus) {
+          result.reviewMenus = visitorReviewStats.analysis.menus.map(m => ({
+            code: m.code,
+            label: m.label,
+            count: m.count,
+          }));
+        }
+
+        // 키워드 (votedVisitorKeywords)
+        if (visitorReviewStats.votedVisitorKeywords) {
+          result.votedKeywords = visitorReviewStats.votedVisitorKeywords.map(k => ({
+            name: k.keyword || '',
+            count: k.count || 0,
+            iconUrl: k.iconUrl || '',
+            code: k.code || '',
+          }));
+        }
+      }
+
+      // 방문자 리뷰 개별 내용 수집 (/review/visitor 페이지)
+      try {
+        const reviewUrl = `https://m.place.naver.com/restaurant/${placeId}/review/visitor`;
+        await page.goto(reviewUrl, {
+          waitUntil: 'networkidle2',
+          timeout: 20000,
+        });
+
+        await new Promise(r => setTimeout(r, 1000));
+
+        // 스크롤해서 더 많은 리뷰 로드 (최대 3번 스크롤)
+        logger.info(`Scrolling to load more reviews for ${placeId}...`);
+        for (let i = 0; i < 3; i++) {
+          await page.evaluate(() => {
+            window.scrollTo(0, document.body.scrollHeight);
+          });
+          await new Promise(r => setTimeout(r, 1500));
+        }
+
+        const reviewApolloState = await page.evaluate(() => {
+          return window.__APOLLO_STATE__ || null;
+        });
+
+        if (reviewApolloState) {
+          // VisitorReview: 키 찾기
+          const reviewKeys = Object.keys(reviewApolloState).filter(k =>
+            k.startsWith('VisitorReview:') && k.endsWith(':true')
+          );
+
+          reviewKeys.forEach(key => {
+            const review = reviewApolloState[key];
+            if (!review || !review.body) return;
+
+            // 작성자 정보 가져오기
+            let authorNickname = '';
+            if (review.author && review.author.__ref) {
+              const authorData = reviewApolloState[review.author.__ref];
+              if (authorData) {
+                authorNickname = authorData.nickname || '';
+              }
+            }
+
+            result.visitorReviewItems.push({
+              id: review.id || review.reviewId || '',
+              body: review.body || '',
+              author: {
+                nickname: authorNickname,
+                imageUrl: review.author?.imageUrl || '',
+              },
+              visitCount: review.visitCount || 0,
+              viewCount: review.viewCount || 0,
+              visited: review.visited || '',
+              created: review.created || '',
+              mediaCount: review.media?.length || 0,
+              thumbnail: review.thumbnail || '',
+              hasReply: !!review.reply,
+              originType: review.originType || '',
+              votedKeywords: (review.votedKeywords || []).map(k => ({
+                code: k.code || '',
+                name: k.name || '',
+                iconUrl: k.iconUrl || '',
+              })),
+              visitCategories: (review.visitCategories || []).map(c => ({
+                code: c.code || '',
+                name: c.name || '',
+                keywords: (c.keywords || []).map(kw => kw.name || kw.code || ''),
+              })),
+            });
+          });
+
+          logger.info(`Collected ${result.visitorReviewItems.length} visitor reviews for ${placeId}`);
+        }
+      } catch (error) {
+        logger.warn(`Failed to fetch visitor reviews for ${placeId}: ${error.message}`);
+      }
+
+      // 블로그·카페 리뷰 수집 (/review/ugc 페이지) - 2025-11-27
+      try {
+        const blogReviewUrl = `https://m.place.naver.com/restaurant/${placeId}/review/ugc`;
+        await page.goto(blogReviewUrl, {
+          waitUntil: 'networkidle2',
+          timeout: 20000,
+        });
+
+        await new Promise(r => setTimeout(r, 1500));
+
+        // Apollo State 또는 DOM에서 블로그 리뷰 추출
+        const blogReviewData = await page.evaluate(() => {
+          const reviews = [];
+
+          // Apollo State에서 먼저 시도 (더 정확한 데이터)
+          const apolloState = window.__APOLLO_STATE__ || {};
+
+          // BlogReview 키 찾기
+          const blogReviewKeys = Object.keys(apolloState).filter(k =>
+            k.startsWith('BlogReview:') || k.startsWith('UGCReview:')
+          );
+
+          blogReviewKeys.forEach(key => {
+            const review = apolloState[key];
+            if (!review) return;
+
+            // 작성자 정보 가져오기
+            let authorName = '';
+            if (review.author && review.author.__ref) {
+              const authorData = apolloState[review.author.__ref];
+              if (authorData) {
+                authorName = authorData.nickname || authorData.name || '';
+              }
+            }
+
+            reviews.push({
+              title: review.title || '',
+              content: review.body || review.summary || review.description || '',
+              author: authorName || review.bloggerName || '',
+              date: review.created || review.visitDate || review.publishDate || '',
+              url: review.url || review.link || '',
+              wordCount: (review.body || review.summary || '').length,
+            });
+          });
+
+          // Apollo State에서 못 찾았으면 DOM에서 시도
+          if (reviews.length === 0) {
+            const reviewElements = document.querySelectorAll('a[href*="blog.naver.com"], a[href*="m.blog.naver.com"]');
+
+            reviewElements.forEach(linkEl => {
+              const container = linkEl.closest('li, div[class*="item"], article');
+              if (!container) return;
+
+              const titleEl = container.querySelector('[class*="tit"], [class*="title"], h3, h4, strong');
+              const contentEl = container.querySelector('[class*="text"], [class*="desc"], [class*="summary"], p');
+              const authorEl = container.querySelector('[class*="name"], [class*="nick"], [class*="author"]');
+              const dateEl = container.querySelector('[class*="date"], time, span[class*="time"]');
+
+              if (titleEl) {
+                reviews.push({
+                  title: titleEl.textContent.trim(),
+                  content: contentEl ? contentEl.textContent.trim() : '',
+                  author: authorEl ? authorEl.textContent.trim() : '',
+                  date: dateEl ? dateEl.textContent.trim() : '',
+                  url: linkEl.href,
+                  wordCount: contentEl ? contentEl.textContent.trim().length : 0,
+                });
+              }
+            });
+          }
+
+          return reviews;
+        });
+
+        if (blogReviewData && blogReviewData.length > 0) {
+          result.blogReviews = blogReviewData.filter(r => r.title || r.content);
+          logger.info(`Collected ${result.blogReviews.length} blog reviews for ${placeId}`);
+        } else {
+          result.blogReviews = []; // 초기화
+        }
+
+        // Apollo State에서도 시도
+        const blogApolloState = await page.evaluate(() => {
+          return window.__APOLLO_STATE__ || null;
+        });
+
+        if (blogApolloState) {
+          const blogKeys = Object.keys(blogApolloState).filter(k =>
+            k.includes('Blog') || k.includes('blog') || k.includes('UGC') || k.includes('ugc')
+          );
+
+          blogKeys.forEach(key => {
+            const review = blogApolloState[key];
+            if (review && (review.title || review.content || review.description)) {
+              // 중복 제거
+              const exists = result.blogReviews && result.blogReviews.some(r => r.url === review.url || r.title === review.title);
+              if (!exists) {
+                if (!result.blogReviews) result.blogReviews = [];
+                result.blogReviews.push({
+                  title: review.title || '',
+                  content: review.content || review.description || review.summary || '',
+                  author: review.author || review.bloggerName || '',
+                  date: review.date || review.createdAt || review.publishedDate || '',
+                  url: review.url || review.blogUrl || '',
+                  wordCount: (review.content || review.description || '').length,
+                });
+              }
+            }
+          });
+
+          if (result.blogReviews.length > 0) {
+            logger.info(`Total blog reviews (DOM + Apollo): ${result.blogReviews.length}`);
+          }
+        }
+
+      } catch (error) {
+        logger.warn(`Failed to fetch blog reviews for ${placeId}: ${error.message}`);
+      }
+
+      // AI 브리핑 및 외부 연동 데이터 수집 (2025-11-27)
+      try {
+        await page.goto(`https://m.place.naver.com/restaurant/${placeId}/home`, {
+          waitUntil: 'networkidle2',
+          timeout: 20000,
+        });
+
+        await new Promise(r => setTimeout(r, 1500));
+
+        // 페이지 끝까지 스크롤하여 모든 콘텐츠 로드 (관련링크 포함)
+        await page.evaluate(async () => {
+          await new Promise((resolve) => {
+            let totalHeight = 0;
+            const distance = 100;
+            const timer = setInterval(() => {
+              const scrollHeight = document.body.scrollHeight;
+              window.scrollBy(0, distance);
+              totalHeight += distance;
+
+              if (totalHeight >= scrollHeight) {
+                clearInterval(timer);
+                resolve();
+              }
+            }, 50);
+          });
+        });
+
+        await new Promise(r => setTimeout(r, 2000));
+
+        // AI 브리핑 데이터 추출 (개선된 선택자 - 2025-11-27)
+        const aiBriefingData = await page.evaluate(() => {
+          const briefing = {
+            summary: '',
+            disclaimer: '',
+            recommendations: [],
+            externalLinks: [], // 다이닝코드 등 외부 링크
+          };
+
+          // AI 브리핑 섹션 찾기 - 여러 방법 시도
+          let briefingSection = null;
+
+          // 방법 1: "AI 브리핑" 텍스트로 찾기
+          const headings = Array.from(document.querySelectorAll('h2, h3, h4, strong, .title, [class*="title"]'));
+          const aiBriefingHeading = headings.find(h => h.textContent.includes('AI 브리핑') || h.textContent.includes('AI브리핑'));
+          if (aiBriefingHeading) {
+            briefingSection = aiBriefingHeading.closest('section, div[class*="section"], div[class*="container"]') ||
+                             aiBriefingHeading.parentElement;
+          }
+
+          // 방법 2: 클래스명으로 찾기
+          if (!briefingSection) {
+            briefingSection = document.querySelector('[class*="AiBriefing"], [class*="ai-briefing"], [class*="aiBriefing"]');
+          }
+
+          if (briefingSection) {
+            // 설명문구 ("실질 단계로 정확하지 않을 수 있어요")
+            const disclaimerEl = briefingSection.querySelector('[class*="description"], [class*="subtitle"], small, .text-sm');
+            if (disclaimerEl) {
+              briefing.disclaimer = disclaimerEl.textContent.trim();
+            }
+
+            // 추천 항목들 - 번호가 있는 리스트 아이템
+            // 패턴 1: ol > li 구조
+            const listItems = briefingSection.querySelectorAll('ol > li, ul > li, [class*="list"] > li, [class*="item"]');
+
+            if (listItems.length > 0) {
+              listItems.forEach((item, idx) => {
+                const text = item.textContent.trim();
+                if (!text) return;
+
+                // 번호 추출 (1, 2, 3 등)
+                const numberMatch = text.match(/^(\d+)[\s\.]/);
+                const number = numberMatch ? numberMatch[1] : String(idx + 1);
+
+                // 실제 텍스트 (번호 제거)
+                let mainText = text.replace(/^\d+[\s\.]/, '').trim();
+
+                // 출처/작성자 정보 추출
+                let author = '';
+                let date = '';
+
+                // 작은 텍스트나 메타 정보 찾기
+                const metaEl = item.querySelector('small, .meta, [class*="author"], [class*="source"]');
+                if (metaEl) {
+                  const metaText = metaEl.textContent.trim();
+                  mainText = mainText.replace(metaText, '').trim();
+
+                  // 날짜 패턴 (25.04.25, 2025.04.25 등)
+                  const dateMatch = metaText.match(/\d{2,4}[\.\/]\d{2}[\.\/]\d{2}/);
+                  if (dateMatch) {
+                    date = dateMatch[0];
+                  }
+
+                  // 작성자 (날짜를 제외한 나머지)
+                  author = metaText.replace(/\d{2,4}[\.\/]\d{2}[\.\/]\d{2}\.?/, '').trim();
+                }
+
+                if (mainText.length > 5) {
+                  briefing.recommendations.push({
+                    number: number,
+                    text: mainText,
+                    author: author,
+                    date: date,
+                  });
+                }
+              });
+            } else {
+              // 패턴 2: 번호가 별도 요소인 경우
+              const numberedItems = briefingSection.querySelectorAll('[class*="number"]');
+              numberedItems.forEach(numEl => {
+                const number = numEl.textContent.trim();
+                const container = numEl.closest('[class*="item"], li, div');
+                if (container) {
+                  const textEl = container.querySelector('[class*="text"], p, span:not([class*="number"])');
+                  const authorEl = container.querySelector('[class*="author"], [class*="nick"], small');
+                  const dateEl = container.querySelector('[class*="date"]');
+
+                  if (textEl) {
+                    briefing.recommendations.push({
+                      number: number,
+                      text: textEl.textContent.trim(),
+                      author: authorEl ? authorEl.textContent.trim() : '',
+                      date: dateEl ? dateEl.textContent.trim() : '',
+                    });
+                  }
+                }
+              });
+            }
+
+            // 요약 - 브리핑 섹션의 전체 핵심 메시지
+            if (briefing.recommendations.length > 0) {
+              briefing.summary = briefing.recommendations.map(r => r.text).join(' / ');
+            }
+          }
+
+          // 외부 연동 링크 (다이닝코드, 망고플레이트 등) - 전체 페이지에서 찾기
+          const externalLinkEls = document.querySelectorAll('a[href*="diningcode"], a[href*="mangoplate"], a[href*="catchtable"]');
+          externalLinkEls.forEach(link => {
+            const href = link.href;
+            const text = link.textContent.trim();
+            const type = href.includes('diningcode') ? 'diningcode' :
+                        href.includes('mangoplate') ? 'mangoplate' :
+                        href.includes('catchtable') ? 'catchtable' : 'other';
+
+            briefing.externalLinks.push({
+              type: type,
+              url: href,
+              text: text,
+            });
+          });
+
+          return briefing;
+        });
+
+        if (aiBriefingData) {
+          result.aiBriefing = aiBriefingData;
+          logger.info(`Collected AI briefing data for ${placeId}`);
+
+          // 외부 링크가 있으면 수집
+          if (aiBriefingData.externalLinks && aiBriefingData.externalLinks.length > 0) {
+            logger.info(`Found ${aiBriefingData.externalLinks.length} external links`);
+          }
+        }
+
+      } catch (error) {
+        logger.warn(`Failed to fetch AI briefing for ${placeId}: ${error.message}`);
+      }
+
+      // 다이닝코드 데이터 수집 (외부 연동)
+      if (result.aiBriefing && result.aiBriefing.externalLinks) {
+        const diningcodeLink = result.aiBriefing.externalLinks.find(link => link.type === 'diningcode');
+
+        if (diningcodeLink) {
+          try {
+            logger.info(`Fetching Diningcode data from: ${diningcodeLink.url}`);
+
+            await page.goto(diningcodeLink.url, {
+              waitUntil: 'networkidle2',
+              timeout: 20000,
+            });
+
+            await new Promise(r => setTimeout(r, 2000));
+
+            const diningcodeData = await page.evaluate(() => {
+              const data = {
+                name: '',
+                rating: 0,
+                reviewCount: 0,
+                priceRange: '',
+                tags: [],
+                operatingHours: '',
+                summary: '',
+              };
+
+              // 이름
+              const nameEl = document.querySelector('h1, .restaurant-name, [class*="title"]');
+              if (nameEl) data.name = nameEl.textContent.trim();
+
+              // 평점
+              const ratingEl = document.querySelector('[class*="rating"], [class*="score"]');
+              if (ratingEl) {
+                const ratingText = ratingEl.textContent.trim();
+                const match = ratingText.match(/[\d.]+/);
+                if (match) data.rating = parseFloat(match[0]);
+              }
+
+              // 리뷰 수
+              const reviewCountEl = document.querySelector('[class*="review-count"], [class*="count"]');
+              if (reviewCountEl) {
+                const countText = reviewCountEl.textContent.trim();
+                const match = countText.match(/[\d,]+/);
+                if (match) data.reviewCount = parseInt(match[0].replace(/,/g, ''));
+              }
+
+              // 가격대
+              const priceEl = document.querySelector('[class*="price"], [class*="won"]');
+              if (priceEl) data.priceRange = priceEl.textContent.trim();
+
+              // 태그
+              const tagEls = document.querySelectorAll('[class*="tag"], [class*="keyword"]');
+              tagEls.forEach(tag => {
+                const text = tag.textContent.trim();
+                if (text) data.tags.push(text);
+              });
+
+              // 영업시간
+              const hoursEl = document.querySelector('[class*="hours"], [class*="time"]');
+              if (hoursEl) data.operatingHours = hoursEl.textContent.trim();
+
+              // 요약 정보
+              const summaryEl = document.querySelector('[class*="summary"], [class*="description"], p');
+              if (summaryEl) data.summary = summaryEl.textContent.trim();
+
+              return data;
+            });
+
+            result.externalData = result.externalData || {};
+            result.externalData.diningcode = diningcodeData;
+
+            logger.info(`Collected Diningcode data: ${diningcodeData.name}`);
+
+          } catch (error) {
+            logger.warn(`Failed to fetch Diningcode data: ${error.message}`);
+          }
+        }
+      }
+
+      // 경쟁업체 정보 수집 (2025-11-27 신규)
+      try {
+        const competitorCollector = new CompetitorCollector(page);
+
+        // 다이닝코드 URL 가져오기
+        const diningcodeUrl = result.aiBriefing && result.aiBriefing.externalLinks
+          ? result.aiBriefing.externalLinks.find(link => link.type === 'diningcode')?.url
+          : null;
+
+        const competitors = await competitorCollector.collectAll(placeId, diningcodeUrl, {
+          limit: 10 // 각 플랫폼당 최대 10개
+        });
+
+        result.competitors = competitors;
+
+        const totalCompetitors = competitors.naver.length + competitors.diningcode.length;
+        if (totalCompetitors > 0) {
+          logger.info(`Collected ${competitors.naver.length} Naver competitors, ${competitors.diningcode.length} Diningcode competitors`);
+        }
+
+      } catch (error) {
+        logger.warn(`Failed to fetch competitors for ${placeId}: ${error.message}`);
+        result.competitors = { naver: [], diningcode: [] };
+      }
+
+      logger.info(`Place.naver.com data extraction completed for ${placeId}`);
+      return result;
+
+    } catch (error) {
+      logger.warn(`_fetchPlaceDetailDirect error for ${placeId}: ${error.message}`);
+      return result;
+    }
+  }
+
+  /**
+   * DOM에서 기본 정보 추출
+   * @private
+   */
+  async _extractFromDOM(page, placeId) {
+    try {
+      const data = await page.evaluate(() => {
+        // 네이버 지도 페이지에서 iframe 내부 데이터 접근
+        const result = {
+          name: '',
+          category: '',
+          address: '',
+          phone: '',
+          openingHours: '',
+        };
+
+        // 페이지 제목에서 이름 추출
+        const title = document.title || '';
+        const nameMatch = title.match(/^(.+?)\s*-\s*네이버/);
+        if (nameMatch) {
+          result.name = nameMatch[1].trim();
+        }
+
+        // iframe 내부 접근 시도
+        const iframe = document.querySelector('iframe[name="entryIframe"]');
+        if (iframe && iframe.contentDocument) {
+          const doc = iframe.contentDocument;
+
+          // 이름
+          const nameEl = doc.querySelector('.GHAhO, .Fc1rA, [class*="name"], h1, .place_title');
+          if (nameEl) result.name = nameEl.textContent.trim();
+
+          // 카테고리
+          const categoryEl = doc.querySelector('.lnJFt, [class*="category"], .subcategory');
+          if (categoryEl) result.category = categoryEl.textContent.trim();
+
+          // 주소
+          const addressEl = doc.querySelector('.LDgIH, [class*="address"], .addr');
+          if (addressEl) result.address = addressEl.textContent.trim();
+
+          // 전화번호
+          const phoneEl = doc.querySelector('.xlx7Q, [class*="phone"], .tel');
+          if (phoneEl) result.phone = phoneEl.textContent.trim();
+
+          // 영업시간
+          const hoursEl = doc.querySelector('.A_cdD, [class*="time"], .time');
+          if (hoursEl) result.openingHours = hoursEl.textContent.trim();
+        }
+
+        return result;
+      });
+
+      return data;
+    } catch (error) {
+      logger.warn(`DOM extraction failed for ${placeId}:`, error.message);
+      return {
+        name: '',
+        category: '',
+        address: '',
+        phone: '',
+        openingHours: '',
+      };
+    }
+  }
+
+  /**
+   * Apollo State에서 기본 정보 추출
+   * @private
+   */
+  _extractBasicInfo(apolloState, placeId, fallback) {
+    // PC 버전에서는 PlaceDetailBase: 키 사용
+    const placeKey = `PlaceDetailBase:${placeId}`;
+    const placeData = apolloState[placeKey] || apolloState[`Place:${placeId}`] || {};
+
+    return {
+      id: placeId,
+      name: placeData.name || fallback.name,
+      category: placeData.category || placeData.categoryName || fallback.category,
+      address: {
+        road: placeData.roadAddress || placeData.address || fallback.address,
+        jibun: placeData.jibunAddress || '',
+        detail: placeData.addressDetail || '',
+      },
+      phone: placeData.virtualPhone || placeData.phone || placeData.phoneNumber || fallback.phone,
+      description: placeData.description || placeData.intro || '',
+      openingHours: placeData.businessHours || placeData.openingHours || '',
+      homepage: placeData.homepage || placeData.homepageUrl || '',
+      tags: placeData.tags || [],
+    };
+  }
+
+  /**
+   * Apollo State에서 메뉴 추출
+   * @private
+   */
+  _extractMenus(apolloState, placeId) {
+    const menus = [];
+
+    Object.keys(apolloState).forEach(key => {
+      if (key.startsWith('Menu:') || key.startsWith('MenuItem:')) {
+        const menuData = apolloState[key];
+        menus.push({
+          id: menuData.id || key.split(':')[1],
+          name: menuData.name || menuData.menuName || '',
+          price: this._parsePrice(menuData.price || menuData.priceTagText),
+          description: menuData.description || '',
+          image: menuData.imageUrl || menuData.image?.url || null,
+          isRecommended: menuData.isRecommended || menuData.isSignature || false,
+          isPopular: menuData.isPopular || false,
+        });
+      }
+    });
+
+    return menus
+      .sort((a, b) => {
+        if (a.isRecommended !== b.isRecommended) return b.isRecommended ? 1 : -1;
+        if (a.isPopular !== b.isPopular) return b.isPopular ? 1 : -1;
+        return 0;
+      })
+      .slice(0, 50);
+  }
+
+  /**
+   * Apollo State에서 리뷰 통계 추출
+   * @private
+   */
+  _extractReviewStats(apolloState, placeId) {
+    const reviewKey = Object.keys(apolloState).find(k =>
+      k.startsWith('Review') || k.includes('reviewSummary')
+    );
+
+    if (!reviewKey) return { total: 0, visitor: 0, blog: 0, average: 0 };
+
+    const reviewData = apolloState[reviewKey];
+    return {
+      total: reviewData.totalCount || reviewData.count || 0,
+      visitor: reviewData.visitorReviewCount || 0,
+      blog: reviewData.blogReviewCount || 0,
+      average: reviewData.averageScore || reviewData.rating || 0,
+    };
+  }
+
+  /**
+   * Apollo State에서 블로그 리뷰 추출
+   * @private
+   */
+  _extractBlogReviews(apolloState, placeId) {
+    const blogReviews = [];
+
+    Object.keys(apolloState).forEach(key => {
+      if (key.startsWith('BlogReview:') || key.includes('blogReview')) {
+        const review = apolloState[key];
+        const content = review.content || review.description || '';
+
+        if (content.length >= 1500) {
+          blogReviews.push({
+            id: review.id || key.split(':')[1],
+            title: review.title || '',
+            content: content,
+            author: review.author || review.bloggerName || '',
+            date: review.date || review.createdAt || '',
+            url: review.url || review.blogUrl || '',
+            wordCount: content.length,
+          });
+        }
+      }
+    });
+
+    return blogReviews.slice(0, 10);
+  }
+
+  /**
+   * Apollo State에서 리뷰 요약 추출
+   * @private
+   */
+  _extractReviewSummary(apolloState, placeId) {
+    const summaryKey = Object.keys(apolloState).find(k =>
+      k.includes('reviewSummary') || k.includes('ReviewSummary')
+    );
+
+    if (!summaryKey) return { keywords: [], positive: [], negative: [] };
+
+    const summary = apolloState[summaryKey];
+    return {
+      keywords: summary.keywords || [],
+      positive: summary.positiveKeywords || [],
+      negative: summary.negativeKeywords || [],
+    };
+  }
+
+  /**
+   * Apollo State에서 이미지 추출
+   * @private
+   */
+  _extractImages(apolloState, placeId) {
+    const images = [];
+
+    Object.keys(apolloState).forEach(key => {
+      if (key.startsWith('Image:') || key.startsWith('Photo:')) {
+        const img = apolloState[key];
+        images.push({
+          id: img.id || key.split(':')[1],
+          url: img.url || img.imageUrl || '',
+          thumbnail: img.thumbnail || img.thumbnailUrl || '',
+          width: img.width || 0,
+          height: img.height || 0,
+          category: this._classifyImage(img),
+          uploadedBy: img.author || img.uploader || '',
+          uploadedAt: img.date || img.createdAt || '',
+        });
+      }
+    });
+
+    return images;
+  }
+
+  /**
+   * 이미지 분류
+   * @private
+   */
+  _classifyImage(imageData) {
+    const tags = (imageData.tags || []).map(t => t.toLowerCase());
+    const description = (imageData.description || '').toLowerCase();
+
+    if (tags.includes('exterior') || description.includes('외관')) return 'exterior';
+    if (tags.includes('interior') || description.includes('내부')) return 'interior';
+    if (tags.includes('menu') || description.includes('메뉴')) return 'menu';
+    if (tags.includes('atmosphere') || description.includes('분위기')) return 'atmosphere';
+    return 'etc';
+  }
+
+  /**
+   * Apollo State에서 편의시설 추출
+   * @private
+   */
+  _extractFacilities(apolloState, placeId) {
+    const facilityKey = Object.keys(apolloState).find(k =>
+      k.includes('facility') || k.includes('Facility')
+    );
+
+    if (!facilityKey) return [];
+
+    const facilityData = apolloState[facilityKey];
+    const facilities = facilityData.list || facilityData.items || [];
+
+    return facilities.map(f => ({
+      name: f.name || f.label || '',
+      available: f.available !== false,
+      description: f.description || '',
+    }));
+  }
+
+  /**
+   * Apollo State에서 결제수단 추출
+   * @private
+   */
+  _extractPayments(apolloState, placeId) {
+    const paymentKey = Object.keys(apolloState).find(k =>
+      k.includes('payment') || k.includes('Payment')
+    );
+
+    if (!paymentKey) return [];
+
+    const paymentData = apolloState[paymentKey];
+    const payments = paymentData.list || paymentData.items || [];
+
+    return payments.map(p => p.name || p.label || p);
+  }
+
+  /**
+   * Apollo State에서 votedKeywords 추출
+   * @private
+   */
+  _extractVotedKeywords(apolloState) {
+    const keywords = [];
+
+    Object.keys(apolloState).forEach(key => {
+      if (key.includes('VotedKeyword') || key.includes('Keyword')) {
+        const kw = apolloState[key];
+        if (kw.keyword || kw.name) {
+          keywords.push({
+            name: kw.keyword || kw.name,
+            count: kw.count || 0,
+          });
+        }
+      }
+    });
+
+    return keywords;
+  }
+
+  /**
+   * 가격 파싱
+   * @private
+   */
+  _parsePrice(priceStr) {
+    if (!priceStr) return null;
+    const match = String(priceStr).match(/[\d,]+/);
+    if (!match) return null;
+    return parseInt(match[0].replace(/,/g, ''), 10);
+  }
+
+  /**
+   * 배치 크롤링
+   */
+  async crawlBatch(placeIds) {
+    const results = [];
+
+    for (const placeId of placeIds) {
+      try {
+        const data = await this.crawlPlace(placeId);
+        results.push({ success: true, placeId, data });
+      } catch (error) {
+        results.push({ success: false, placeId, error: error.message });
+      }
+    }
+
+    return results;
+  }
+
+  /**
+   * 키워드별 검색 순위 수집
+   * @param {string} placeId - 매장 ID
+   * @param {string[]} keywords - 검색 키워드 배열
+   * @param {Object} options - 옵션
+   * @returns {Promise<Array>} 키워드별 순위 정보
+   */
+  async collectKeywordRankings(placeId, keywords, options = {}) {
+    logger.info(`Collecting keyword rankings for place ${placeId} with ${keywords.length} keywords`);
+
+    const rankCrawler = new SearchRankCrawler({
+      headless: this.config.headless,
+      timeout: this.config.timeout,
+      maxPages: options.maxPages || 10,
+      ...options
+    });
+
+    try {
+      // SearchRankCrawler 초기화
+      await rankCrawler.initialize();
+
+      // 배치 순위 조회
+      const results = await rankCrawler.findRankBatch(keywords, placeId);
+
+      logger.info(`Keyword rankings collected for place ${placeId}`);
+      return results;
+
+    } catch (error) {
+      logger.error(`Failed to collect keyword rankings for ${placeId}:`, error);
+      throw error;
+    } finally {
+      await rankCrawler.close();
+    }
+  }
+
+  /**
+   * 리소스 정리
+   */
+  async close() {
+    if (this.browser) {
+      await this.browser.close();
+      logger.info('PlaceCrawler v0.4 closed');
+    }
+  }
+}

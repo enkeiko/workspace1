@@ -1,0 +1,299 @@
+# Naver Place Search Results - Apollo State Data Structure
+
+================================================================================
+                    COMPLETE APOLLO STATE STRUCTURE
+================================================================================
+
+window
+  |
+  └── __APOLLO_STATE__  ← Main data container (11 keys)
+      |
+      ├── ROOT_QUERY  ← **START HERE** for search results
+      │   |
+      │   ├── "restaurantList({\"input\":{...}})"  ← Dynamic query key
+      │   │   |
+      │   │   ├── __typename: "RestaurantListResult"
+      │   │   ├── items: [Array of references]  ← Contains search results
+      │   │   │   └── [
+      │   │   │       { __ref: "RestaurantListSummary:2099518162:2099518162" }
+      │   │   │       { __ref: "RestaurantListSummary:1234567890:1234567890" }
+      │   │   │       ...
+      │   │   │     ]
+      │   │   ├── total: 1  ← Total result count
+      │   │   ├── restaurantCategory: "restaurant"
+      │   │   ├── siteSort: "rel.dsc"
+      │   │   ├── queryString: "pr=place_m_salt&version=2.0.0..."
+      │   │   ├── selectedFilter: {Object}
+      │   │   └── location: {Object}
+      │   |
+      │   └── "adBusinesses({\"input\":{...}})"  ← Ad businesses query
+      │       └── ...
+      |
+      ├── RestaurantListSummary:2099518162:2099518162  ← **ACTUAL PLACE DATA**
+      │   |
+      │   ├── [IDENTITY FIELDS]
+      │   │   ├── id: "2099518162"
+      │   │   ├── apolloCacheId: "2099518162"
+      │   │   ├── dbType: "drt"
+      │   │   └── __typename: "RestaurantListSummary"
+      │   |
+      │   ├── [BASIC INFO]
+      │   │   ├── name: "보미카츠"
+      │   │   ├── category: "돈가스"
+      │   │   ├── businessCategory: "restaurant"
+      │   │   └── description: null
+      │   |
+      │   ├── [ADDRESS - 5 TYPES]
+      │   │   ├── address: "태장동 773-6"  (old format)
+      │   │   ├── roadAddress: "현충로 17 1층"  (new format)
+      │   │   ├── fullAddress: "강원특별자치도 원주시 태장동 773-6 1층"
+      │   │   ├── sigudongAddress: "원주시 태장동"
+      │   │   └── commonAddress: "원주 태장동"
+      │   |
+      │   ├── [LOCATION]
+      │   │   ├── x: "127.9547258"  (longitude)
+      │   │   ├── y: "37.3573879"  (latitude)
+      │   │   └── distance: "89km"
+      │   |
+      │   ├── [CONTACT]
+      │   │   ├── phone: null
+      │   │   └── virtualPhone: "0507-1434-4867"
+      │   |
+      │   ├── [IMAGES]
+      │   │   ├── imageUrl: "https://ldb-phinf.pstatic.net/..."
+      │   │   ├── imageCount: 2
+      │   │   ├── imageUrls: [Array]
+      │   │   │   ├── [0]: "https://ldb-phinf.pstatic.net/.../3491.jpg"
+      │   │   │   └── [1]: "https://ldb-phinf.pstatic.net/.../3283.jpg"
+      │   │   └── visitorImages: [Array of references]
+      │   │       └── { __ref: "VisitorImages:mi8osntflyx8rntq00n" }
+      │   |
+      │   ├── [REVIEWS & RATINGS]
+      │   │   ├── visitorReviewScore: null  ← Can be null (no rating yet)
+      │   │   ├── visitorReviewCount: "21"  ← String, not number!
+      │   │   ├── blogCafeReviewCount: "5"
+      │   │   ├── bookingReviewCount: "0"
+      │   │   ├── totalReviewCount: "5"
+      │   │   ├── visitorReviews: [Array of references]
+      │   │   │   └── { __ref: "VisitorReviews:mi8osntflycpe7gpy6g" }
+      │   │   └── microReview: null
+      │   |
+      │   ├── [BUSINESS FEATURES]
+      │   │   ├── hasBooking: null
+      │   │   ├── hasNPay: false
+      │   │   ├── newOpening: true
+      │   │   ├── hasWheelchairEntrance: true
+      │   │   └── options: "포장,유아의자,무선 인터넷,배달..."
+      │   |
+      │   ├── [BUSINESS HOURS]
+      │   │   ├── businessHours: null  (deprecated)
+      │   │   └── newBusinessHours: {Object}
+      │   │       ├── __typename: "NewBusinessHours"
+      │   │       ├── status: "영업 중"
+      │   │       └── description: "19:30에 라스트오더"
+      │   |
+      │   ├── [PRICING & POPULARITY]
+      │   │   ├── priceCategory: "2만원 대"
+      │   │   └── saveCount: "~100"
+      │   |
+      │   ├── [CATEGORIES]
+      │   │   ├── categoryCodeList: [Array]
+      │   │   │   ├── [0]: "220036"
+      │   │   │   ├── [1]: "220038"
+      │   │   │   ├── [2]: "220082"
+      │   │   │   └── [3]: "220812"
+      │   │   └── detailCid: {Object}
+      │   │       ├── __typename: "DetailCid"
+      │   │       ├── c0: "220036/220038/220082/220812"
+      │   │       ├── c1: "1004760/1004380/1002043"
+      │   │       ├── c2: "1004760/1006737"
+      │   │       └── c3: null
+      │   |
+      │   ├── [URLS]
+      │   │   ├── bookingUrl: null
+      │   │   ├── talktalkUrl: null
+      │   │   ├── routeUrl: "https://m.search.naver.com/..."
+      │   │   └── bookingHubUrl: null
+      │   |
+      │   ├── [PROMOTIONS]
+      │   │   ├── promotionTitle: null
+      │   │   └── coupon: null
+      │   |
+      │   ├── [SPECIAL FEATURES]
+      │   │   ├── streetPanorama: {__ref: "Panorama:aqMgo/..."}
+      │   │   ├── broadcastInfo: null
+      │   │   ├── michelinGuide: null
+      │   │   └── broadcasts: null
+      │   |
+      │   ├── [DELIVERY SERVICES]
+      │   │   ├── naverOrder: {Object}
+      │   │   │   ├── __typename: "NaverOrder"
+      │   │   │   ├── items: []
+      │   │   │   ├── isDelivery: false
+      │   │   │   ├── isTableOrder: false
+      │   │   │   ├── isPreOrder: false
+      │   │   │   └── isPickup: false
+      │   │   ├── baemin: null
+      │   │   ├── yogiyo: null
+      │   │   ├── deliveryArea: null
+      │   │   └── isCvsDelivery: false
+      │   |
+      │   └── [ADDITIONAL]
+      │       ├── agencyId: null
+      │       ├── bookingBusinessId: null
+      │       ├── bookingDisplayName: "방문자 리뷰"
+      │       ├── bookingVisitId: null
+      │       ├── bookingPickupId: null
+      │       ├── popularMenuImages: null
+      │       ├── foryouLabel: null
+      │       ├── foryouTasteType: null
+      │       ├── naverBookingCategory: null
+      │       ├── tvcastId: null
+      │       ├── uniqueBroadcasts: null
+      │       ├── realTimeBookingInfo: null
+      │       └── posInfo: {Object}
+      |
+      ├── VisitorImages:mi8osntflyx8rntq00n  ← Referenced visitor image
+      │   ├── __typename: "VisitorImages"
+      │   ├── id: "mi8osntflyx8rntq00n"
+      │   ├── reviewId: "6915af4de605f9491f2ddc8b"
+      │   ├── imageUrl: "https://pup-review-phinf.pstatic.net/..."
+      │   ├── profileImageUrl: "https://phinf.pstatic.net/..."
+      │   └── nickname: "ZERO4113"
+      |
+      ├── VisitorReviews:mi8osntflycpe7gpy6g  ← Referenced visitor review
+      │   ├── __typename: "VisitorReviews"
+      │   ├── id: "mi8osntflycpe7gpy6g"
+      │   ├── review: "오늘 <b>점심</b>으로 먹었는데..."
+      │   └── reviewId: "69088d69a15e3e300d97e424"
+      |
+      ├── Panorama:aqMgo/eHsS0T/cGu9JF9wA==  ← Street view panorama
+      │   ├── __typename: "Panorama"
+      │   ├── id: "aqMgo/eHsS0T/cGu9JF9wA=="
+      │   ├── pan: "-108.86"
+      │   ├── tilt: "10.00"
+      │   ├── lat: "37.3574416"
+      │   └── lon: "127.9548835"
+      |
+      └── [More VisitorImages and VisitorReviews objects...]
+
+================================================================================
+                         EXTRACTION FLOW DIAGRAM
+================================================================================
+
+   ┌─────────────────────────────────────────────────────────────┐
+   │ 1. Access window.__APOLLO_STATE__                           │
+   └───────────────────────┬─────────────────────────────────────┘
+                           │
+                           ▼
+   ┌─────────────────────────────────────────────────────────────┐
+   │ 2. Get apolloState.ROOT_QUERY                               │
+   └───────────────────────┬─────────────────────────────────────┘
+                           │
+                           ▼
+   ┌─────────────────────────────────────────────────────────────┐
+   │ 3. Find key starting with "restaurantList("                 │
+   │    Example: "restaurantList({\"input\":{...}})"             │
+   └───────────────────────┬─────────────────────────────────────┘
+                           │
+                           ▼
+   ┌─────────────────────────────────────────────────────────────┐
+   │ 4. Get items array from query result                        │
+   │    items = rootQuery[restaurantListKey].items               │
+   └───────────────────────┬─────────────────────────────────────┘
+                           │
+                           ▼
+   ┌─────────────────────────────────────────────────────────────┐
+   │ 5. Loop through items array                                 │
+   │    Each item: { __ref: "RestaurantListSummary:ID:ID" }     │
+   └───────────────────────┬─────────────────────────────────────┘
+                           │
+                           ▼
+   ┌─────────────────────────────────────────────────────────────┐
+   │ 6. Resolve reference to get actual data                     │
+   │    placeData = apolloState[itemRef.__ref]                   │
+   └───────────────────────┬─────────────────────────────────────┘
+                           │
+                           ▼
+   ┌─────────────────────────────────────────────────────────────┐
+   │ 7. Extract fields with CORRECT names:                       │
+   │    - placeData.visitorReviewScore (not visitorReviewsScore) │
+   │    - placeData.visitorReviewCount (not visitorReviewsTotal) │
+   │    - placeData.id                                            │
+   │    - placeData.name                                          │
+   │    - placeData.category                                      │
+   │    - placeData.address / roadAddress                         │
+   │    - etc. (50+ fields available)                             │
+   └───────────────────────┬─────────────────────────────────────┘
+                           │
+                           ▼
+   ┌─────────────────────────────────────────────────────────────┐
+   │ 8. Return extracted search results                          │
+   └─────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    COMMON MISTAKES TO AVOID
+================================================================================
+
+❌ WRONG: Looking for these keys in apolloState root
+   - "SearchResult:xxx"    (doesn't exist)
+   - "Query:xxx"           (doesn't exist)
+   - "Place:xxx"           (wrong format)
+
+❌ WRONG: Using these field names
+   - visitorReviewsScore   (has extra 's')
+   - visitorReviewsTotal   (wrong field name)
+
+❌ WRONG: Not resolving references
+   - Trying to use items array directly without resolving __ref
+
+✅ CORRECT: Access path
+   apolloState.ROOT_QUERY["restaurantList(...)"].items[0].__ref
+   → "RestaurantListSummary:123:123"
+   → apolloState["RestaurantListSummary:123:123"]
+   → { id, name, visitorReviewScore, visitorReviewCount, ... }
+
+================================================================================
+                         FIELD NAME REFERENCE
+================================================================================
+
+Type                 Old/Wrong Name              Correct Name
+--------------------------------------------------------------------------------
+Rating               visitorReviewsScore     →   visitorReviewScore
+Review Count         visitorReviewsTotal     →   visitorReviewCount
+Place ID             placeId (sometimes)     →   id (in data object)
+Longitude            lon / longitude         →   x
+Latitude             lat / latitude          →   y
+Business Hours       businessHours           →   newBusinessHours (preferred)
+
+Note: visitorReviewCount is a STRING ("21"), not a number!
+      Use parseInt() when needed.
+
+================================================================================
+                     PAGINATION & MULTIPLE RESULTS
+================================================================================
+
+For multiple search results, the structure is:
+
+ROOT_QUERY
+  └── "restaurantList({...})"
+      ├── items: [
+      │     { __ref: "RestaurantListSummary:123:123" },   ← Rank 1
+      │     { __ref: "RestaurantListSummary:456:456" },   ← Rank 2
+      │     { __ref: "RestaurantListSummary:789:789" },   ← Rank 3
+      │     ...
+      │   ]
+      └── total: 25
+
+The rank is determined by the index in the items array:
+- items[0] = Rank 1
+- items[1] = Rank 2
+- items[2] = Rank 3
+- etc.
+
+For pagination:
+- Page 1: start=1  → Ranks 1-9
+- Page 2: start=10 → Ranks 10-18
+- Page 3: start=19 → Ranks 19-27
+
+================================================================================

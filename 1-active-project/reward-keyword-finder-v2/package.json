@@ -1,0 +1,19 @@
+{
+  "name": "reward-keyword-finder-v2",
+  "version": "1.0.0",
+  "description": "네이버 플레이스 5위 이내 키워드 탐색 프로그램",
+  "main": "src/server/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server/app.js",
+    "dev": "node --watch src/server/app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "got": "^14.0.0",
+    "p-queue": "^8.0.1",
+    "node-cache": "^5.1.2",
+    "better-sqlite3": "^9.2.2",
+    "cheerio": "^1.0.0-rc.12"
+  }
+}

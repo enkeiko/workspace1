@@ -1,0 +1,226 @@
+{
+  "timestamp": "2025-11-12T08:15:49.852Z",
+  "places": {
+    "1768171911": {
+      "place_id": "1768171911",
+      "timestamp": "2025-11-12T08:15:49.852Z",
+      "matrix_size": 19,
+      "candidates": [
+        {
+          "keyword": "강남역 닭갈비",
+          "type": "short_term",
+          "classification": "main",
+          "search_volume": 6466,
+          "competition": "low",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "강남구 닭갈비",
+          "type": "short_term",
+          "classification": "main",
+          "search_volume": 8000,
+          "competition": "medium",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "서울특별시 닭갈비",
+          "type": "short_term",
+          "classification": "main",
+          "search_volume": 8103,
+          "competition": "medium",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "강남역 닭갈비 철판닭갈비",
+          "type": "long_term",
+          "classification": "main",
+          "search_volume": 3806,
+          "competition": "low",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "강남역 닭갈비 치즈닭갈비",
+          "type": "long_term",
+          "classification": "main",
+          "search_volume": 4933,
+          "competition": "high",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "강남구 닭갈비 철판닭갈비",
+          "type": "long_term",
+          "classification": "main",
+          "search_volume": 4996,
+          "competition": "medium",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "강남구 닭갈비 치즈닭갈비",
+          "type": "long_term",
+          "classification": "main",
+          "search_volume": 6919,
+          "competition": "high",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "서울특별시 닭갈비 철판닭갈비",
+          "type": "long_term",
+          "classification": "main",
+          "search_volume": 8229,
+          "competition": "medium",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "서울특별시 닭갈비 치즈닭갈비",
+          "type": "long_term",
+          "classification": "main",
+          "search_volume": 2989,
+          "competition": "medium",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "닭갈비 철판닭갈비",
+          "type": "short_term",
+          "classification": "main",
+          "search_volume": 7048,
+          "competition": "high",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "닭갈비 치즈닭갈비",
+          "type": "short_term",
+          "classification": "main",
+          "search_volume": 1126,
+          "competition": "medium",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "강남역 철판닭갈비",
+          "type": "short_term",
+          "classification": "main",
+          "search_volume": 4112,
+          "competition": "medium",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "강남역 치즈닭갈비",
+          "type": "short_term",
+          "classification": "main",
+          "search_volume": 1717,
+          "competition": "low",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "강남구 철판닭갈비",
+          "type": "short_term",
+          "classification": "main",
+          "search_volume": 6004,
+          "competition": "low",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "강남구 치즈닭갈비",
+          "type": "short_term",
+          "classification": "main",
+          "search_volume": 1872,
+          "competition": "low",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "히도 강남점 닭갈비",
+          "type": "long_term",
+          "classification": "main",
+          "search_volume": 6882,
+          "competition": "medium",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "주차 닭갈비",
+          "type": "short_term",
+          "classification": "main",
+          "search_volume": 9390,
+          "competition": "high",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "단체석 닭갈비",
+          "type": "short_term",
+          "classification": "main",
+          "search_volume": 7396,
+          "competition": "medium",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        },
+        {
+          "keyword": "포장 닭갈비",
+          "type": "short_term",
+          "classification": "main",
+          "search_volume": 6981,
+          "competition": "low",
+          "trend": "stable",
+          "relevance_score": null,
+          "rationale": null
+        }
+      ],
+      "ai_analysis_used": false,
+      "comparison": {
+        "has_comparison": true,
+        "current_keyword_count": 4,
+        "new_candidate_count": 19,
+        "overlap_count": 0,
+        "new_keywords_count": 19,
+        "current_avg_volume": 5000,
+        "new_avg_volume": 5630,
+        "volume_improvement_percent": 12.6,
+        "recommendation": "New keywords show potential for increased search exposure"
+      },
+      "metadata": {
+        "category": "닭갈비",
+        "region": "강남구",
+        "total_candidates": 19,
+        "avg_search_volume": 5630
+      }
+    }
+  },
+  "statistics": {
+    "total_places": 1,
+    "successful": 1,
+    "failed": 0
+  },
+  "errors": []
+}

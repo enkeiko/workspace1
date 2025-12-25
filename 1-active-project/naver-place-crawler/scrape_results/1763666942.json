@@ -1,0 +1,47 @@
+{
+  "timestamp": 1763666942,
+  "records": [
+    {
+      "id": "biz1",
+      "name": "가게1",
+      "categoryCode": "FD6",
+      "category": [
+        "음식점"
+      ],
+      "algorithm_type": "TYPE_B",
+      "keywords": [
+        {
+          "keyword": "친절해요",
+          "keyword_code": "K001",
+          "count": 5
+        },
+        {
+          "keyword": "맛있어요",
+          "keyword_code": "K002",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "id": "biz2",
+      "name": "가게2",
+      "categoryCode": "CE7",
+      "category": [
+        "카페"
+      ],
+      "algorithm_type": "TYPE_B",
+      "keywords": [
+        {
+          "keyword": "친절해요",
+          "keyword_code": "K001",
+          "count": 5
+        },
+        {
+          "keyword": "맛있어요",
+          "keyword_code": "K002",
+          "count": 3
+        }
+      ]
+    }
+  ]
+}
