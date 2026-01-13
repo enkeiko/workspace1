@@ -1,6 +1,7 @@
-﻿# AGENTS instructions
+﻿# AGENTS Global Instructions (전역 지침)
 
-- Primary communication language: Korean.
-- Prompts or AI-facing documents: write in English.
-- For any English prompts/docs, include Korean references or a separate Korean explanation section so a Korean reader can understand the intent.
-- Keep outputs concise and execution-focused.
+- **IDE 및 모든 CLI 출력**: 모든 에이전트는 사용자와의 직접적인 소통, 모든 상태 요약, 진행 보고를 반드시 **한국어**로 출력해야 합니다.
+- **에이전트 간 통신 및 기술 프롬프트**: 에이전트끼리의 문서나 복잡한 프롬프트는 효율성을 위해 **영어**로 작성할 수 있으나, 반드시 해당 내용의 핵심 의도를 담은 **한국어 요약 주석 또는 설명**을 병기해야 합니다.
+- **실행 중심**: 모든 답변은 한국어로 하되, 명령어 실행과 코드 구현은 빠르고 정확하게 처리하는 데 집중합니다.
+- **토큰 최적화**: 한국어로 답변하되 불필요한 서술은 줄이고 핵심 위주로 전달합니다.
+
