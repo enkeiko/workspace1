@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +16,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Plus,
   Loader2,
@@ -23,6 +41,15 @@ import {
   AlertCircle,
   Check,
   Clock,
+  Download,
+  FileSpreadsheet,
+  Receipt,
+  ArrowUpRight,
+  ArrowDownRight,
+  Calendar,
+  Search,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { format, subMonths } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -64,6 +91,22 @@ interface Settlement {
   createdAt: string;
 }
 
+interface TaxInvoice {
+  id: string;
+  type: "SALES" | "PURCHASE";
+  issueDate: string;
+  supplierBusinessNo: string;
+  supplierName: string;
+  receiverBusinessNo: string;
+  receiverName: string;
+  supplyAmount: number;
+  taxAmount: number;
+  totalAmount: number;
+  ntsConfirmNo: string | null;
+  status: "DRAFT" | "ISSUED" | "SENT" | "FAILED";
+  createdAt: string;
+}
+
 interface SummaryData {
   currentMonth: string;
   summary: {
@@ -86,6 +129,13 @@ interface SummaryData {
   }>;
 }
 
+interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
   PENDING: { label: "대기", variant: "outline" },
   CONFIRMED: { label: "확정", variant: "secondary" },
@@ -97,7 +147,23 @@ const typeMap: Record<string, { label: string; color: string }> = {
   COST: { label: "비용", color: "text-red-600" },
 };
 
+const invoiceTypeMap = {
+  SALES: { label: "매출", color: "bg-blue-500", icon: ArrowUpRight },
+  PURCHASE: { label: "매입", color: "bg-orange-500", icon: ArrowDownRight },
+};
+
+const invoiceStatusMap = {
+  DRAFT: { label: "초안", variant: "outline" as const },
+  ISSUED: { label: "발행", variant: "default" as const },
+  SENT: { label: "전송", variant: "default" as const },
+  FAILED: { label: "실패", variant: "destructive" as const },
+};
+
 export default function SettlementsPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentTab = searchParams.get("tab") || "settlements";
+
   const [settlements, setSettlements] = useState<Settlement[]>([]);
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [stores, setStores] = useState<Store[]>([]);
@@ -115,9 +181,69 @@ export default function SettlementsPage() {
     description: "",
   });
 
+  // Tax Invoice states
+  const [invoices, setInvoices] = useState<TaxInvoice[]>([]);
+  const [invoicePagination, setInvoicePagination] = useState<Pagination>({
+    page: 1,
+    limit: 20,
+    total: 0,
+    totalPages: 0,
+  });
+  const [invoiceSearch, setInvoiceSearch] = useState("");
+  const [invoiceTypeFilter, setInvoiceTypeFilter] = useState<string>("all");
+  const [invoiceStatusFilter, setInvoiceStatusFilter] = useState<string>("all");
+  const [invoiceStartDate, setInvoiceStartDate] = useState(
+    format(subMonths(new Date(), 3), "yyyy-MM-dd")
+  );
+  const [invoiceEndDate, setInvoiceEndDate] = useState(format(new Date(), "yyyy-MM-dd"));
+
+  const handleTabChange = (value: string) => {
+    router.push(`/settlements?tab=${value}`);
+  };
+
+  const fetchInvoices = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({
+        page: invoicePagination.page.toString(),
+        limit: invoicePagination.limit.toString(),
+      });
+      if (invoiceSearch) params.append("search", invoiceSearch);
+      if (invoiceTypeFilter && invoiceTypeFilter !== "all") params.append("type", invoiceTypeFilter);
+      if (invoiceStatusFilter && invoiceStatusFilter !== "all") params.append("status", invoiceStatusFilter);
+      if (invoiceStartDate) params.append("startDate", invoiceStartDate);
+      if (invoiceEndDate) params.append("endDate", invoiceEndDate);
+
+      const res = await fetch(`/api/tax-invoices?${params}`);
+      const data = await res.json();
+
+      if (res.ok) {
+        setInvoices(data.invoices || []);
+        setInvoicePagination(data.pagination || { page: 1, limit: 20, total: 0, totalPages: 0 });
+      }
+    } catch (error) {
+      console.error("Failed to fetch tax invoices:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [invoicePagination.page, invoicePagination.limit, invoiceSearch, invoiceTypeFilter, invoiceStatusFilter, invoiceStartDate, invoiceEndDate]);
+
   useEffect(() => {
-    fetchData();
-  }, [selectedMonth, selectedType]);
+    if (currentTab === "tax-invoices") {
+      fetchInvoices();
+    } else {
+      fetchData();
+    }
+  }, [currentTab, selectedMonth, selectedType]);
+
+  useEffect(() => {
+    if (currentTab === "tax-invoices") {
+      const timer = setTimeout(() => {
+        fetchInvoices();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [currentTab, fetchInvoices]);
 
   const fetchData = async () => {
     try {
@@ -206,25 +332,37 @@ export default function SettlementsPage() {
     };
   });
 
-  if (loading && !settlements.length) {
-    return (
-      <div className="flex justify-center py-8">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
-
   const profit = (summary?.summary.revenue || 0) - (summary?.summary.cost || 0);
 
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">정산 관리</h2>
-          <p className="text-muted-foreground">
-            매장별 매출/비용 정산을 관리합니다.
-          </p>
-        </div>
+  const salesTotal = invoices
+    .filter((i) => i.type === "SALES")
+    .reduce((sum, i) => sum + i.totalAmount, 0);
+  const purchaseTotal = invoices
+    .filter((i) => i.type === "PURCHASE")
+    .reduce((sum, i) => sum + i.totalAmount, 0);
+
+  const getAddButton = () => {
+    if (currentTab === "tax-invoices") {
+      return (
+        <Button asChild>
+          <Link href="/tax-invoices/new">
+            <Plus className="h-4 w-4 mr-2" />
+            세금계산서 등록
+          </Link>
+        </Button>
+      );
+    }
+    return (
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          onClick={() => {
+            window.location.href = `/api/settlements/export?month=${selectedMonth}`;
+          }}
+        >
+          <FileSpreadsheet className="h-4 w-4 mr-2" />
+          Excel 다운로드
+        </Button>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button>
@@ -311,8 +449,35 @@ export default function SettlementsPage() {
           </DialogContent>
         </Dialog>
       </div>
+    );
+  };
 
-      {/* 요약 카드 */}
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">정산 관리</h2>
+          <p className="text-muted-foreground">
+            매출/비용 정산 및 세금계산서를 통합 관리합니다.
+          </p>
+        </div>
+        {getAddButton()}
+      </div>
+
+      <Tabs value={currentTab} onValueChange={handleTabChange}>
+        <TabsList className="grid w-full grid-cols-2 max-w-xs">
+          <TabsTrigger value="settlements" className="flex items-center gap-2">
+            <Wallet className="h-4 w-4" />
+            정산 현황
+          </TabsTrigger>
+          <TabsTrigger value="tax-invoices" className="flex items-center gap-2">
+            <Receipt className="h-4 w-4" />
+            세금계산서
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="settlements" className="mt-4 space-y-6">
+          {/* 요약 카드 */}
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -537,6 +702,245 @@ export default function SettlementsPage() {
           </CardContent>
         </Card>
       )}
+        </TabsContent>
+
+        <TabsContent value="tax-invoices" className="mt-4 space-y-6">
+          {/* 세금계산서 요약 카드 */}
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">매출 세금계산서</CardTitle>
+                <ArrowUpRight className="h-4 w-4 text-blue-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-blue-600">
+                  {salesTotal.toLocaleString()}원
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {invoices.filter((i) => i.type === "SALES").length}건
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">매입 세금계산서</CardTitle>
+                <ArrowDownRight className="h-4 w-4 text-orange-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-orange-600">
+                  {purchaseTotal.toLocaleString()}원
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {invoices.filter((i) => i.type === "PURCHASE").length}건
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">합계</CardTitle>
+                <Receipt className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {(salesTotal - purchaseTotal).toLocaleString()}원
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  총 {invoices.length}건
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* 세금계산서 목록 */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-4 flex-wrap">
+                <div className="relative flex-1 max-w-sm">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="사업자번호, 상호 검색..."
+                    className="pl-9"
+                    value={invoiceSearch}
+                    onChange={(e) => {
+                      setInvoiceSearch(e.target.value);
+                      setInvoicePagination((prev) => ({ ...prev, page: 1 }));
+                    }}
+                  />
+                </div>
+                <Select
+                  value={invoiceTypeFilter}
+                  onValueChange={(value) => {
+                    setInvoiceTypeFilter(value);
+                    setInvoicePagination((prev) => ({ ...prev, page: 1 }));
+                  }}
+                >
+                  <SelectTrigger className="w-[120px]">
+                    <SelectValue placeholder="유형" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">전체</SelectItem>
+                    <SelectItem value="SALES">매출</SelectItem>
+                    <SelectItem value="PURCHASE">매입</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select
+                  value={invoiceStatusFilter}
+                  onValueChange={(value) => {
+                    setInvoiceStatusFilter(value);
+                    setInvoicePagination((prev) => ({ ...prev, page: 1 }));
+                  }}
+                >
+                  <SelectTrigger className="w-[120px]">
+                    <SelectValue placeholder="상태" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">전체</SelectItem>
+                    <SelectItem value="DRAFT">초안</SelectItem>
+                    <SelectItem value="ISSUED">발행</SelectItem>
+                    <SelectItem value="SENT">전송</SelectItem>
+                    <SelectItem value="FAILED">실패</SelectItem>
+                  </SelectContent>
+                </Select>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="date"
+                    className="w-[140px]"
+                    value={invoiceStartDate}
+                    onChange={(e) => setInvoiceStartDate(e.target.value)}
+                  />
+                  <span className="text-muted-foreground">~</span>
+                  <Input
+                    type="date"
+                    className="w-[140px]"
+                    value={invoiceEndDate}
+                    onChange={(e) => setInvoiceEndDate(e.target.value)}
+                  />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {loading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : invoices.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  {invoiceSearch || invoiceTypeFilter !== "all" || invoiceStatusFilter !== "all"
+                    ? "검색 결과가 없습니다."
+                    : "등록된 세금계산서가 없습니다."}
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>유형</TableHead>
+                      <TableHead>발행일</TableHead>
+                      <TableHead>공급자</TableHead>
+                      <TableHead>공급받는자</TableHead>
+                      <TableHead className="text-right">공급가액</TableHead>
+                      <TableHead className="text-right">세액</TableHead>
+                      <TableHead className="text-right">합계</TableHead>
+                      <TableHead>승인번호</TableHead>
+                      <TableHead>상태</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {invoices.map((invoice) => {
+                      const TypeIcon = invoiceTypeMap[invoice.type].icon;
+                      return (
+                        <TableRow key={invoice.id}>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <div className={`p-1 rounded ${invoiceTypeMap[invoice.type].color}`}>
+                                <TypeIcon className="h-3 w-3 text-white" />
+                              </div>
+                              <span className="text-sm">{invoiceTypeMap[invoice.type].label}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {format(new Date(invoice.issueDate), "yyyy-MM-dd")}
+                          </TableCell>
+                          <TableCell>
+                            <div>
+                              <p className="font-medium text-sm">{invoice.supplierName}</p>
+                              <p className="text-xs text-muted-foreground font-mono">
+                                {invoice.supplierBusinessNo}
+                              </p>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div>
+                              <p className="font-medium text-sm">{invoice.receiverName}</p>
+                              <p className="text-xs text-muted-foreground font-mono">
+                                {invoice.receiverBusinessNo}
+                              </p>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right font-mono">
+                            {invoice.supplyAmount.toLocaleString()}
+                          </TableCell>
+                          <TableCell className="text-right font-mono">
+                            {invoice.taxAmount.toLocaleString()}
+                          </TableCell>
+                          <TableCell className="text-right font-mono font-medium">
+                            {invoice.totalAmount.toLocaleString()}
+                          </TableCell>
+                          <TableCell className="font-mono text-xs">
+                            {invoice.ntsConfirmNo || "-"}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={invoiceStatusMap[invoice.status].variant}>
+                              {invoiceStatusMap[invoice.status].label}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              )}
+
+              {invoicePagination.totalPages > 1 && (
+                <div className="flex items-center justify-between mt-4">
+                  <p className="text-sm text-muted-foreground">총 {invoicePagination.total}건</p>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={invoicePagination.page === 1}
+                      onClick={() =>
+                        setInvoicePagination((prev) => ({
+                          ...prev,
+                          page: prev.page - 1,
+                        }))
+                      }
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <span className="text-sm">
+                      {invoicePagination.page} / {invoicePagination.totalPages}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={invoicePagination.page === invoicePagination.totalPages}
+                      onClick={() =>
+                        setInvoicePagination((prev) => ({
+                          ...prev,
+                          page: prev.page + 1,
+                        }))
+                      }
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

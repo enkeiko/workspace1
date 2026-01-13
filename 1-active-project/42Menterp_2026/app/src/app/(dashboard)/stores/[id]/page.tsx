@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, use, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,15 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,8 +36,27 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Loader2, ExternalLink, Trash2, Plus, X, Tag, Building2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Loader2,
+  ExternalLink,
+  Trash2,
+  Plus,
+  X,
+  Tag,
+  Building2,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+  FileText,
+  ChevronLeft,
+  ChevronRight,
+  Store as StoreIcon,
+  BarChart3,
+  ClipboardList,
+} from "lucide-react";
 import { toast } from "sonner";
+import { format, subDays } from "date-fns";
 
 interface StoreKeyword {
   id: string;
@@ -63,6 +91,53 @@ interface Store {
   keywords?: StoreKeyword[];
 }
 
+interface KeywordRanking {
+  id: string;
+  storeKeywordId: string;
+  ranking: number | null;
+  checkDate: string;
+  checkTime: string;
+  previousRank: number | null;
+  rankChange: number;
+  storeKeyword: {
+    id: string;
+    keyword: string;
+    store: { id: string; name: string; mid: string };
+  };
+}
+
+interface WorkLog {
+  id: string;
+  storeId: string;
+  purchaseOrderId: string | null;
+  workType: string;
+  workDate: string;
+  description: string;
+  qty: number | null;
+  result: string | null;
+  store: { id: string; name: string; mid: string };
+  purchaseOrder: { id: string; purchaseOrderNo: string } | null;
+  createdBy: { id: string; name: string };
+  createdAt: string;
+}
+
+interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+const workTypeMap: Record<string, { label: string; color: string }> = {
+  SALES_ORDER_CREATED: { label: "수주 생성", color: "bg-blue-500" },
+  SALES_ORDER_CONFIRMED: { label: "수주 확정", color: "bg-blue-600" },
+  PURCHASE_ORDER_CREATED: { label: "발주 생성", color: "bg-green-500" },
+  PURCHASE_ORDER_CONFIRMED: { label: "발주 확정", color: "bg-green-600" },
+  PURCHASE_ORDER_COMPLETED: { label: "발주 완료", color: "bg-green-700" },
+  MANUAL_WORK: { label: "수동 작업", color: "bg-purple-500" },
+  KEYWORD_CHECK: { label: "키워드 확인", color: "bg-orange-500" },
+};
+
 export default function StoreDetailPage({
   params,
 }: {
@@ -70,6 +145,9 @@ export default function StoreDetailPage({
 }) {
   const { id } = use(params);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentTab = searchParams.get("tab") || "info";
+
   const [store, setStore] = useState<Store | null>(null);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -94,10 +172,110 @@ export default function StoreDetailPage({
     customerId: "",
   });
 
+  // Keyword Rankings state
+  const [rankings, setRankings] = useState<KeywordRanking[]>([]);
+  const [rankingsLoading, setRankingsLoading] = useState(false);
+  const [selectedKeywordId, setSelectedKeywordId] = useState<string>("all");
+  const [rankingsDateRange, setRankingsDateRange] = useState({
+    start: format(subDays(new Date(), 30), "yyyy-MM-dd"),
+    end: format(new Date(), "yyyy-MM-dd"),
+  });
+
+  // Work Logs state
+  const [workLogs, setWorkLogs] = useState<WorkLog[]>([]);
+  const [workLogsLoading, setWorkLogsLoading] = useState(false);
+  const [workLogsPagination, setWorkLogsPagination] = useState<Pagination>({
+    page: 1,
+    limit: 20,
+    total: 0,
+    totalPages: 0,
+  });
+  const [workTypeFilter, setWorkTypeFilter] = useState<string>("all");
+  const [workLogsDateRange, setWorkLogsDateRange] = useState({
+    start: format(subDays(new Date(), 30), "yyyy-MM-dd"),
+    end: format(new Date(), "yyyy-MM-dd"),
+  });
+
+  const handleTabChange = (value: string) => {
+    router.push(`/stores/${id}?tab=${value}`);
+  };
+
   useEffect(() => {
     fetchStore();
     fetchCustomers();
   }, [id]);
+
+  useEffect(() => {
+    if (currentTab === "keywords" && store?.keywords && store.keywords.length > 0) {
+      fetchRankings();
+    }
+  }, [currentTab, store?.keywords, selectedKeywordId, rankingsDateRange]);
+
+  useEffect(() => {
+    if (currentTab === "work-logs") {
+      fetchWorkLogs();
+    }
+  }, [currentTab, workLogsPagination.page, workTypeFilter, workLogsDateRange]);
+
+  const fetchRankings = useCallback(async () => {
+    if (!store?.keywords || store.keywords.length === 0) return;
+
+    setRankingsLoading(true);
+    try {
+      const params = new URLSearchParams({
+        startDate: rankingsDateRange.start,
+        endDate: rankingsDateRange.end,
+        limit: "100",
+      });
+      if (selectedKeywordId !== "all") {
+        params.append("storeKeywordId", selectedKeywordId);
+      }
+
+      const res = await fetch(`/api/keywords/rankings?${params}`);
+      const data = await res.json();
+
+      if (res.ok) {
+        // Filter rankings for this store's keywords
+        const storeKeywordIds = store.keywords.map((k) => k.id);
+        const filteredRankings = (data.rankings || []).filter(
+          (r: KeywordRanking) => storeKeywordIds.includes(r.storeKeywordId)
+        );
+        setRankings(filteredRankings);
+      }
+    } catch (error) {
+      console.error("Failed to fetch rankings:", error);
+    } finally {
+      setRankingsLoading(false);
+    }
+  }, [store?.keywords, selectedKeywordId, rankingsDateRange]);
+
+  const fetchWorkLogs = useCallback(async () => {
+    setWorkLogsLoading(true);
+    try {
+      const params = new URLSearchParams({
+        storeId: id,
+        page: workLogsPagination.page.toString(),
+        limit: workLogsPagination.limit.toString(),
+        startDate: workLogsDateRange.start,
+        endDate: workLogsDateRange.end,
+      });
+      if (workTypeFilter !== "all") {
+        params.append("workType", workTypeFilter);
+      }
+
+      const res = await fetch(`/api/work-logs?${params}`);
+      const data = await res.json();
+
+      if (res.ok) {
+        setWorkLogs(data.workLogs || []);
+        setWorkLogsPagination(data.pagination || { page: 1, limit: 20, total: 0, totalPages: 0 });
+      }
+    } catch (error) {
+      console.error("Failed to fetch work logs:", error);
+    } finally {
+      setWorkLogsLoading(false);
+    }
+  }, [id, workLogsPagination.page, workLogsPagination.limit, workTypeFilter, workLogsDateRange]);
 
   const fetchCustomers = async () => {
     try {
@@ -319,58 +497,77 @@ export default function StoreDetailPage({
             <p className="text-muted-foreground font-mono">{store.mid}</p>
           </div>
         </div>
-        <div className="flex gap-2">
-          {editMode ? (
-            <>
-              <Button variant="outline" onClick={cancelEdit}>
-                취소
-              </Button>
-              <Button onClick={handleSave} disabled={saving}>
-                {saving ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    저장 중...
-                  </>
-                ) : (
-                  "저장"
-                )}
-              </Button>
-            </>
-          ) : (
-            <>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="outline" className="text-red-600">
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    삭제
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>매장을 삭제하시겠습니까?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      이 작업은 되돌릴 수 없습니다. 매장 정보가 영구적으로 삭제됩니다.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>취소</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={handleDelete}
-                      disabled={deleting}
-                      className="bg-red-600 hover:bg-red-700"
-                    >
-                      {deleting ? "삭제 중..." : "삭제"}
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-              <Button onClick={() => setEditMode(true)}>수정</Button>
-            </>
-          )}
-        </div>
+        {currentTab === "info" && (
+          <div className="flex gap-2">
+            {editMode ? (
+              <>
+                <Button variant="outline" onClick={cancelEdit}>
+                  취소
+                </Button>
+                <Button onClick={handleSave} disabled={saving}>
+                  {saving ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      저장 중...
+                    </>
+                  ) : (
+                    "저장"
+                  )}
+                </Button>
+              </>
+            ) : (
+              <>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline" className="text-red-600">
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      삭제
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>매장을 삭제하시겠습니까?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        이 작업은 되돌릴 수 없습니다. 매장 정보가 영구적으로 삭제됩니다.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>취소</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDelete}
+                        disabled={deleting}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        {deleting ? "삭제 중..." : "삭제"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+                <Button onClick={() => setEditMode(true)}>수정</Button>
+              </>
+            )}
+          </div>
+        )}
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <Tabs value={currentTab} onValueChange={handleTabChange}>
+        <TabsList className="grid w-full grid-cols-3 max-w-md">
+          <TabsTrigger value="info" className="flex items-center gap-2">
+            <StoreIcon className="h-4 w-4" />
+            기본 정보
+          </TabsTrigger>
+          <TabsTrigger value="keywords" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            키워드 순위
+          </TabsTrigger>
+          <TabsTrigger value="work-logs" className="flex items-center gap-2">
+            <ClipboardList className="h-4 w-4" />
+            작업 로그
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="info" className="mt-4 space-y-6">
+          <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>기본 정보</CardTitle>
@@ -678,6 +875,279 @@ export default function StoreDetailPage({
           </div>
         </CardContent>
       </Card>
+        </TabsContent>
+
+        <TabsContent value="keywords" className="mt-4 space-y-6">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>키워드 순위 현황</CardTitle>
+                  <CardDescription>등록된 키워드의 순위 변동을 확인합니다.</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Select
+                    value={selectedKeywordId}
+                    onValueChange={setSelectedKeywordId}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="키워드 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체 키워드</SelectItem>
+                      {store.keywords?.map((kw) => (
+                        <SelectItem key={kw.id} value={kw.id}>
+                          {kw.keyword}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    type="date"
+                    className="w-[140px]"
+                    value={rankingsDateRange.start}
+                    onChange={(e) =>
+                      setRankingsDateRange((prev) => ({ ...prev, start: e.target.value }))
+                    }
+                  />
+                  <span className="text-muted-foreground">~</span>
+                  <Input
+                    type="date"
+                    className="w-[140px]"
+                    value={rankingsDateRange.end}
+                    onChange={(e) =>
+                      setRankingsDateRange((prev) => ({ ...prev, end: e.target.value }))
+                    }
+                  />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {!store.keywords || store.keywords.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  등록된 키워드가 없습니다. 기본 정보 탭에서 키워드를 먼저 등록해주세요.
+                </div>
+              ) : rankingsLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : rankings.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  해당 기간의 순위 기록이 없습니다.
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>키워드</TableHead>
+                      <TableHead>확인일</TableHead>
+                      <TableHead>확인시간</TableHead>
+                      <TableHead className="text-center">현재 순위</TableHead>
+                      <TableHead className="text-center">이전 순위</TableHead>
+                      <TableHead className="text-center">변동</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {rankings.map((ranking) => (
+                      <TableRow key={ranking.id}>
+                        <TableCell className="font-medium">
+                          {ranking.storeKeyword.keyword}
+                        </TableCell>
+                        <TableCell>
+                          {format(new Date(ranking.checkDate), "yyyy-MM-dd")}
+                        </TableCell>
+                        <TableCell>{ranking.checkTime}</TableCell>
+                        <TableCell className="text-center font-mono">
+                          {ranking.ranking ?? "-"}
+                        </TableCell>
+                        <TableCell className="text-center font-mono text-muted-foreground">
+                          {ranking.previousRank ?? "-"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {ranking.rankChange !== 0 ? (
+                            <div className="flex items-center justify-center gap-1">
+                              {ranking.rankChange > 0 ? (
+                                <>
+                                  <TrendingUp className="h-4 w-4 text-green-600" />
+                                  <span className="text-green-600">+{ranking.rankChange}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <TrendingDown className="h-4 w-4 text-red-600" />
+                                  <span className="text-red-600">{ranking.rankChange}</span>
+                                </>
+                              )}
+                            </div>
+                          ) : (
+                            <Minus className="h-4 w-4 text-muted-foreground mx-auto" />
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="work-logs" className="mt-4 space-y-6">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>작업 로그</CardTitle>
+                  <CardDescription>이 매장에 대한 모든 작업 기록을 확인합니다.</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Select
+                    value={workTypeFilter}
+                    onValueChange={(value) => {
+                      setWorkTypeFilter(value);
+                      setWorkLogsPagination((prev) => ({ ...prev, page: 1 }));
+                    }}
+                  >
+                    <SelectTrigger className="w-[140px]">
+                      <SelectValue placeholder="작업 유형" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="SALES_ORDER_CREATED">수주 생성</SelectItem>
+                      <SelectItem value="SALES_ORDER_CONFIRMED">수주 확정</SelectItem>
+                      <SelectItem value="PURCHASE_ORDER_CREATED">발주 생성</SelectItem>
+                      <SelectItem value="PURCHASE_ORDER_CONFIRMED">발주 확정</SelectItem>
+                      <SelectItem value="PURCHASE_ORDER_COMPLETED">발주 완료</SelectItem>
+                      <SelectItem value="MANUAL_WORK">수동 작업</SelectItem>
+                      <SelectItem value="KEYWORD_CHECK">키워드 확인</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    type="date"
+                    className="w-[140px]"
+                    value={workLogsDateRange.start}
+                    onChange={(e) =>
+                      setWorkLogsDateRange((prev) => ({ ...prev, start: e.target.value }))
+                    }
+                  />
+                  <span className="text-muted-foreground">~</span>
+                  <Input
+                    type="date"
+                    className="w-[140px]"
+                    value={workLogsDateRange.end}
+                    onChange={(e) =>
+                      setWorkLogsDateRange((prev) => ({ ...prev, end: e.target.value }))
+                    }
+                  />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {workLogsLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : workLogs.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  해당 기간의 작업 기록이 없습니다.
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>작업일</TableHead>
+                      <TableHead>작업 유형</TableHead>
+                      <TableHead>내용</TableHead>
+                      <TableHead className="text-center">수량</TableHead>
+                      <TableHead>결과</TableHead>
+                      <TableHead>발주번호</TableHead>
+                      <TableHead>작성자</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {workLogs.map((log) => (
+                      <TableRow key={log.id}>
+                        <TableCell>
+                          {format(new Date(log.workDate), "yyyy-MM-dd")}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            className={`${workTypeMap[log.workType]?.color || "bg-gray-500"} text-white`}
+                          >
+                            {workTypeMap[log.workType]?.label || log.workType}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="max-w-[200px] truncate">
+                          {log.description}
+                        </TableCell>
+                        <TableCell className="text-center font-mono">
+                          {log.qty ?? "-"}
+                        </TableCell>
+                        <TableCell className="max-w-[150px] truncate">
+                          {log.result || "-"}
+                        </TableCell>
+                        <TableCell>
+                          {log.purchaseOrder ? (
+                            <Link
+                              href={`/purchase-orders/${log.purchaseOrder.id}`}
+                              className="text-blue-600 hover:underline font-mono text-sm"
+                            >
+                              {log.purchaseOrder.purchaseOrderNo}
+                            </Link>
+                          ) : (
+                            "-"
+                          )}
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {log.createdBy.name}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+
+              {workLogsPagination.totalPages > 1 && (
+                <div className="flex items-center justify-between mt-4">
+                  <p className="text-sm text-muted-foreground">
+                    총 {workLogsPagination.total}건
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={workLogsPagination.page === 1}
+                      onClick={() =>
+                        setWorkLogsPagination((prev) => ({
+                          ...prev,
+                          page: prev.page - 1,
+                        }))
+                      }
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <span className="text-sm">
+                      {workLogsPagination.page} / {workLogsPagination.totalPages}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={workLogsPagination.page === workLogsPagination.totalPages}
+                      onClick={() =>
+                        setWorkLogsPagination((prev) => ({
+                          ...prev,
+                          page: prev.page + 1,
+                        }))
+                      }
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

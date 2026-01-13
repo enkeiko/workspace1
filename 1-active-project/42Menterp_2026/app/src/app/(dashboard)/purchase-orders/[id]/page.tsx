@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, use, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
   TableBody,
@@ -42,6 +43,8 @@ import {
   PlayCircle,
   XCircle,
   ClipboardList,
+  FileText,
+  Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -118,6 +121,36 @@ interface PurchaseOrder {
   exports: PurchaseOrderExport[];
 }
 
+interface WorkStatement {
+  id: string;
+  statementNo: string;
+  periodStart: string;
+  periodEnd: string;
+  supplyAmount: number;
+  taxAmount: number;
+  totalAmount: number;
+  status: "DRAFT" | "CONFIRMED" | "LOCKED";
+  note: string | null;
+  createdAt: string;
+  confirmedAt: string | null;
+  purchaseOrder: {
+    purchaseOrderNo: string;
+    channel: { name: string };
+  };
+  createdBy: { name: string };
+  confirmedBy: { name: string } | null;
+  _count: {
+    items: number;
+    settlementLines: number;
+  };
+}
+
+const workStatementStatusMap: Record<string, { label: string; variant: "default" | "secondary" | "outline" }> = {
+  DRAFT: { label: "초안", variant: "outline" },
+  CONFIRMED: { label: "확정", variant: "default" },
+  LOCKED: { label: "잠금", variant: "secondary" },
+};
+
 const statusMap: Record<
   string,
   { label: string; variant: "default" | "secondary" | "destructive" | "outline" }
@@ -146,15 +179,50 @@ export default function PurchaseOrderDetailPage({
 }) {
   const { id } = use(params);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentTab = searchParams.get("tab") || "info";
+
   const [purchaseOrder, setPurchaseOrder] = useState<PurchaseOrder | null>(null);
   const [loading, setLoading] = useState(true);
   const [statusLoading, setStatusLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
+  // Work Statements state
+  const [workStatements, setWorkStatements] = useState<WorkStatement[]>([]);
+  const [workStatementsLoading, setWorkStatementsLoading] = useState(false);
+
+  const handleTabChange = (value: string) => {
+    router.push(`/purchase-orders/${id}?tab=${value}`);
+  };
+
   useEffect(() => {
     fetchPurchaseOrder();
   }, [id]);
+
+  useEffect(() => {
+    if (currentTab === "work-statements" && purchaseOrder) {
+      fetchWorkStatements();
+    }
+  }, [currentTab, purchaseOrder?.id]);
+
+  const fetchWorkStatements = useCallback(async () => {
+    if (!purchaseOrder) return;
+
+    setWorkStatementsLoading(true);
+    try {
+      const res = await fetch(`/api/work-statements?purchaseOrderId=${purchaseOrder.id}`);
+      const data = await res.json();
+
+      if (res.ok) {
+        setWorkStatements(data.workStatements || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch work statements:", error);
+    } finally {
+      setWorkStatementsLoading(false);
+    }
+  }, [purchaseOrder?.id]);
 
   const fetchPurchaseOrder = async () => {
     try {
@@ -361,6 +429,116 @@ export default function PurchaseOrderDetailPage({
   const canComplete = purchaseOrder.status === "IN_PROGRESS";
   const canCreateWorkStatement = ["CONFIRMED", "IN_PROGRESS"].includes(purchaseOrder.status);
 
+  const getHeaderButtons = () => {
+    if (currentTab === "work-statements") {
+      return (
+        <Button asChild>
+          <Link href={`/work-statements/new?purchaseOrderId=${purchaseOrder.id}`}>
+            <Plus className="h-4 w-4 mr-2" />
+            작업 명세 등록
+          </Link>
+        </Button>
+      );
+    }
+
+    return (
+      <>
+        {canDelete && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" className="text-red-600">
+                <Trash2 className="h-4 w-4 mr-2" />
+                삭제
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>발주를 삭제하시겠습니까?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  이 작업은 되돌릴 수 없습니다.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>취소</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  {deleting ? "삭제 중..." : "삭제"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
+        {canCancel && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" disabled={statusLoading}>
+                <XCircle className="h-4 w-4 mr-2" />
+                취소
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>발주를 취소하시겠습니까?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  이 작업은 되돌릴 수 없습니다.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>닫기</AlertDialogCancel>
+                <AlertDialogAction onClick={handleCancel}>
+                  취소 처리
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
+        {canConfirm && (
+          <Button
+            variant="outline"
+            onClick={handleConfirm}
+            disabled={statusLoading}
+          >
+            <CheckCircle className="h-4 w-4 mr-2" />
+            발주 확정
+          </Button>
+        )}
+        {canStart && (
+          <Button
+            variant="outline"
+            onClick={() => handleStatusChange("IN_PROGRESS")}
+            disabled={statusLoading}
+          >
+            <PlayCircle className="h-4 w-4 mr-2" />
+            작업 시작
+          </Button>
+        )}
+        {canComplete && (
+          <Button
+            onClick={handleComplete}
+            disabled={statusLoading}
+            className="bg-green-600 hover:bg-green-700"
+          >
+            <CheckCircle className="h-4 w-4 mr-2" />
+            완료 처리
+          </Button>
+        )}
+        {canExport && (
+          <Button onClick={handleExport} disabled={exporting}>
+            {exporting ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <FileSpreadsheet className="h-4 w-4 mr-2" />
+            )}
+            발주서 출력
+          </Button>
+        )}
+      </>
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -383,110 +561,24 @@ export default function PurchaseOrderDetailPage({
           </div>
         </div>
         <div className="flex gap-2">
-          {canDelete && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="outline" className="text-red-600">
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  삭제
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>발주를 삭제하시겠습니까?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    이 작업은 되돌릴 수 없습니다.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>취소</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={handleDelete}
-                    disabled={deleting}
-                    className="bg-red-600 hover:bg-red-700"
-                  >
-                    {deleting ? "삭제 중..." : "삭제"}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
-          {canCancel && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="outline" disabled={statusLoading}>
-                  <XCircle className="h-4 w-4 mr-2" />
-                  취소
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>발주를 취소하시겠습니까?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    이 작업은 되돌릴 수 없습니다.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>닫기</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleCancel}>
-                    취소 처리
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
-          {canConfirm && (
-            <Button
-              variant="outline"
-              onClick={handleConfirm}
-              disabled={statusLoading}
-            >
-              <CheckCircle className="h-4 w-4 mr-2" />
-              발주 확정
-            </Button>
-          )}
-          {canStart && (
-            <Button
-              variant="outline"
-              onClick={() => handleStatusChange("IN_PROGRESS")}
-              disabled={statusLoading}
-            >
-              <PlayCircle className="h-4 w-4 mr-2" />
-              작업 시작
-            </Button>
-          )}
-          {canCreateWorkStatement && (
-            <Button variant="outline" asChild>
-              <Link href={`/work-statements/new?purchaseOrderId=${purchaseOrder.id}`}>
-                <ClipboardList className="h-4 w-4 mr-2" />
-                작업 명세 등록
-              </Link>
-            </Button>
-          )}
-          {canComplete && (
-            <Button
-              onClick={handleComplete}
-              disabled={statusLoading}
-              className="bg-green-600 hover:bg-green-700"
-            >
-              <CheckCircle className="h-4 w-4 mr-2" />
-              완료 처리
-            </Button>
-          )}
-          {canExport && (
-            <Button onClick={handleExport} disabled={exporting}>
-              {exporting ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <FileSpreadsheet className="h-4 w-4 mr-2" />
-              )}
-              발주서 출력
-            </Button>
-          )}
+          {getHeaderButtons()}
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <Tabs value={currentTab} onValueChange={handleTabChange}>
+        <TabsList className="grid w-full grid-cols-2 max-w-xs">
+          <TabsTrigger value="info" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            발주 정보
+          </TabsTrigger>
+          <TabsTrigger value="work-statements" className="flex items-center gap-2">
+            <ClipboardList className="h-4 w-4" />
+            작업 명세
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="info" className="mt-4 space-y-6">
+          <div className="grid gap-6 md:grid-cols-3">
         <Card className="md:col-span-2">
           <CardHeader>
             <CardTitle>발주 정보</CardTitle>
@@ -675,6 +767,94 @@ export default function PurchaseOrderDetailPage({
           </div>
         </CardContent>
       </Card>
+        </TabsContent>
+
+        <TabsContent value="work-statements" className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>작업 명세 목록</CardTitle>
+              <CardDescription>
+                이 발주와 연결된 작업 명세 내역입니다
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {workStatementsLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                </div>
+              ) : workStatements.length === 0 ? (
+                <div className="text-center py-8">
+                  <ClipboardList className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground">작업 명세가 없습니다</p>
+                  {canCreateWorkStatement && (
+                    <Button asChild className="mt-4">
+                      <Link href={`/work-statements/new?purchaseOrderId=${purchaseOrder.id}`}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        작업 명세 등록
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>명세번호</TableHead>
+                      <TableHead>기간</TableHead>
+                      <TableHead className="text-right">공급가</TableHead>
+                      <TableHead className="text-right">세액</TableHead>
+                      <TableHead className="text-right">총액</TableHead>
+                      <TableHead className="text-center">항목수</TableHead>
+                      <TableHead className="text-center">상태</TableHead>
+                      <TableHead>작성일</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {workStatements.map((statement) => (
+                      <TableRow key={statement.id}>
+                        <TableCell>
+                          <Link
+                            href={`/work-statements/${statement.id}`}
+                            className="font-medium text-blue-600 hover:underline"
+                          >
+                            {statement.statementNo}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          {format(new Date(statement.periodStart), "MM-dd")} ~{" "}
+                          {format(new Date(statement.periodEnd), "MM-dd")}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {statement.supplyAmount.toLocaleString()}원
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {statement.taxAmount.toLocaleString()}원
+                        </TableCell>
+                        <TableCell className="text-right font-medium">
+                          {statement.totalAmount.toLocaleString()}원
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {statement._count.items}건
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Badge variant={workStatementStatusMap[statement.status]?.variant}>
+                            {workStatementStatusMap[statement.status]?.label}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {format(new Date(statement.createdAt), "yyyy-MM-dd", {
+                            locale: ko,
+                          })}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
