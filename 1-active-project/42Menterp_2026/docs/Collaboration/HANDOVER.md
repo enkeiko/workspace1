@@ -68,3 +68,36 @@
     - `app/src/components/common/index.ts` - 모든 공용 컴포넌트 통합 export
 
 ---
+
+### Phase 2: 마스터 데이터 정비 ✅
+- **담당:** Claude Code
+- **상태:** 완료
+- **완료일:** 2026-01-14
+- **변경 사항:**
+
+    #### M-02: 거래처 Import API
+    - `app/src/app/api/customers/import-legacy/route.ts` - 레거시 거래처목록.xls 임포트
+    - `app/src/app/api/customers/import/route.ts` - 일반 Excel Import
+    - `app/src/app/api/customers/export/route.ts` - Excel Export API
+    - `app/src/app/api/customers/quality-report/route.ts` - 데이터 품질 보고서
+
+    #### M-03: 거래처 마이그레이션 스크립트
+    - `app/prisma/seed-customers.ts` - 94건 마이그레이션 스크립트
+
+    #### M-04: 고객-매장 연결 API
+    - `app/src/app/api/customers/link-stores/route.ts` - 수동 연결
+    - `app/src/app/api/customers/auto-link/route.ts` - 자동 연결
+
+---
+
+### Phase 3: 주간 발주 시스템 (Smart Grid) 🚧
+- **담당:** Claude Code
+- **상태:** 진행 중
+- **시작일:** 2026-01-14
+- **계획:**
+    - PO-01: 주간 발주 그리드 UI
+    - PO-02: DateRange 컴포넌트
+    - PO-03: 그리드 저장 API (SO/PO 연동)
+    - PO-07: Manual Override 보호
+
+---
