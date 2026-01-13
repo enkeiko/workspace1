@@ -11,13 +11,16 @@ import {
   FileText,
   TrendingUp,
   Loader2,
-  AlertCircle,
   AlertTriangle,
   Info,
   ArrowRight,
   Calendar,
+  DollarSign,
+  CreditCard,
+  Clock,
+  Wallet,
 } from "lucide-react";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
 import {
   BarChart,
@@ -53,6 +56,13 @@ interface DashboardData {
     totalQty: number;
     totalAmount: number;
   };
+  settlementStats: {
+    monthlyRevenue: number;
+    monthlyCost: number;
+    monthlyProfit: number;
+    pendingRevenue: number;
+    pendingCost: number;
+  };
   channelStats: Array<{
     name: string;
     count: number;
@@ -69,6 +79,14 @@ interface DashboardData {
     count: number;
     qty: number;
     amount: number;
+  }>;
+  expiringItems: Array<{
+    id: string;
+    storeName: string;
+    channelName: string;
+    purchaseOrderNo: string;
+    endDate: string;
+    daysLeft: number;
   }>;
   recentOrders: Array<{
     id: string;
@@ -100,8 +118,6 @@ const statusMap: Record<
   CANCELLED: { label: "취소", variant: "destructive", color: "#EF4444" },
 };
 
-const COLORS = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6", "#EC4899"];
-
 export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -112,21 +128,12 @@ export default function DashboardPage() {
 
   const fetchDashboardData = async () => {
     try {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/65b289cd-d346-4f18-b84f-38aa47fa8192',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'dashboard/page.tsx:fetch',message:'Fetching dashboard API',data:{},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
       const res = await fetch("/api/dashboard");
       const result = await res.json();
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/65b289cd-d346-4f18-b84f-38aa47fa8192',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'dashboard/page.tsx:response',message:'API response received',data:{status:res.status,ok:res.ok,hasData:!!result,errorMsg:result?.error},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'B,C'})}).catch(()=>{});
-      // #endregion
       if (res.ok) {
         setData(result);
       }
     } catch (error) {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/65b289cd-d346-4f18-b84f-38aa47fa8192',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'dashboard/page.tsx:catch',message:'Fetch error',data:{errorMsg:(error as Error)?.message},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'C,D'})}).catch(()=>{});
-      // #endregion
       console.error("Failed to fetch dashboard data:", error);
     } finally {
       setLoading(false);
@@ -154,6 +161,16 @@ export default function DashboardPage() {
     value: s.count,
     color: statusMap[s.status]?.color || "#9CA3AF",
   }));
+
+  const formatAmount = (amount: number) => {
+    if (amount >= 100000000) {
+      return `${(amount / 100000000).toFixed(1)}억`;
+    }
+    if (amount >= 10000) {
+      return `${(amount / 10000).toFixed(0)}만`;
+    }
+    return amount.toLocaleString();
+  };
 
   return (
     <div className="space-y-6">
@@ -203,7 +220,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* 주요 통계 카드 */}
+      {/* 주요 통계 카드 - 1행 */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -239,7 +256,7 @@ export default function DashboardPage() {
           <CardContent>
             <div className="text-2xl font-bold">{data.weeklyStats.orderCount}건</div>
             <p className="text-xs text-muted-foreground">
-              {data.weeklyStats.totalQty.toLocaleString()}개 · {(data.weeklyStats.totalAmount / 10000).toFixed(0)}만원
+              {data.weeklyStats.totalQty.toLocaleString()}개 · {formatAmount(data.weeklyStats.totalAmount)}원
             </p>
           </CardContent>
         </Card>
@@ -252,7 +269,70 @@ export default function DashboardPage() {
           <CardContent>
             <div className="text-2xl font-bold">{data.monthlyStats.orderCount}건</div>
             <p className="text-xs text-muted-foreground">
-              {data.monthlyStats.totalQty.toLocaleString()}개 · {(data.monthlyStats.totalAmount / 10000).toFixed(0)}만원
+              {data.monthlyStats.totalQty.toLocaleString()}개 · {formatAmount(data.monthlyStats.totalAmount)}원
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* 정산 현황 카드 - 2행 */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">금월 매출</CardTitle>
+            <DollarSign className="h-4 w-4 text-green-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">
+              {formatAmount(data.settlementStats.monthlyRevenue)}원
+            </div>
+            <p className="text-xs text-muted-foreground">
+              고객 청구 금액
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">금월 비용</CardTitle>
+            <CreditCard className="h-4 w-4 text-red-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-red-600">
+              {formatAmount(data.settlementStats.monthlyCost)}원
+            </div>
+            <p className="text-xs text-muted-foreground">
+              채널 지급 금액
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">금월 수익</CardTitle>
+            <Wallet className="h-4 w-4 text-blue-600" />
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold ${data.settlementStats.monthlyProfit >= 0 ? "text-blue-600" : "text-red-600"}`}>
+              {formatAmount(data.settlementStats.monthlyProfit)}원
+            </div>
+            <p className="text-xs text-muted-foreground">
+              매출 - 비용
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">미수금</CardTitle>
+            <Clock className="h-4 w-4 text-amber-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-amber-600">
+              {formatAmount(data.settlementStats.pendingRevenue)}원
+            </div>
+            <p className="text-xs text-muted-foreground">
+              미지급: {formatAmount(data.settlementStats.pendingCost)}원
             </p>
           </CardContent>
         </Card>
@@ -370,66 +450,101 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* 최근 발주 */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>최근 발주</CardTitle>
-            <CardDescription>최근 등록된 발주 5건</CardDescription>
-          </div>
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/orders">
-              전체보기 <ArrowRight className="h-4 w-4 ml-1" />
-            </Link>
-          </Button>
-        </CardHeader>
-        <CardContent>
-          {data.recentOrders.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              아직 발주 내역이 없습니다.
+      {/* 연장 예정 & 최근 발주 */}
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* 연장 예정 매장 */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>연장 예정</CardTitle>
+              <CardDescription>3일 내 종료되는 발주</CardDescription>
             </div>
-          ) : (
-            <div className="space-y-4">
-              {data.recentOrders.map((order) => (
-                <div
-                  key={order.id}
-                  className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0"
-                >
-                  <div className="flex items-center gap-4">
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/purchase-orders?expiring=all">
+                전체보기 <ArrowRight className="h-4 w-4 ml-1" />
+              </Link>
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {data.expiringItems.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                3일 내 종료 예정인 발주가 없습니다.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {data.expiringItems.slice(0, 5).map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0"
+                  >
+                    <div>
+                      <p className="font-medium">{item.storeName}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {item.channelName} · {item.purchaseOrderNo}
+                      </p>
+                    </div>
+                    <Badge variant={item.daysLeft <= 1 ? "destructive" : "secondary"}>
+                      D-{item.daysLeft}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* 최근 발주 */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>최근 수주</CardTitle>
+              <CardDescription>최근 등록된 수주 5건</CardDescription>
+            </div>
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/sales-orders">
+                전체보기 <ArrowRight className="h-4 w-4 ml-1" />
+              </Link>
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {data.recentOrders.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                아직 수주 내역이 없습니다.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {data.recentOrders.map((order) => (
+                  <div
+                    key={order.id}
+                    className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0"
+                  >
                     <div>
                       <Link
-                        href={`/orders/${order.id}`}
+                        href={`/sales-orders/${order.id}`}
                         className="font-medium hover:underline"
                       >
                         {order.orderNo}
                       </Link>
                       <p className="text-sm text-muted-foreground">
                         {order.channel.name} ·{" "}
-                        {format(new Date(order.orderDate), "M월 d일", {
-                          locale: ko,
-                        })}
+                        {format(new Date(order.orderDate), "M월 d일", { locale: ko })}
                       </p>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div className="text-right">
-                      <p className="font-medium">
-                        {order.totalQty.toLocaleString()}건
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {order.totalAmount.toLocaleString()}원
-                      </p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium">
+                        {formatAmount(order.totalAmount)}원
+                      </span>
+                      <Badge variant={statusMap[order.status]?.variant}>
+                        {statusMap[order.status]?.label}
+                      </Badge>
                     </div>
-                    <Badge variant={statusMap[order.status]?.variant}>
-                      {statusMap[order.status]?.label}
-                    </Badge>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

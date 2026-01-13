@@ -16,7 +16,10 @@ import {
   Search,
   Loader2,
   AlertCircle,
+  Bell,
+  ChevronRight,
 } from "lucide-react";
+import Link from "next/link";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 
@@ -202,6 +205,38 @@ export default function SettingsPage() {
                 <dd>PostgreSQL</dd>
               </div>
             </dl>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Bell className="h-5 w-5" />
+              텔레그램 알림
+            </CardTitle>
+            <CardDescription>실시간 알림 연동 설정</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                {process.env.TELEGRAM_BOT_TOKEN ? (
+                  <>
+                    <CheckCircle className="h-5 w-5 text-green-600" />
+                    <span>설정됨</span>
+                  </>
+                ) : (
+                  <>
+                    <XCircle className="h-5 w-5 text-yellow-600" />
+                    <span className="text-muted-foreground">설정 필요</span>
+                  </>
+                )}
+              </div>
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/settings/telegram">
+                  설정하기 <ChevronRight className="h-4 w-4 ml-1" />
+                </Link>
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>

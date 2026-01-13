@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import Link from "next/link";
+import { KakaoSendDialog } from "@/components/kakao-send-dialog";
 
 interface QuotationItem {
   id: string;
@@ -128,6 +129,12 @@ export default function QuotationPreviewPage({
           </Link>
         </Button>
         <div className="flex gap-2">
+          <KakaoSendDialog
+            documentType="quotation"
+            documentId={id}
+            defaultPhone={quotation.customer.phone || ""}
+            customerName={quotation.customer.businessName || quotation.customer.name}
+          />
           <Button variant="outline" onClick={handleDownloadImage}>
             <Download className="h-4 w-4 mr-2" />
             이미지 저장

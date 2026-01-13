@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import Link from "next/link";
+import { KakaoSendDialog } from "@/components/kakao-send-dialog";
 
 interface StatementItem {
   id: string;
@@ -132,6 +133,12 @@ export default function StatementPreviewPage({
           </Link>
         </Button>
         <div className="flex gap-2">
+          <KakaoSendDialog
+            documentType="statement"
+            documentId={id}
+            defaultPhone={customer.phone || ""}
+            customerName={customer.businessName || customer.name}
+          />
           <Button variant="outline" onClick={handleDownloadImage}>
             <Download className="h-4 w-4 mr-2" />
             이미지 저장

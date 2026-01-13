@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { notifyPurchaseOrderCreated } from "@/lib/telegram";
 
 const purchaseOrderItemSchema = z.object({
   storeId: z.string(),
@@ -213,6 +214,15 @@ export async function POST(request: NextRequest) {
         },
       });
     }
+
+    // 텔레그램 알림 전송 (비동기, 실패해도 발주 생성은 완료)
+    notifyPurchaseOrderCreated({
+      purchaseOrderNo: purchaseOrder.purchaseOrderNo,
+      channelName: channel.name,
+      totalQty,
+      totalAmount,
+      createdBy: session.user.name || session.user.email || "Unknown",
+    }).catch((err) => console.error("Telegram notification failed:", err));
 
     return NextResponse.json(purchaseOrder, { status: 201 });
   } catch (error) {

@@ -2,21 +2,12 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, subMonths, format } from "date-fns";
+import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, subMonths, format, addDays } from "date-fns";
 
 export async function GET() {
   try {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/65b289cd-d346-4f18-b84f-38aa47fa8192',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'dashboard/route.ts:GET',message:'API called',data:{},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,B'})}).catch(()=>{});
-    // #endregion
     const session = await getServerSession(authOptions);
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/65b289cd-d346-4f18-b84f-38aa47fa8192',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'dashboard/route.ts:session',message:'Session check',data:{hasSession:!!session,userEmail:session?.user?.email},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'B'})}).catch(()=>{});
-    // #endregion
     if (!session) {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/65b289cd-d346-4f18-b84f-38aa47fa8192',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'dashboard/route.ts:unauthorized',message:'No session - returning 401',data:{},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'B'})}).catch(()=>{});
-      // #endregion
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -25,10 +16,7 @@ export async function GET() {
     const weekEnd = endOfWeek(now, { weekStartsOn: 1 });
     const monthStart = startOfMonth(now);
     const monthEnd = endOfMonth(now);
-
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/65b289cd-d346-4f18-b84f-38aa47fa8192',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'dashboard/route.ts:beforeQuery',message:'About to query database',data:{weekStart:weekStart.toISOString(),weekEnd:weekEnd.toISOString()},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
+    const currentMonth = format(now, "yyyy-MM");
 
     // 기본 통계
     const [
@@ -49,7 +37,7 @@ export async function GET() {
         where: {
           orderDate: { gte: weekStart, lte: weekEnd },
         },
-        include: { 
+        include: {
           customer: true,
           items: true,
         },
@@ -64,14 +52,10 @@ export async function GET() {
       }),
     ]);
 
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/65b289cd-d346-4f18-b84f-38aa47fa8192',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'dashboard/route.ts:afterQuery',message:'Database query complete',data:{totalStores,activeStores,totalSalesOrders,weeklyCount:weeklySalesOrders.length},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
-
     // 주간 통계 계산
     const weeklyStats = {
       orderCount: weeklySalesOrders.length,
-      totalQty: weeklySalesOrders.reduce((sum, o) => 
+      totalQty: weeklySalesOrders.reduce((sum, o) =>
         sum + o.items.reduce((itemSum, item) => itemSum + item.totalQty, 0), 0),
       totalAmount: weeklySalesOrders.reduce((sum, o) => sum + o.totalAmount, 0),
     };
@@ -79,25 +63,81 @@ export async function GET() {
     // 월간 통계 계산
     const monthlyStats = {
       orderCount: monthlySalesOrders.length,
-      totalQty: monthlySalesOrders.reduce((sum, o) => 
+      totalQty: monthlySalesOrders.reduce((sum, o) =>
         sum + o.items.reduce((itemSum, item) => itemSum + item.totalQty, 0), 0),
       totalAmount: monthlySalesOrders.reduce((sum, o) => sum + o.totalAmount, 0),
     };
 
-    // 고객별 주간 수주 현황 (기존 채널별 → 고객별로 변경)
-    const customerStats = weeklySalesOrders.reduce((acc, order) => {
-      const customerName = order.customer?.name || "미지정";
-      if (!acc[customerName]) {
-        acc[customerName] = { name: customerName, count: 0, qty: 0, amount: 0 };
+    // 정산 현황 (이번 달)
+    const [revenueSettlements, costSettlements] = await Promise.all([
+      prisma.settlement.aggregate({
+        where: {
+          settlementMonth: currentMonth,
+          type: "REVENUE",
+        },
+        _sum: { amount: true },
+        _count: true,
+      }),
+      prisma.settlement.aggregate({
+        where: {
+          settlementMonth: currentMonth,
+          type: "COST",
+        },
+        _sum: { amount: true },
+        _count: true,
+      }),
+    ]);
+
+    // 미수금/미지급금 (PENDING 상태)
+    const [pendingRevenue, pendingCost] = await Promise.all([
+      prisma.settlement.aggregate({
+        where: {
+          type: "REVENUE",
+          status: "PENDING",
+        },
+        _sum: { amount: true },
+      }),
+      prisma.settlement.aggregate({
+        where: {
+          type: "COST",
+          status: "PENDING",
+        },
+        _sum: { amount: true },
+      }),
+    ]);
+
+    const settlementStats = {
+      monthlyRevenue: revenueSettlements._sum.amount || 0,
+      monthlyCost: costSettlements._sum.amount || 0,
+      monthlyProfit: (revenueSettlements._sum.amount || 0) - (costSettlements._sum.amount || 0),
+      pendingRevenue: pendingRevenue._sum.amount || 0,
+      pendingCost: pendingCost._sum.amount || 0,
+    };
+
+    // 채널별 주간 발주 현황
+    const weeklyPurchaseOrders = await prisma.purchaseOrder.findMany({
+      where: {
+        orderDate: { gte: weekStart, lte: weekEnd },
+      },
+      include: {
+        channel: true,
+        items: true,
+      },
+    });
+
+    const channelStats = weeklyPurchaseOrders.reduce((acc, order) => {
+      const channelName = order.channel?.name || "미지정";
+      if (!acc[channelName]) {
+        acc[channelName] = { name: channelName, count: 0, qty: 0, amount: 0 };
       }
-      acc[customerName].count += 1;
-      acc[customerName].qty += order.items.reduce((sum, item) => sum + item.totalQty, 0);
-      acc[customerName].amount += order.totalAmount;
+      acc[channelName].count += 1;
+      acc[channelName].qty += order.items.reduce((sum, item) => sum + item.totalQty, 0);
+      acc[channelName].amount += order.totalAmount;
       return acc;
     }, {} as Record<string, { name: string; count: number; qty: number; amount: number }>);
 
-    // 상태별 주간 수주 현황
-    const statusStats = weeklySalesOrders.reduce((acc, order) => {
+    // 상태별 주간 발주 현황
+    const statusStats = weeklyPurchaseOrders.reduce((acc, order) => {
       if (!acc[order.status]) {
         acc[order.status] = { status: order.status, count: 0 };
       }
@@ -121,7 +161,7 @@ export async function GET() {
           month: format(targetMonth, "yyyy-MM"),
           label: format(targetMonth, "M월"),
           count: result._count,
-          qty: 0, // items 합산이 필요하면 별도 쿼리 필요
+          qty: 0,
           amount: result._sum.totalAmount || 0,
         }));
       })
@@ -138,18 +178,71 @@ export async function GET() {
       },
     });
 
-    // 알림 (대기 중인 수주, 완료되지 않은 수주 등)
-    const confirmedOrders = await prisma.salesOrder.count({
-      where: { status: "CONFIRMED" },
+    // 연장 예정 매장 (D-3, D-1) - PurchaseOrderItem의 endDate 기준
+    const d3Date = addDays(now, 3);
+    const d1Date = addDays(now, 1);
+
+    const expiringItems = await prisma.purchaseOrderItem.findMany({
+      where: {
+        endDate: {
+          gte: now,
+          lte: d3Date,
+        },
+        purchaseOrder: {
+          status: { in: ["CONFIRMED", "IN_PROGRESS"] },
+        },
+      },
+      include: {
+        store: { select: { name: true } },
+        purchaseOrder: {
+          select: {
+            purchaseOrderNo: true,
+            channel: { select: { name: true } },
+          },
+        },
+      },
+      orderBy: { endDate: "asc" },
+      take: 10,
     });
+
+    // 알림 생성
+    const alerts = [];
+
+    // 연장 예정 알림
+    const d1Items = expiringItems.filter(item => {
+      const endDate = new Date(item.endDate);
+      return endDate <= d1Date;
+    });
+    const d3Items = expiringItems.filter(item => {
+      const endDate = new Date(item.endDate);
+      return endDate > d1Date && endDate <= d3Date;
+    });
+
+    if (d1Items.length > 0) {
+      alerts.push({
+        type: "warning",
+        title: "내일 종료 예정",
+        message: `${d1Items.length}건의 발주가 내일 종료됩니다.`,
+        link: "/purchase-orders?expiring=d1",
+      });
+    }
+    if (d3Items.length > 0) {
+      alerts.push({
+        type: "info",
+        title: "3일 내 종료 예정",
+        message: `${d3Items.length}건의 발주가 3일 내 종료됩니다.`,
+        link: "/purchase-orders?expiring=d3",
+      });
+    }
+
+    // 초안/확정 수주 알림
     const draftOrders = await prisma.salesOrder.count({
       where: { status: "DRAFT" },
     });
-    const inProgressOrders = await prisma.salesOrder.count({
-      where: { status: "IN_PROGRESS" },
+    const confirmedOrders = await prisma.salesOrder.count({
+      where: { status: "CONFIRMED" },
     });
 
-    const alerts = [];
     if (draftOrders > 0) {
       alerts.push({
         type: "warning",
@@ -162,16 +255,18 @@ export async function GET() {
       alerts.push({
         type: "info",
         title: "확정된 수주",
-        message: `${confirmedOrders}건의 수주가 확정 상태입니다.`,
+        message: `${confirmedOrders}건의 수주가 발주 대기 중입니다.`,
         link: "/sales-orders?status=CONFIRMED",
       });
     }
-    if (inProgressOrders > 0) {
+
+    // 미수금 알림
+    if (settlementStats.pendingRevenue > 0) {
       alerts.push({
-        type: "info",
-        title: "진행 중인 수주",
-        message: `${inProgressOrders}건의 수주가 진행 중입니다.`,
-        link: "/sales-orders?status=IN_PROGRESS",
+        type: "warning",
+        title: "미수금 현황",
+        message: `${(settlementStats.pendingRevenue / 10000).toFixed(0)}만원의 미수금이 있습니다.`,
+        link: "/settlements?type=REVENUE&status=PENDING",
       });
     }
 
@@ -185,9 +280,18 @@ export async function GET() {
       },
       weeklyStats,
       monthlyStats,
-      channelStats: Object.values(customerStats), // 하위호환 유지
+      settlementStats,
+      channelStats: Object.values(channelStats),
       statusStats: Object.values(statusStats),
       monthlyTrend,
+      expiringItems: expiringItems.map(item => ({
+        id: item.id,
+        storeName: item.store.name,
+        channelName: item.purchaseOrder.channel.name,
+        purchaseOrderNo: item.purchaseOrder.purchaseOrderNo,
+        endDate: item.endDate,
+        daysLeft: Math.ceil((new Date(item.endDate).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)),
+      })),
       recentOrders: recentSalesOrders.map((o) => ({
         id: o.id,
         orderNo: o.salesOrderNo,
@@ -195,15 +299,12 @@ export async function GET() {
         status: o.status,
         totalQty: o.items.reduce((sum, item) => sum + item.totalQty, 0),
         totalAmount: o.totalAmount,
-        channel: { name: o.customer?.name || "미지정" }, // 하위호환 유지
+        channel: { name: o.customer?.name || "미지정" },
         createdBy: o.createdBy,
       })),
       alerts,
     });
   } catch (error) {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/65b289cd-d346-4f18-b84f-38aa47fa8192',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'dashboard/route.ts:catch',message:'Error caught',data:{errorName:(error as Error)?.name,errorMessage:(error as Error)?.message},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,D'})}).catch(()=>{});
-    // #endregion
     console.error("Failed to fetch dashboard data:", error);
     return NextResponse.json(
       { error: "대시보드 데이터를 불러오는데 실패했습니다" },

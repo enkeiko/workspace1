@@ -21,15 +21,28 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Plus,
   Search,
   Loader2,
   ChevronLeft,
   ChevronRight,
+  MoreHorizontal,
+  CheckCircle,
+  PlayCircle,
+  XCircle,
+  Zap,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
+import { toast } from "sonner";
 
 interface PurchaseOrder {
   id: string;
@@ -81,6 +94,8 @@ export default function PurchaseOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [batchProcessing, setBatchProcessing] = useState(false);
 
   const fetchPurchaseOrders = useCallback(async () => {
     setLoading(true);
@@ -114,6 +129,73 @@ export default function PurchaseOrdersPage() {
     return () => clearTimeout(timer);
   }, [fetchPurchaseOrders]);
 
+  // 선택 시 페이지 변경되면 선택 해제
+  useEffect(() => {
+    setSelectedIds(new Set());
+  }, [pagination.page]);
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === purchaseOrders.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(purchaseOrders.map((o) => o.id)));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    const newSet = new Set(selectedIds);
+    if (newSet.has(id)) {
+      newSet.delete(id);
+    } else {
+      newSet.add(id);
+    }
+    setSelectedIds(newSet);
+  };
+
+  const handleBatchAction = async (action: "confirm" | "start" | "complete" | "cancel") => {
+    if (selectedIds.size === 0) {
+      toast.error("선택된 발주가 없습니다");
+      return;
+    }
+
+    const actionLabels = {
+      confirm: "확정",
+      start: "진행 시작",
+      complete: "완료",
+      cancel: "취소",
+    };
+
+    setBatchProcessing(true);
+    try {
+      const res = await fetch("/api/purchase-orders/batch", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ids: Array.from(selectedIds),
+          action,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success(`${data.updated}건 ${actionLabels[action]} 처리 완료`);
+        if (data.skipped > 0) {
+          toast.warning(`${data.skipped}건은 상태가 맞지 않아 건너뜀`);
+        }
+        setSelectedIds(new Set());
+        fetchPurchaseOrders();
+      } else {
+        toast.error(data.error || "처리에 실패했습니다");
+      }
+    } catch (error) {
+      console.error("Batch action error:", error);
+      toast.error("처리 중 오류가 발생했습니다");
+    } finally {
+      setBatchProcessing(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -125,12 +207,49 @@ export default function PurchaseOrdersPage() {
             채널에 발주를 등록하고 관리합니다.
           </p>
         </div>
-        <Button asChild>
-          <Link href="/purchase-orders/new">
-            <Plus className="h-4 w-4 mr-2" />
-            발주 등록
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          {selectedIds.size > 0 && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" disabled={batchProcessing}>
+                  {batchProcessing ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Zap className="h-4 w-4 mr-2" />
+                  )}
+                  일괄 처리 ({selectedIds.size})
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => handleBatchAction("confirm")}>
+                  <CheckCircle className="h-4 w-4 mr-2 text-blue-600" />
+                  확정 처리
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleBatchAction("start")}>
+                  <PlayCircle className="h-4 w-4 mr-2 text-purple-600" />
+                  진행 시작
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleBatchAction("complete")}>
+                  <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
+                  완료 처리
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleBatchAction("cancel")}
+                  className="text-red-600"
+                >
+                  <XCircle className="h-4 w-4 mr-2" />
+                  취소 처리
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+          <Button asChild>
+            <Link href="/purchase-orders/new">
+              <Plus className="h-4 w-4 mr-2" />
+              발주 등록
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <Card>
@@ -186,6 +305,15 @@ export default function PurchaseOrdersPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-[40px]">
+                      <Checkbox
+                        checked={
+                          purchaseOrders.length > 0 &&
+                          selectedIds.size === purchaseOrders.length
+                        }
+                        onCheckedChange={toggleSelectAll}
+                      />
+                    </TableHead>
                     <TableHead>발주번호</TableHead>
                     <TableHead>수주번호</TableHead>
                     <TableHead>채널</TableHead>
@@ -199,7 +327,16 @@ export default function PurchaseOrdersPage() {
                 </TableHeader>
                 <TableBody>
                   {purchaseOrders.map((order) => (
-                    <TableRow key={order.id}>
+                    <TableRow
+                      key={order.id}
+                      className={selectedIds.has(order.id) ? "bg-muted/50" : ""}
+                    >
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedIds.has(order.id)}
+                          onCheckedChange={() => toggleSelect(order.id)}
+                        />
+                      </TableCell>
                       <TableCell>
                         <Link
                           href={`/purchase-orders/${order.id}`}
