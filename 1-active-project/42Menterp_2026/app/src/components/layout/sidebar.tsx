@@ -20,6 +20,7 @@ import {
   FileSignature,
   ShoppingCart,
   FileCheck,
+  ClipboardCheck,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -72,6 +73,12 @@ const menuItems = [
     subtitle: "Statement",
     href: "/statements",
     icon: FileCheck,
+  },
+  {
+    title: "작업 명세",
+    subtitle: "Work Statement",
+    href: "/work-statements",
+    icon: ClipboardCheck,
   },
   {
     title: "정산 관리",

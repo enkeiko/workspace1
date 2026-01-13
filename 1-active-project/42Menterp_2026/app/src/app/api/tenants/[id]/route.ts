@@ -59,7 +59,7 @@ export async function GET(
         _count: {
           select: {
             stores: true,
-            orders: true,
+            purchaseOrders: true,
           },
         },
       },
@@ -163,7 +163,7 @@ export async function DELETE(
       where: { id },
       include: {
         _count: {
-          select: { stores: true, orders: true, users: true },
+          select: { stores: true, purchaseOrders: true, users: true },
         },
       },
     });
@@ -175,7 +175,7 @@ export async function DELETE(
       );
     }
 
-    if (tenant._count.stores > 0 || tenant._count.orders > 0) {
+    if (tenant._count.stores > 0 || tenant._count.purchaseOrders > 0) {
       return NextResponse.json(
         { error: "연결된 매장이나 발주가 있어 삭제할 수 없습니다. 비활성화를 사용하세요." },
         { status: 400 }

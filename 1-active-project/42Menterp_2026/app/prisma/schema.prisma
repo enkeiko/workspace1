@@ -67,8 +67,13 @@ model User {
   updatedAt     DateTime  @updatedAt
 
   // 수주/발주
-  salesOrders          SalesOrder[]
-  purchaseOrders       PurchaseOrder[]
+  salesOrdersCreated   SalesOrder[] @relation("SalesOrderCreator")
+  salesOrdersConfirmed SalesOrder[] @relation("SalesOrderConfirmer")
+  salesOrdersCancelled SalesOrder[] @relation("SalesOrderCanceller")
+  purchaseOrdersCreated   PurchaseOrder[] @relation("PurchaseOrderCreator")
+  purchaseOrdersConfirmed PurchaseOrder[] @relation("PurchaseOrderConfirmer")
+  purchaseOrdersCancelled PurchaseOrder[] @relation("PurchaseOrderCanceller")
+  purchaseOrdersCompleted PurchaseOrder[] @relation("PurchaseOrderCompleter")
   purchaseOrderExports PurchaseOrderExport[]
 
   // 정산/작업
@@ -91,6 +96,17 @@ model User {
   // 거래명세서
   statementsIssued     Statement[] @relation("StatementIssuer")
   statementsCreated    Statement[] @relation("StatementCreator")
+
+  // 작업 명세
+  workStatementsConfirmed WorkStatement[] @relation("WorkStatementConfirmer")
+  workStatementsCreated   WorkStatement[] @relation("WorkStatementCreator")
+
+  // 입금 기록
+  paymentRecords       PaymentRecord[]
+
+  // Expert Review: Status History & Cost Adjustments
+  statusHistories      StatusHistory[]
+  costAdjustmentsApproved CostAdjustment[]
 }
 
 enum Role {
@@ -164,6 +180,7 @@ model Store {
   keywords           StoreKeyword[]
   settlements        Settlement[]
   workLogs           WorkLog[]
+  paymentRecords     PaymentRecord[]
 }
 
 enum StoreStatus {
@@ -261,11 +278,15 @@ model ChannelSheet {
   updatedAt      DateTime  @updatedAt
 
   purchaseOrderExports PurchaseOrderExport[]
+  sheetImportLogs      SheetImportLog[]
 }
 
 enum SheetType {
   ORDER
   RECEIPT
+  WORK_REPORT
+  SETTLEMENT
+  KEYWORD_RANK
 }
 
 // ===== 견적서 Quotation =====
@@ -382,9 +403,20 @@ model SalesOrder {
   status          SalesOrderStatus @default(DRAFT)
   memo            String?
 
+  // 확정 정보
+  confirmedAt     DateTime?
+  confirmedById   String?
+  confirmedBy     User?            @relation("SalesOrderConfirmer", fields: [confirmedById], references: [id])
+
+  // 취소 정보
+  cancelledAt     DateTime?
+  cancelledById   String?
+  cancelledBy     User?            @relation("SalesOrderCanceller", fields: [cancelledById], references: [id])
+  cancelReason    String?
+
   // 관리
   createdById     String
-  createdBy       User             @relation(fields: [createdById], references: [id])
+  createdBy       User             @relation("SalesOrderCreator", fields: [createdById], references: [id])
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
@@ -470,15 +502,40 @@ model PurchaseOrder {
 
   status          PurchaseOrderStatus @default(DRAFT)
   memo            String?
+  note            String?
 
+  // 확정 정보
+  confirmedAt     DateTime?
+  confirmedById   String?
+  confirmedBy     User?               @relation("PurchaseOrderConfirmer", fields: [confirmedById], references: [id])
+
+  // 취소 정보
+  cancelledAt     DateTime?
+  cancelledById   String?
+  cancelledBy     User?               @relation("PurchaseOrderCanceller", fields: [cancelledById], references: [id])
+  cancelReason    String?
+
+  // 완료 정보
+  completedAt     DateTime?
+  completedById   String?
+  completedBy     User?               @relation("PurchaseOrderCompleter", fields: [completedById], references: [id])
+
+  // Expert Review: Manual Override
+  isManualOverride Boolean            @default(false)
+  manualOverrideReason String?
+
+  // 관리
   createdById     String
-  createdBy       User                @relation(fields: [createdById], references: [id])
+  createdBy       User                @relation("PurchaseOrderCreator", fields: [createdById], references: [id])
   createdAt       DateTime            @default(now())
   updatedAt       DateTime            @updatedAt
 
   items           PurchaseOrderItem[]
   exports         PurchaseOrderExport[]
   workLogs        WorkLog[]
+  workStatements  WorkStatement[]
+  sheetImportLogs SheetImportLog[]
+  costAdjustments CostAdjustment[]
 
   @@index([salesOrderId])
   @@index([channelId])
@@ -510,8 +567,19 @@ model PurchaseOrderItem {
 
   note            String?
   status          PurchaseOrderItemStatus @default(PENDING)
+
+  // Expert Review: Evidence-Based Billing
+  proofUrl        String?           // 작업 증빙 URL (스크린샷, 링크 등)
+  proofNote       String?           // 증빙 메모
+
+  // Expert Review: Manual Override
+  isManualOverride Boolean          @default(false)
+  manualOverrideReason String?
+
   createdAt       DateTime                @default(now())
   updatedAt       DateTime                @updatedAt
+
+  workStatementItems WorkStatementItem[]
 
   @@index([purchaseOrderId])
   @@index([storeId])
@@ -688,8 +756,19 @@ model Settlement {
   confirmedAt     DateTime?
   confirmedById   String?
   confirmedBy     User?            @relation(fields: [confirmedById], references: [id])
+
+  // Expert Review: Unbillable Cost 처리
+  // "Completed Work" != "Billable Work" 상황 추적
+  billableAmount    Int?             // 청구 가능 금액
+  unbillableAmount  Int?             // 청구 불가 금액 (작업 완료, 고객 미지불)
+  adjustmentAmount  Int?             // 조정 금액
+  unbillableReason  String?          // 청구 불가 사유
+
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
+
+  lines           SettlementLine[]
+  payments        PaymentRecord[]
 
   @@index([settlementMonth])
   @@index([storeId, settlementMonth])
@@ -719,6 +798,8 @@ model WorkLog {
   description     String
   qty             Int?
   result          String?
+  proofUrl        String?        // Evidence-Based Billing: 증빙 URL
+  metadata        Json?          // 추가 메타데이터
   createdById     String
   createdBy       User           @relation(fields: [createdById], references: [id])
   createdAt       DateTime       @default(now())
@@ -729,9 +810,13 @@ model WorkLog {
 enum WorkType {
   SALES_ORDER_CREATED
   SALES_ORDER_CONFIRMED
+  SALES_ORDER_CANCELLED
   PURCHASE_ORDER_CREATED
   PURCHASE_ORDER_CONFIRMED
   PURCHASE_ORDER_COMPLETED
+  PURCHASE_ORDER_CANCELLED
+  CHANNEL_REPORT
+  SHEET_IMPORT
   MANUAL_WORK
   KEYWORD_CHECK
   REVIEW_CHECK
@@ -952,4 +1037,251 @@ model NotificationSetting {
   updatedAt        DateTime            @updatedAt
 
   @@unique([userId, notificationType, channel])
+}
+
+// ===== 작업 명세 (Work Statement) =====
+
+model WorkStatement {
+  id                String              @id @default(cuid())
+  statementNo       String              @unique  // WS260113-0001
+
+  // 발주 연결
+  purchaseOrderId   String
+  purchaseOrder     PurchaseOrder       @relation(fields: [purchaseOrderId], references: [id])
+
+  // 기간
+  periodStart       DateTime
+  periodEnd         DateTime
+
+  // 금액
+  supplyAmount      Int                 @default(0)
+  taxAmount         Int                 @default(0)
+  totalAmount       Int                 @default(0)
+
+  status            WorkStatementStatus @default(DRAFT)
+  note              String?
+
+  confirmedAt       DateTime?
+  confirmedById     String?
+  confirmedBy       User?               @relation("WorkStatementConfirmer", fields: [confirmedById], references: [id])
+
+  createdById       String
+  createdBy         User                @relation("WorkStatementCreator", fields: [createdById], references: [id])
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  items             WorkStatementItem[]
+  settlementLines   SettlementLine[]
+  costAdjustments   CostAdjustment[]
+
+  @@index([purchaseOrderId])
+  @@index([periodEnd])
+  @@index([status])
+}
+
+model WorkStatementItem {
+  id                    String         @id @default(cuid())
+  workStatementId       String
+  workStatement         WorkStatement  @relation(fields: [workStatementId], references: [id], onDelete: Cascade)
+  seq                   Int            @default(1)
+
+  purchaseOrderItemId   String
+  purchaseOrderItem     PurchaseOrderItem @relation(fields: [purchaseOrderItemId], references: [id])
+
+  completedQty          Int            @default(0)
+  unitPriceSnapshot     Int            @default(0)  // 확정 시점 단가
+  amount                Int            @default(0)  // completedQty * unitPriceSnapshot
+
+  // Expert Review: Evidence-Based Billing
+  proofUrl              String?        // 작업 증빙 URL
+  proofNote             String?        // 증빙 메모
+
+  note                  String?
+  createdAt             DateTime       @default(now())
+
+  @@index([workStatementId])
+  @@index([purchaseOrderItemId])
+}
+
+enum WorkStatementStatus {
+  DRAFT       // 초안
+  CONFIRMED   // 확정 (정산 생성됨)
+  LOCKED      // 잠금 (수정 불가)
+}
+
+// ===== 정산 라인 (Settlement Line) =====
+
+model SettlementLine {
+  id                String         @id @default(cuid())
+  settlementId      String
+  settlement        Settlement     @relation(fields: [settlementId], references: [id], onDelete: Cascade)
+
+  workStatementId   String
+  workStatement     WorkStatement  @relation(fields: [workStatementId], references: [id])
+
+  supplyAmount      Int            @default(0)
+  taxAmount         Int            @default(0)
+  totalAmount       Int            @default(0)
+
+  createdAt         DateTime       @default(now())
+
+  @@index([settlementId])
+  @@index([workStatementId])
+}
+
+// ===== 입금 기록 (Payment Record) =====
+
+model PaymentRecord {
+  id              String         @id @default(cuid())
+  settlementId    String?
+  settlement      Settlement?    @relation(fields: [settlementId], references: [id])
+  storeId         String?
+  store           Store?         @relation(fields: [storeId], references: [id])
+
+  amount          Int
+  paymentDate     DateTime
+  paymentMethod   PaymentMethod  @default(TRANSFER)
+  depositorName   String?
+  matchedType     MatchedType    @default(MANUAL)
+  memo            String?
+
+  createdById     String
+  createdBy       User           @relation(fields: [createdById], references: [id])
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([settlementId])
+  @@index([storeId])
+  @@index([paymentDate])
+}
+
+enum PaymentMethod {
+  TRANSFER
+  CARD
+  CASH
+  OTHER
+}
+
+enum MatchedType {
+  AUTO
+  MANUAL
+}
+
+// ===== Expert Review 권장사항 반영 =====
+
+// 1. Google Sheet Staging Table (The "Google Sheet Trap" 해결)
+// Sheet -> Staging (Raw) -> Validation -> Core DB 패턴
+model SheetImportLog {
+  id              String            @id @default(cuid())
+  channelSheetId  String
+  channelSheet    ChannelSheet      @relation(fields: [channelSheetId], references: [id])
+
+  // 원본 데이터
+  rawData         Json              // 시트에서 읽어온 원본 데이터
+  rowNumber       Int?              // 시트 행 번호
+
+  // 검증 결과
+  status          ImportStatus      @default(PENDING)
+  validationErrors Json?            // 검증 실패 사유
+
+  // 매칭 결과
+  matchedPurchaseOrderId String?
+  matchedPurchaseOrder   PurchaseOrder? @relation(fields: [matchedPurchaseOrderId], references: [id])
+
+  // 처리 정보
+  processedAt     DateTime?
+  processedById   String?
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([channelSheetId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum ImportStatus {
+  PENDING       // 대기
+  VALIDATED     // 검증 완료
+  FAILED        // 검증 실패
+  PROCESSED     // 처리 완료
+  SKIPPED       // 건너뜀
+}
+
+// 2. Status History Log (Universal Search & 상태 추적)
+model StatusHistory {
+  id            String        @id @default(cuid())
+
+  // 다형성 참조 (어떤 엔티티의 상태 변경인지)
+  entityType    EntityType
+  entityId      String
+
+  // 상태 변경 내역
+  fromStatus    String?
+  toStatus      String
+  reason        String?       // 변경 사유
+
+  // Manual Override 여부
+  isManualOverride Boolean    @default(false)
+
+  // 변경자
+  changedById   String?
+  changedBy     User?         @relation(fields: [changedById], references: [id])
+  changedAt     DateTime      @default(now())
+
+  @@index([entityType, entityId])
+  @@index([changedAt])
+}
+
+enum EntityType {
+  QUOTATION
+  SALES_ORDER
+  PURCHASE_ORDER
+  WORK_STATEMENT
+  SETTLEMENT
+  TAX_INVOICE
+}
+
+// 3. Unbillable Cost 처리를 위한 CostAdjustment
+// "Completed Work" != "Billable Work" 상황 처리
+model CostAdjustment {
+  id              String              @id @default(cuid())
+
+  // 연결된 발주/명세
+  purchaseOrderId String?
+  purchaseOrder   PurchaseOrder?      @relation(fields: [purchaseOrderId], references: [id])
+  workStatementId String?
+  workStatement   WorkStatement?      @relation(fields: [workStatementId], references: [id])
+
+  // 조정 내역
+  adjustmentType  AdjustmentType
+  amount          Int                 // 조정 금액
+  reason          String              // 조정 사유
+
+  // 승인 정보
+  status          AdjustmentStatus    @default(PENDING)
+  approvedById    String?
+  approvedBy      User?               @relation(fields: [approvedById], references: [id])
+  approvedAt      DateTime?
+
+  createdById     String
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([purchaseOrderId])
+  @@index([workStatementId])
+}
+
+enum AdjustmentType {
+  UNBILLABLE      // 청구 불가 (작업 완료, 고객 미지불)
+  DISCOUNT        // 할인
+  PENALTY         // 페널티
+  CORRECTION      // 정정
+  OTHER           // 기타
+}
+
+enum AdjustmentStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }

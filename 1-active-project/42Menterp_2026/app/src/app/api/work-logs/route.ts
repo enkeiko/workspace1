@@ -6,15 +6,15 @@ import { z } from "zod";
 
 const workLogCreateSchema = z.object({
   storeId: z.string().min(1, "매장을 선택해주세요"),
-  orderId: z.string().optional().nullable(),
+  purchaseOrderId: z.string().optional().nullable(),
   workType: z.enum([
-    "ORDER_CREATED",
-    "ORDER_CONFIRMED",
-    "ORDER_COMPLETED",
+    "SALES_ORDER_CREATED",
+    "SALES_ORDER_CONFIRMED",
+    "PURCHASE_ORDER_CREATED",
+    "PURCHASE_ORDER_CONFIRMED",
+    "PURCHASE_ORDER_COMPLETED",
     "MANUAL_WORK",
     "KEYWORD_CHECK",
-    "REVIEW_CHECK",
-    "OTHER",
   ]),
   workDate: z.string(),
   description: z.string().min(1, "작업 내용을 입력해주세요"),
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
         where,
         include: {
           store: { select: { id: true, name: true, mid: true } },
-          order: { select: { id: true, orderNo: true } },
+          purchaseOrder: { select: { id: true, purchaseOrderNo: true } },
           createdBy: { select: { id: true, name: true } },
         },
         orderBy: { workDate: "desc" },
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
     const workLog = await prisma.workLog.create({
       data: {
         storeId: validatedData.storeId,
-        orderId: validatedData.orderId || null,
+        purchaseOrderId: validatedData.purchaseOrderId || null,
         workType: validatedData.workType,
         workDate: new Date(validatedData.workDate),
         description: validatedData.description,
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
       },
       include: {
         store: { select: { id: true, name: true, mid: true } },
-        order: { select: { id: true, orderNo: true } },
+        purchaseOrder: { select: { id: true, purchaseOrderNo: true } },
         createdBy: { select: { id: true, name: true } },
       },
     });

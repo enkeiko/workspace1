@@ -42,13 +42,13 @@ export async function GET(
             businessNo: true,
           },
         },
-        orderItems: {
+        purchaseOrderItems: {
           take: 10,
           orderBy: { createdAt: "desc" },
           include: {
-            order: {
+            purchaseOrder: {
               select: {
-                orderNo: true,
+                purchaseOrderNo: true,
                 channel: { select: { name: true } },
               },
             },

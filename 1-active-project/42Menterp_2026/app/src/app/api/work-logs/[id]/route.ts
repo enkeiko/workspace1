@@ -25,7 +25,7 @@ export async function GET(
       where: { id },
       include: {
         store: { select: { id: true, name: true, mid: true } },
-        order: { select: { id: true, orderNo: true } },
+        purchaseOrder: { select: { id: true, purchaseOrderNo: true } },
         createdBy: { select: { id: true, name: true } },
       },
     });
@@ -74,7 +74,7 @@ export async function PUT(
       data: validatedData,
       include: {
         store: { select: { id: true, name: true, mid: true } },
-        order: { select: { id: true, orderNo: true } },
+        purchaseOrder: { select: { id: true, purchaseOrderNo: true } },
         createdBy: { select: { id: true, name: true } },
       },
     });

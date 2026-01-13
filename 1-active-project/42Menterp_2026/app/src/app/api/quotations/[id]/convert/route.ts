@@ -32,9 +32,9 @@ export async function POST(
         customer: true,
         items: {
           include: {
-            store: true,
             product: true,
           },
+          orderBy: { seq: "asc" },
         },
       },
     });
@@ -69,16 +69,19 @@ export async function POST(
         orderDate: new Date(),
         totalAmount: quotation.totalAmount,
         taxAmount: quotation.taxAmount,
-        note: quotation.note,
+        memo: quotation.note,
         createdById: session.user.id,
         items: {
-          create: quotation.items.map((item) => ({
-            storeId: item.storeId,
+          create: quotation.items.map((item, index) => ({
+            seq: index + 1,
             productId: item.productId,
-            description: item.description,
-            qty: item.qty,
+            productType: item.product?.type || "SAVE",
+            keyword: item.itemName,
+            totalQty: item.quantity,
             unitPrice: item.unitPrice,
-            amount: item.amount,
+            supplyAmount: item.supplyAmount,
+            taxAmount: item.taxAmount,
+            note: item.itemSpec || item.note,
           })),
         },
       },

@@ -5,18 +5,33 @@ import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
 const quotationItemSchema = z.object({
-  storeId: z.string().optional().nullable(),
   productId: z.string().optional().nullable(),
-  description: z.string(),
-  qty: z.number().min(1),
+  itemName: z.string().min(1, "품목명은 필수입니다"),
+  itemSpec: z.string().optional().nullable(),
+  quantity: z.number().min(1),
   unitPrice: z.number().min(0),
-  amount: z.number().min(0),
+  supplyAmount: z.number().min(0),
+  taxAmount: z.number().min(0).optional(),
+  note: z.string().optional().nullable(),
 });
 
 const quotationSchema = z.object({
   customerId: z.string(),
-  validUntil: z.string(),
-  subject: z.string().optional().nullable(),
+  validUntil: z.string().optional().nullable(),
+  // 공급자 정보 (당사)
+  supplierName: z.string().default("42먼트"),
+  supplierBusinessNo: z.string().optional().nullable(),
+  supplierCeoName: z.string().optional().nullable(),
+  supplierAddr: z.string().optional().nullable(),
+  supplierPhone: z.string().optional().nullable(),
+  supplierEmail: z.string().optional().nullable(),
+  // 공급받는자 정보 - 고객에서 자동 채움
+  receiverName: z.string().optional(),
+  receiverBusinessNo: z.string().optional().nullable(),
+  receiverCeoName: z.string().optional().nullable(),
+  receiverAddr: z.string().optional().nullable(),
+  receiverPhone: z.string().optional().nullable(),
+  receiverEmail: z.string().optional().nullable(),
   note: z.string().optional().nullable(),
   items: z.array(quotationItemSchema).min(1, "최소 1개 이상의 항목이 필요합니다"),
 });
@@ -59,7 +74,7 @@ export async function GET(request: NextRequest) {
     if (search) {
       where.OR = [
         { quotationNo: { contains: search, mode: "insensitive" } },
-        { subject: { contains: search, mode: "insensitive" } },
+        { receiverName: { contains: search, mode: "insensitive" } },
       ];
     }
 
@@ -71,7 +86,7 @@ export async function GET(request: NextRequest) {
         take: limit,
         include: {
           customer: {
-            select: { id: true, name: true, businessName: true },
+            select: { id: true, name: true },
           },
           createdBy: {
             select: { name: true },
@@ -123,30 +138,52 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const totalAmount = validatedData.items.reduce(
-      (sum, item) => sum + item.amount,
+    const supplyAmount = validatedData.items.reduce(
+      (sum, item) => sum + item.supplyAmount,
       0
     );
-    const taxAmount = Math.round(totalAmount * 0.1);
+    const taxAmount = validatedData.items.reduce(
+      (sum, item) => sum + (item.taxAmount || Math.round(item.supplyAmount * 0.1)),
+      0
+    );
+    const totalAmount = supplyAmount + taxAmount;
 
     const quotation = await prisma.quotation.create({
       data: {
         quotationNo: generateQuotationNo(),
         customerId: validatedData.customerId,
-        validUntil: new Date(validatedData.validUntil),
-        subject: validatedData.subject,
-        totalAmount,
+        validUntil: validatedData.validUntil ? new Date(validatedData.validUntil) : null,
+        // 공급자 정보
+        supplierName: validatedData.supplierName || "42먼트",
+        supplierBusinessNo: validatedData.supplierBusinessNo,
+        supplierCeoName: validatedData.supplierCeoName,
+        supplierAddr: validatedData.supplierAddr,
+        supplierPhone: validatedData.supplierPhone,
+        supplierEmail: validatedData.supplierEmail,
+        // 공급받는자 정보 - 고객 정보에서 채움
+        receiverName: validatedData.receiverName || customer.name,
+        receiverBusinessNo: validatedData.receiverBusinessNo || customer.businessNo,
+        receiverCeoName: validatedData.receiverCeoName || customer.representative,
+        receiverAddr: validatedData.receiverAddr || customer.address,
+        receiverPhone: validatedData.receiverPhone || customer.contactPhone,
+        receiverEmail: validatedData.receiverEmail || customer.contactEmail,
+        // 금액
+        supplyAmount,
         taxAmount,
+        totalAmount,
         note: validatedData.note,
         createdById: session.user.id,
         items: {
-          create: validatedData.items.map((item) => ({
-            storeId: item.storeId,
+          create: validatedData.items.map((item, index) => ({
+            seq: index + 1,
             productId: item.productId,
-            description: item.description,
-            qty: item.qty,
+            itemName: item.itemName,
+            itemSpec: item.itemSpec,
+            quantity: item.quantity,
             unitPrice: item.unitPrice,
-            amount: item.amount,
+            supplyAmount: item.supplyAmount,
+            taxAmount: item.taxAmount || Math.round(item.supplyAmount * 0.1),
+            note: item.note,
           })),
         },
       },
@@ -154,9 +191,9 @@ export async function POST(request: NextRequest) {
         customer: true,
         items: {
           include: {
-            store: true,
             product: true,
           },
+          orderBy: { seq: "asc" },
         },
       },
     });

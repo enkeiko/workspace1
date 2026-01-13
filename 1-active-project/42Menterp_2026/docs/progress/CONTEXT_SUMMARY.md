@@ -1,6 +1,6 @@
 # 42ment ERP 프로젝트 컨텍스트 요약
 
-> **최종 업데이트:** 2026-01-12
+> **최종 업데이트:** 2026-01-13
 > **용도:** 다른 AI 채팅에서 이어서 작업할 때 참고
 
 ---
@@ -45,14 +45,14 @@ C:\Users\enkei\workspace\1-active-project\42Menterp_2026\
 │   ├── src\
 │   │   ├── app\           # App Router 페이지
 │   │   ├── components\    # UI 컴포넌트 (shadcn/ui)
-│   │   ├── lib\           # 유틸리티
+│   │   ├── lib\           # 유틸리티 (auth, prisma, status-history)
 │   │   └── types\         # 타입 정의
 │   └── prisma\
-│       └── schema.prisma  # DB 스키마
+│       └── schema.prisma  # DB 스키마 (28+ 테이블)
 │
 ├── marketing-agency-erp\   ← 기존 프로젝트 (참고용)
 ├── 42ment-erp\             ← Python 버전 (참고용)
-├── docs\                   
+├── docs\
 │   ├── progress\          ← 🔴 진행사항 문서
 │   │   ├── QA_REPORT_001.md
 │   │   ├── FIX_REQUEST_001.md
@@ -72,111 +72,107 @@ C:\Users\enkei\workspace\1-active-project\42Menterp_2026\
 | ORM | Prisma |
 | Auth | NextAuth.js |
 | UI | shadcn/ui + Tailwind CSS |
-| 외부 연동 | Google Sheets API |
+| 외부 연동 | Google Sheets API, 바로빌(세금계산서) |
 
 ---
 
-## 4. 현재 구현 상태
+## 4. 현재 구현 상태 (Phase 1 완료)
 
 ### 완료된 것
-- [x] Prisma 스키마 정의 (User, Store, Channel, Order 등)
-- [x] 기본 페이지 구조 (dashboard, stores, orders, channels)
+- [x] Prisma 스키마 정의 (28+ 테이블)
+- [x] 기본 페이지 구조 (dashboard, stores, orders, channels 등)
 - [x] shadcn/ui 컴포넌트 설정
-- [x] NextAuth 기본 설정
+- [x] NextAuth 인증 (middleware 포함)
+- [x] 고객사(Tenant), 매장(Store), 채널(Channel) CRUD
+- [x] 견적(Quotation) → 수주(SalesOrder) → 발주(PurchaseOrder) 전환
+- [x] 정산(Settlement) 관리
+- [x] Google Sheets 연동
 
-### 미완료 / 문제점
-- [ ] 루트 페이지가 Next.js 기본 템플릿 상태 (Critical)
-- [ ] 인증 미들웨어 없음 (Critical)
-- [ ] API 응답 형식 불일치 (Minor)
+### Expert Review 반영 (2026-01-13)
+- [x] SheetImportLog (Staging Table 패턴) - Google Sheet → DB 데이터 검증
+- [x] StatusHistory - 상태 변경 이력 추적
+- [x] CostAdjustment - Unbillable 비용 처리
+- [x] Evidence-Based Billing (proofUrl 필드)
+- [x] Manual Override 필드
+
+### 새로 추가된 API
+| API | 설명 |
+|-----|------|
+| `POST /api/sheet-imports` | 시트 데이터 스테이징 |
+| `POST /api/sheet-imports/[id]/validate` | 데이터 검증 |
+| `POST /api/sheet-imports/[id]/process` | Core DB 반영 |
+| `POST /api/sheet-imports/batch-process` | 일괄 처리 |
+| `GET /api/status-history` | 상태 이력 조회 |
+| `GET /api/status-history/[entityType]/[entityId]` | 엔티티별 타임라인 |
+| `GET /api/search?q=검색어` | 통합 검색 |
 
 ---
 
 ## 5. 핵심 데이터 모델
 
-```prisma
-User       - 사용자 (SUPER_ADMIN, ADMIN, OPERATOR, VIEWER)
-Store      - 매장 (mid, placeUrl, businessNo 등)
-Channel    - 발주 채널 (피닉스, 말차, 히든 등)
-ChannelSheet - 채널별 Google Sheets 설정
-Order      - 발주 헤더
-OrderItem  - 발주 상세 (매장별 키워드, 수량, 기간)
-OrderExport - 발주서 출력 이력
-StoreKeyword - 매장별 키워드
+```
+User          - 사용자 (SUPER_ADMIN, ADMIN, OPERATOR, VIEWER)
+Tenant        - 고객사
+Customer      - 고객 (Tenant 소속)
+Store         - 매장 (mid, placeUrl, businessNo 등)
+Channel       - 발주 채널 (피닉스, 말차, 히든 등)
+ChannelSheet  - 채널별 Google Sheets 설정
+Product       - 상품 (키워드, 리뷰, 저장 등)
+
+Quotation     - 견적서
+SalesOrder    - 수주 (고객 주문)
+PurchaseOrder - 발주 (채널 발주)
+WorkStatement - 작업 명세
+Settlement    - 정산
+TaxInvoice    - 세금계산서
+
+SheetImportLog - 시트 임포트 스테이징 (Expert Review)
+StatusHistory  - 상태 변경 이력 (Expert Review)
+CostAdjustment - 비용 조정 (Expert Review)
 ```
 
 ---
 
-## 6. 작업 지시 방식
+## 6. 상태 전이 규칙 (PRD 2.5)
 
-### 워크플로우
 ```
-Claude Code (구현) → QA팀장 (검수) → FIX_REQUEST_00X.md → Claude Code (수정)
-```
-
-### Claude Code에 전달할 지시
-```
-C:\Users\enkei\workspace\1-active-project\42Menterp_2026\docs\progress\FIX_REQUEST_001.md 파일을 읽고 
-모든 수정 사항을 순서대로 구현해줘.
-완료 후 각 항목에 체크하고, 마지막에 완료 보고 형식으로 알려줘.
+Quotation:     DRAFT → SENT → ACCEPTED/REJECTED
+SalesOrder:    DRAFT → CONFIRMED → IN_PROGRESS → COMPLETED/CANCELLED
+PurchaseOrder: DRAFT → PENDING → CONFIRMED → IN_PROGRESS → COMPLETED/CANCELLED
+WorkStatement: DRAFT → CONFIRMED → LOCKED
+Settlement:    PENDING → CONFIRMED → PAID
+TaxInvoice:    DRAFT → ISSUED → SENT → FAILED
 ```
 
 ---
 
-## 7. 현재 대기 중인 작업
-
-**파일:** `C:\Users\enkei\workspace\1-active-project\42Menterp_2026\docs\progress\FIX_REQUEST_001.md`
-
-1. **[Critical]** 루트 페이지 리다이렉트 구현
-2. **[Critical]** 인증 미들웨어 추가 (middleware.ts)
-3. **[Major]** authOptions 파일 생성
-4. **[Major]** prisma client 확인
-5. **[Minor]** channels API 응답 형식 통일
-6. **[Minor]** 대시보드 통계 API 호출 수정
-
----
-
-## 8. 확정된 비즈니스 요구사항
-
-| 항목 | 내용 |
-|------|------|
-| 고객:매장 | 1:N (한 고객이 여러 매장) |
-| 주문:발주 | 1:N (한 주문에 여러 거래처 발주) |
-| 비용 관리 | 기본단가 + 건별 수정 가능 |
-| 발주 수량 | 주문과 다를 수 있음 (서비스/조정) |
-| 부가세 | 기본 별도(10%) + 면세 옵션 |
-| 입금 관리 | 과세(수동+엑셀+API), 면세(수동만) |
-| 견적서 | PDF 저장 + 이미지로 발송 |
-| 세금계산서 | 홈택스 엑셀 일괄 발급 |
-| 연장 알림 | D-1, D-3 텔레그램 알림 |
-| 발주서 출력 | Google Sheets 연동 |
-
----
-
-## 9. 주요 문서 위치
+## 7. 주요 문서 위치
 
 | 문서 | 경로 |
 |------|------|
 | PRD v3.0 (최신) | `C:\Users\enkei\workspace\1-active-project\42Menterp_2026\PRD_42ment_ERP_v3.0.md` |
 | PRD v2.0 | `C:\Users\enkei\workspace\1-active-project\42Menterp_2026\docs\PRD_42Ment_ERP_MVP_v2.md` |
+| Expert Review | `C:\Users\enkei\workspace\1-active-project\42Menterp_2026\docs\PRD_v3.0\expert_review.md` |
 | QA 보고서 | `C:\Users\enkei\workspace\1-active-project\42Menterp_2026\docs\progress\QA_REPORT_001.md` |
 | 수정 지시서 | `C:\Users\enkei\workspace\1-active-project\42Menterp_2026\docs\progress\FIX_REQUEST_001.md` |
 | 컨텍스트 요약 | `C:\Users\enkei\workspace\1-active-project\42Menterp_2026\docs\progress\CONTEXT_SUMMARY.md` |
 
 ---
 
-## 10. 다음 단계
+## 8. 다음 단계
 
-1. **즉시:** FIX_REQUEST_001.md 수정 사항 구현
-2. **이후:** 
-   - Store CRUD 완성
-   - Order 생성 플로우
-   - Google Sheets 발주서 출력
-   - 인증/권한 테스트
+### Phase 2 (예정)
+- [ ] 대시보드 KPI 위젯 구현
+- [ ] 매장 관리 UI 개선 (일괄 등록, 검색)
+- [ ] 발주 관리 UI (상태 필터, 일괄 처리)
+- [ ] 정산 보고서 생성
+- [ ] 텔레그램 알림 연동
 
 ---
 
-## 11. 중요 참고사항
+## 9. 중요 참고사항
 
+- **Expert Review 패턴 적용 완료** - SheetImportLog(Staging), StatusHistory, CostAdjustment
 - **기존 프로젝트** `marketing-agency-erp`는 별도 프로젝트임 (혼동 주의)
 - **PRD v3.0**이 최신 기획서 (v2.0은 참고용)
 - **QA 검수 후 수정 지시** 방식으로 진행

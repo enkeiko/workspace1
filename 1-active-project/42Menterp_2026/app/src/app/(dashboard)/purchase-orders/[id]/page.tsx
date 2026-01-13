@@ -40,6 +40,8 @@ import {
   ExternalLink,
   CheckCircle,
   PlayCircle,
+  XCircle,
+  ClipboardList,
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -200,6 +202,83 @@ export default function PurchaseOrderDetailPage({
     }
   };
 
+  const handleConfirm = async () => {
+    if (!purchaseOrder) return;
+
+    setStatusLoading(true);
+    try {
+      const res = await fetch(`/api/purchase-orders/${id}/confirm`, {
+        method: "POST",
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success("발주가 확정되었습니다");
+        fetchPurchaseOrder();
+      } else {
+        toast.error(data.error);
+      }
+    } catch (error) {
+      console.error("Failed to confirm:", error);
+      toast.error("발주 확정에 실패했습니다");
+    } finally {
+      setStatusLoading(false);
+    }
+  };
+
+  const handleCancel = async () => {
+    if (!purchaseOrder) return;
+
+    setStatusLoading(true);
+    try {
+      const res = await fetch(`/api/purchase-orders/${id}/cancel`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success("발주가 취소되었습니다");
+        fetchPurchaseOrder();
+      } else {
+        toast.error(data.error);
+      }
+    } catch (error) {
+      console.error("Failed to cancel:", error);
+      toast.error("발주 취소에 실패했습니다");
+    } finally {
+      setStatusLoading(false);
+    }
+  };
+
+  const handleComplete = async () => {
+    if (!purchaseOrder) return;
+
+    setStatusLoading(true);
+    try {
+      const res = await fetch(`/api/purchase-orders/${id}/complete`, {
+        method: "POST",
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success("발주가 완료되었습니다");
+        fetchPurchaseOrder();
+      } else {
+        toast.error(data.error);
+      }
+    } catch (error) {
+      console.error("Failed to complete:", error);
+      toast.error("발주 완료에 실패했습니다");
+    } finally {
+      setStatusLoading(false);
+    }
+  };
+
   const handleExport = async () => {
     if (!purchaseOrder) return;
 
@@ -276,9 +355,11 @@ export default function PurchaseOrderDetailPage({
   const canExport = ["PENDING", "CONFIRMED", "IN_PROGRESS"].includes(
     purchaseOrder.status
   );
-  const canConfirm = purchaseOrder.status === "DRAFT";
-  const canStart = purchaseOrder.status === "PENDING" || purchaseOrder.status === "CONFIRMED";
+  const canConfirm = purchaseOrder.status === "PENDING";
+  const canCancel = ["DRAFT", "PENDING", "CONFIRMED"].includes(purchaseOrder.status);
+  const canStart = purchaseOrder.status === "CONFIRMED";
   const canComplete = purchaseOrder.status === "IN_PROGRESS";
+  const canCreateWorkStatement = ["CONFIRMED", "IN_PROGRESS"].includes(purchaseOrder.status);
 
   return (
     <div className="space-y-6">
@@ -330,10 +411,34 @@ export default function PurchaseOrderDetailPage({
               </AlertDialogContent>
             </AlertDialog>
           )}
+          {canCancel && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" disabled={statusLoading}>
+                  <XCircle className="h-4 w-4 mr-2" />
+                  취소
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>발주를 취소하시겠습니까?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    이 작업은 되돌릴 수 없습니다.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>닫기</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleCancel}>
+                    취소 처리
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
           {canConfirm && (
             <Button
               variant="outline"
-              onClick={() => handleStatusChange("PENDING")}
+              onClick={handleConfirm}
               disabled={statusLoading}
             >
               <CheckCircle className="h-4 w-4 mr-2" />
@@ -350,9 +455,17 @@ export default function PurchaseOrderDetailPage({
               작업 시작
             </Button>
           )}
+          {canCreateWorkStatement && (
+            <Button variant="outline" asChild>
+              <Link href={`/work-statements/new?purchaseOrderId=${purchaseOrder.id}`}>
+                <ClipboardList className="h-4 w-4 mr-2" />
+                작업 명세 등록
+              </Link>
+            </Button>
+          )}
           {canComplete && (
             <Button
-              onClick={() => handleStatusChange("COMPLETED")}
+              onClick={handleComplete}
               disabled={statusLoading}
               className="bg-green-600 hover:bg-green-700"
             >

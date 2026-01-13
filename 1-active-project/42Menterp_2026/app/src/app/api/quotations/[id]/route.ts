@@ -24,12 +24,9 @@ export async function GET(
         },
         items: {
           include: {
-            store: {
-              select: { id: true, name: true, mid: true },
-            },
             product: true,
           },
-          orderBy: { createdAt: "asc" },
+          orderBy: { seq: "asc" },
         },
         convertedToSalesOrder: {
           select: { id: true, salesOrderNo: true },
@@ -56,7 +53,6 @@ export async function GET(
 
 const updateQuotationSchema = z.object({
   validUntil: z.string().optional(),
-  subject: z.string().optional().nullable(),
   note: z.string().optional().nullable(),
   status: z.enum(["DRAFT", "SENT", "ACCEPTED", "REJECTED", "EXPIRED"]).optional(),
 });
@@ -97,7 +93,6 @@ export async function PUT(
       where: { id },
       data: {
         ...(validatedData.validUntil && { validUntil: new Date(validatedData.validUntil) }),
-        ...(validatedData.subject !== undefined && { subject: validatedData.subject }),
         ...(validatedData.note !== undefined && { note: validatedData.note }),
         ...(validatedData.status && { status: validatedData.status }),
       },

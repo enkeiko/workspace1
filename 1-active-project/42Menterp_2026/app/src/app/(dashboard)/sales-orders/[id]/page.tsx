@@ -42,6 +42,7 @@ import {
   CheckCircle,
   ArrowRightCircle,
   FileText,
+  XCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { format, addWeeks, startOfWeek, getWeek, getYear } from "date-fns";
@@ -198,7 +199,59 @@ export default function SalesOrderDetailPage({
     }
   };
 
-  const handleStatusChange = async (newStatus: string) => {
+  const handleConfirm = async () => {
+    if (!salesOrder) return;
+
+    setStatusLoading(true);
+    try {
+      const res = await fetch(`/api/sales-orders/${id}/confirm`, {
+        method: "POST",
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success("수주가 확정되었습니다");
+        setSalesOrder(data.salesOrder);
+      } else {
+        toast.error(data.error);
+      }
+    } catch (error) {
+      console.error("Failed to confirm:", error);
+      toast.error("수주 확정에 실패했습니다");
+    } finally {
+      setStatusLoading(false);
+    }
+  };
+
+  const handleCancel = async () => {
+    if (!salesOrder) return;
+
+    setStatusLoading(true);
+    try {
+      const res = await fetch(`/api/sales-orders/${id}/cancel`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success("수주가 취소되었습니다");
+        setSalesOrder(data.salesOrder);
+      } else {
+        toast.error(data.error);
+      }
+    } catch (error) {
+      console.error("Failed to cancel:", error);
+      toast.error("수주 취소에 실패했습니다");
+    } finally {
+      setStatusLoading(false);
+    }
+  };
+
+  const handleComplete = async () => {
     if (!salesOrder) return;
 
     setStatusLoading(true);
@@ -206,20 +259,20 @@ export default function SalesOrderDetailPage({
       const res = await fetch(`/api/sales-orders/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify({ status: "COMPLETED" }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        toast.success("상태가 변경되었습니다");
-        setSalesOrder({ ...salesOrder, status: newStatus });
+        toast.success("수주가 완료 처리되었습니다");
+        setSalesOrder({ ...salesOrder, status: "COMPLETED" });
       } else {
         toast.error(data.error);
       }
     } catch (error) {
-      console.error("Failed to update status:", error);
-      toast.error("상태 변경에 실패했습니다");
+      console.error("Failed to complete:", error);
+      toast.error("완료 처리에 실패했습니다");
     } finally {
       setStatusLoading(false);
     }
@@ -292,6 +345,7 @@ export default function SalesOrderDetailPage({
 
   const canDelete = salesOrder.status === "DRAFT";
   const canConfirm = salesOrder.status === "DRAFT";
+  const canCancel = ["DRAFT", "CONFIRMED"].includes(salesOrder.status);
   const canConvertToPO = salesOrder.status === "CONFIRMED" || salesOrder.status === "IN_PROGRESS";
   const canComplete = salesOrder.status === "IN_PROGRESS" && salesOrder.purchaseOrders.length > 0;
 
@@ -345,10 +399,34 @@ export default function SalesOrderDetailPage({
               </AlertDialogContent>
             </AlertDialog>
           )}
+          {canCancel && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" disabled={statusLoading}>
+                  <XCircle className="h-4 w-4 mr-2" />
+                  취소
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>수주를 취소하시겠습니까?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    연결된 대기 상태의 발주도 함께 취소됩니다.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>닫기</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleCancel}>
+                    취소 처리
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
           {canConfirm && (
             <Button
-              variant="outline"
-              onClick={() => handleStatusChange("CONFIRMED")}
+              variant="default"
+              onClick={handleConfirm}
               disabled={statusLoading}
             >
               <CheckCircle className="h-4 w-4 mr-2" />
@@ -436,7 +514,7 @@ export default function SalesOrderDetailPage({
           )}
           {canComplete && (
             <Button
-              onClick={() => handleStatusChange("COMPLETED")}
+              onClick={handleComplete}
               disabled={statusLoading}
               className="bg-green-600 hover:bg-green-700"
             >

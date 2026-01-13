@@ -7,17 +7,24 @@ import { z } from "zod";
 const salesOrderItemSchema = z.object({
   storeId: z.string().optional().nullable(),
   productId: z.string().optional().nullable(),
-  description: z.string(),
-  qty: z.number().min(1),
+  productType: z.enum(["REVIEW", "SAVE", "DIRECTION", "TRAFFIC"]),
+  keyword: z.string().optional().nullable(),
+  dailyQty: z.number().min(0).optional(),
+  startDate: z.string().optional().nullable(),
+  endDate: z.string().optional().nullable(),
+  workDays: z.number().min(0).optional(),
+  totalQty: z.number().min(1),
   unitPrice: z.number().min(0),
-  amount: z.number().min(0),
+  supplyAmount: z.number().min(0),
+  taxAmount: z.number().min(0).optional(),
+  note: z.string().optional().nullable(),
 });
 
 const salesOrderSchema = z.object({
   customerId: z.string(),
   sourceQuotationId: z.string().optional().nullable(),
   orderDate: z.string(),
-  note: z.string().optional().nullable(),
+  memo: z.string().optional().nullable(),
   items: z.array(salesOrderItemSchema).min(1, "최소 1개 이상의 항목이 필요합니다"),
 });
 
@@ -68,7 +75,7 @@ export async function GET(request: NextRequest) {
         take: limit,
         include: {
           customer: {
-            select: { id: true, name: true, businessName: true },
+            select: { id: true, name: true },
           },
           sourceQuotation: {
             select: { id: true, quotationNo: true },
@@ -123,11 +130,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const totalAmount = validatedData.items.reduce(
-      (sum, item) => sum + item.amount,
+    const supplyAmount = validatedData.items.reduce(
+      (sum, item) => sum + item.supplyAmount,
       0
     );
-    const taxAmount = Math.round(totalAmount * 0.1);
+    const taxAmount = validatedData.items.reduce(
+      (sum, item) => sum + (item.taxAmount || Math.round(item.supplyAmount * 0.1)),
+      0
+    );
+    const totalAmount = supplyAmount + taxAmount;
 
     const salesOrder = await prisma.salesOrder.create({
       data: {
@@ -135,18 +146,27 @@ export async function POST(request: NextRequest) {
         customerId: validatedData.customerId,
         sourceQuotationId: validatedData.sourceQuotationId,
         orderDate: new Date(validatedData.orderDate),
-        totalAmount,
+        supplyAmount,
         taxAmount,
-        note: validatedData.note,
+        totalAmount,
+        memo: validatedData.memo,
         createdById: session.user.id,
         items: {
-          create: validatedData.items.map((item) => ({
+          create: validatedData.items.map((item, index) => ({
+            seq: index + 1,
             storeId: item.storeId,
             productId: item.productId,
-            description: item.description,
-            qty: item.qty,
+            productType: item.productType,
+            keyword: item.keyword,
+            dailyQty: item.dailyQty || 0,
+            startDate: item.startDate ? new Date(item.startDate) : null,
+            endDate: item.endDate ? new Date(item.endDate) : null,
+            workDays: item.workDays || 0,
+            totalQty: item.totalQty,
             unitPrice: item.unitPrice,
-            amount: item.amount,
+            supplyAmount: item.supplyAmount,
+            taxAmount: item.taxAmount || Math.round(item.supplyAmount * 0.1),
+            note: item.note,
           })),
         },
       },
@@ -157,11 +177,12 @@ export async function POST(request: NextRequest) {
             store: true,
             product: true,
           },
+          orderBy: { seq: "asc" },
         },
       },
     });
 
-    // WorkLog 자동 생성
+    // WorkLog 자동 생성 (수주 등록 시)
     const storeIds = [...new Set(
       validatedData.items
         .filter((item) => item.storeId)
@@ -172,7 +193,6 @@ export async function POST(request: NextRequest) {
       await prisma.workLog.create({
         data: {
           storeId,
-          salesOrderId: salesOrder.id,
           workType: "SALES_ORDER_CREATED",
           workDate: new Date(),
           description: `수주 등록 - ${salesOrder.salesOrderNo}`,

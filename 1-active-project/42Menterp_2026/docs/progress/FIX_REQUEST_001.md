@@ -31,7 +31,7 @@ export default async function Home() {
 
 **참고:** `authOptions`가 `@/lib/auth`에 없으면 해당 파일도 생성 필요
 
-- [ ] 완료
+- [x] 완료 (구현됨 - `/dashboard`로 리다이렉트)
 
 ---
 
@@ -55,7 +55,7 @@ export const config = {
 };
 ```
 
-- [ ] 완료
+- [x] 완료 (더 상세한 버전으로 구현됨)
 
 ---
 
@@ -134,7 +134,7 @@ export const authOptions: NextAuthOptions = {
 };
 ```
 
-- [ ] 완료
+- [x] 완료 (로그인 유지 기능 포함 구현됨)
 
 ---
 

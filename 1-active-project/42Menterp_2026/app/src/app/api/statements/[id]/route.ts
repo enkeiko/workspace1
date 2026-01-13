@@ -28,9 +28,9 @@ export async function GET(
         },
         items: {
           include: {
-            salesOrderItem: true,
+            product: true,
           },
-          orderBy: { createdAt: "asc" },
+          orderBy: { seq: "asc" },
         },
       },
     });
@@ -54,7 +54,7 @@ export async function GET(
 
 const updateStatementSchema = z.object({
   note: z.string().optional().nullable(),
-  status: z.enum(["DRAFT", "ISSUED", "DELIVERED"]).optional(),
+  status: z.enum(["DRAFT", "ISSUED", "SENT"]).optional(),
 });
 
 export async function PUT(

@@ -84,8 +84,8 @@ export async function POST(
     }
 
     const parsedOrderDate = new Date(orderDate);
-    const totalAmount = salesOrder.items.reduce((sum, item) => sum + item.amount, 0);
-    const totalQty = salesOrder.items.reduce((sum, item) => sum + item.qty, 0);
+    const totalAmount = salesOrder.items.reduce((sum, item) => sum + item.supplyAmount + item.taxAmount, 0);
+    const totalQty = salesOrder.items.reduce((sum, item) => sum + item.totalQty, 0);
 
     // Create Purchase Order from Sales Order
     const purchaseOrder = await prisma.purchaseOrder.create({
@@ -104,15 +104,15 @@ export async function POST(
             .map((item) => ({
               storeId: item.storeId!,
               productId: item.productId,
-              productType: channel.type || "TRAFFIC",
-              keyword: item.description,
-              dailyQty: Math.ceil(item.qty / 7),
-              startDate: parsedOrderDate,
-              endDate: new Date(parsedOrderDate.getTime() + 6 * 24 * 60 * 60 * 1000),
-              workDays: 7,
-              totalQty: item.qty,
+              productType: item.productType || channel.type || "TRAFFIC",
+              keyword: item.keyword || "키워드 없음",
+              dailyQty: item.dailyQty || Math.ceil(item.totalQty / 7),
+              startDate: item.startDate || parsedOrderDate,
+              endDate: item.endDate || new Date(parsedOrderDate.getTime() + 6 * 24 * 60 * 60 * 1000),
+              workDays: item.workDays || 7,
+              totalQty: item.totalQty,
               unitPrice: item.unitPrice,
-              amount: item.amount,
+              amount: item.supplyAmount + item.taxAmount,
             })),
         },
       },

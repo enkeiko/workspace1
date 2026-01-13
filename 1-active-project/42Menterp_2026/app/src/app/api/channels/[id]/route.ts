@@ -127,7 +127,7 @@ export async function DELETE(
 
     const existingChannel = await prisma.channel.findUnique({
       where: { id },
-      include: { orders: { take: 1 } },
+      include: { purchaseOrders: { take: 1 } },
     });
 
     if (!existingChannel) {
@@ -137,7 +137,7 @@ export async function DELETE(
       );
     }
 
-    if (existingChannel.orders.length > 0) {
+    if (existingChannel.purchaseOrders.length > 0) {
       return NextResponse.json(
         { error: "발주 내역이 있는 채널은 삭제할 수 없습니다" },
         { status: 400 }

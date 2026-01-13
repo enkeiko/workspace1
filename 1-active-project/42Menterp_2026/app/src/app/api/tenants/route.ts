@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
             select: {
               users: true,
               stores: true,
-              orders: true,
+              purchaseOrders: true,
             },
           },
         },
