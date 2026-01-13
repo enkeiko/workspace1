@@ -90,14 +90,56 @@
 
 ---
 
-### Phase 3: 주간 발주 시스템 (Smart Grid) 🚧
+### Phase 3: 주간 발주 시스템 (Smart Grid) ✅
 - **담당:** Claude Code
-- **상태:** 진행 중
-- **시작일:** 2026-01-14
-- **계획:**
-    - PO-01: 주간 발주 그리드 UI
-    - PO-02: DateRange 컴포넌트
-    - PO-03: 그리드 저장 API (SO/PO 연동)
-    - PO-07: Manual Override 보호
+- **상태:** 완료
+- **완료일:** 2026-01-14
+- **변경 사항:**
+
+    #### PO-02: DateRange 컴포넌트
+    - `app/src/components/ui/popover.tsx` - Radix Popover 래퍼
+    - `app/src/components/ui/calendar.tsx` - react-day-picker 캘린더
+    - `app/src/components/ui/date-range-picker.tsx` - 날짜 범위 선택
+
+    #### PO-01: 주간 발주 그리드 UI
+    - `app/src/components/purchase-orders/types.ts` - GridCellData, GridStoreRow 타입
+    - `app/src/components/purchase-orders/week-selector.tsx` - 주차 선택기
+    - `app/src/components/purchase-orders/grid-cell.tsx` - 그리드 셀 (수량+날짜)
+    - `app/src/components/purchase-orders/weekly-order-grid.tsx` - 메인 스마트 그리드
+    - `app/src/components/purchase-orders/index.ts` - exports
+
+    #### PO-03: 그리드 저장 API (SO/PO 연동)
+    - `app/src/app/api/purchase-orders/grid-load/route.ts` - 주간 데이터 로드
+    - `app/src/app/api/purchase-orders/grid-save/route.ts` - 그리드 저장 (PO 생성/수정)
+
+    #### PO-07: Manual Override 보호
+    - `grid-save/route.ts` - isManualOverride 항목 스킵 로직
+
+    #### 페이지
+    - `app/src/app/(dashboard)/purchase-orders/weekly/page.tsx` - 주간 발주 페이지
+
+---
+
+### Phase 4: 고객/상품 관리 고도화 ✅
+- **담당:** Claude Code
+- **상태:** 완료 - 리뷰 요청
+- **완료일:** 2026-01-14
+- **변경 사항:**
+
+    #### C-01: 고객 목록 리팩토링
+    - `app/src/app/(dashboard)/customers/page.tsx` - DataTable 공용 컴포넌트 적용
+    - `app/src/components/common/hooks/use-pagination.ts` - setPagination 함수 추가
+
+    #### C-02: 엑셀 API
+    - `app/src/app/api/customers/export/route.ts` - Excel 파일 다운로드 (xlsx)
+    - `app/src/app/api/customers/template/route.ts` - 엑셀 양식 다운로드
+
+    #### P-01: 상품 유형별 그룹화 뷰
+    - `app/src/app/api/products/route.ts` - 상품 목록 API (grouped 옵션)
+    - `app/src/app/(dashboard)/products/page.tsx` - 유형별 탭, 그리드/리스트 뷰 전환
+
+    #### C-03: 세금계산서 준비 상태 표시
+    - `app/src/app/(dashboard)/customers/components/tax-invoice-summary.tsx` - 준비 현황 요약 카드
+    - 고객 목록에 세금계산서 상태 컬럼 (CustomerTaxStatus 컴포넌트)
 
 ---

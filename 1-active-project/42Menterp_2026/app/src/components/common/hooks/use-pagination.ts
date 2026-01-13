@@ -8,6 +8,13 @@ interface UsePaginationOptions {
   total?: number;
 }
 
+interface PaginationState {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 interface UsePaginationReturn {
   page: number;
   limit: number;
@@ -16,18 +23,14 @@ interface UsePaginationReturn {
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
   setTotal: (total: number) => void;
+  setPagination: (state: Partial<PaginationState>) => void;
   nextPage: () => void;
   prevPage: () => void;
   goToPage: (page: number) => void;
   hasNextPage: boolean;
   hasPrevPage: boolean;
   offset: number;
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
+  pagination: PaginationState;
 }
 
 export function usePagination(
@@ -59,6 +62,12 @@ export function usePagination(
 
   const setTotal = useCallback((newTotal: number) => {
     setTotalState(Math.max(0, newTotal));
+  }, []);
+
+  const setPagination = useCallback((state: Partial<PaginationState>) => {
+    if (state.page !== undefined) setPageState(state.page);
+    if (state.limit !== undefined) setLimitState(state.limit);
+    if (state.total !== undefined) setTotalState(state.total);
   }, []);
 
   const nextPage = useCallback(() => {
@@ -99,6 +108,7 @@ export function usePagination(
     setPage,
     setLimit,
     setTotal,
+    setPagination,
     nextPage,
     prevPage,
     goToPage,
