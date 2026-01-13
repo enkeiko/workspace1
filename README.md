@@ -66,12 +66,12 @@ workspace/
 | **korean-news-community** | 뉴스 커뮤니티 | Node.js, Express |
 | **naver_seo_autom_0.5_by_codex** | SEO 자동화 실험 | JavaScript |
 | **reward-keyword-finder-v2** | 키워드 도구 재구현 | Node.js |
+| **marketing-agency-erp** | 마케팅 대행사 ERP | Next.js, Prisma |
 
 ### 2-done-project (완료)
 
 | 프로젝트 | 설명 | 기술 |
 |---------|------|------|
-| **marketing-agency-erp** | 마케팅 대행사 ERP | Next.js, Prisma |
 | **Reward_Keyword_makers** | 키워드 도구 | C#, WinForms |
 
 ### 3-Sandbox (실험/학습)

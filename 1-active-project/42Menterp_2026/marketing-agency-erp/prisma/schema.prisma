@@ -306,7 +306,6 @@ model Document {
   @@index([orderId])
   @@index([documentType])
 }
-
 model Settlement {
   id             Int       @id @default(autoincrement())
   orderId        Int
@@ -327,4 +326,5 @@ model Settlement {
   @@index([settlementDate])
   @@index([status])
 }
+
 

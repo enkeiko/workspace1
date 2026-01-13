@@ -1,0 +1,955 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ===== 기본 마스터 =====
+
+// 파트너사 (멀티테넌시)
+model Tenant {
+  id                   String       @id @default(cuid())
+  name                 String
+  code                 String       @unique
+  businessNo           String?      @unique
+  representative       String?
+  contactName          String?
+  contactPhone         String?
+  contactEmail         String?
+  address              String?
+  commissionType       CommissionType @default(RATE)
+  defaultCommissionRate Float?      @default(0.1)
+  bankName             String?
+  bankAccount          String?
+  bankHolder           String?
+  status               TenantStatus @default(ACTIVE)
+  contractStart        DateTime?
+  contractEnd          DateTime?
+  memo                 String?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  users                User[]
+  stores               Store[]
+  salesOrders          SalesOrder[]
+  purchaseOrders       PurchaseOrder[]
+  settlements          Settlement[]
+  partnerPrices        PartnerPrice[]
+  partnerSettlements   PartnerSettlement[]
+}
+
+enum TenantStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum CommissionType {
+  FIXED
+  RATE
+}
+
+// 사용자
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String
+  phone         String?
+  role          Role      @default(ADMIN)
+  tenantId      String?
+  tenant        Tenant?   @relation(fields: [tenantId], references: [id])
+  status        UserStatus @default(ACTIVE)
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // 수주/발주
+  salesOrders          SalesOrder[]
+  purchaseOrders       PurchaseOrder[]
+  purchaseOrderExports PurchaseOrderExport[]
+
+  // 정산/작업
+  settlements          Settlement[]
+  workLogs             WorkLog[]
+  businessChecks       BusinessCheck[]
+
+  // 알림
+  notifications        Notification[]
+  notificationSettings NotificationSetting[]
+
+  // 세금계산서
+  taxInvoicesIssued    TaxInvoice[] @relation("TaxInvoiceIssuer")
+  taxInvoicesCreated   TaxInvoice[] @relation("TaxInvoiceCreator")
+
+  // 견적서
+  quotationsIssued     Quotation[] @relation("QuotationIssuer")
+  quotationsCreated    Quotation[] @relation("QuotationCreator")
+
+  // 거래명세서
+  statementsIssued     Statement[] @relation("StatementIssuer")
+  statementsCreated    Statement[] @relation("StatementCreator")
+}
+
+enum Role {
+  SUPER_ADMIN
+  PARTNER_ADMIN
+  ADMIN
+  OPERATOR
+  VIEWER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+// 고객 (계약자/광고주)
+model Customer {
+  id             String         @id @default(cuid())
+  name           String
+  businessNo     String?        @unique
+  representative String?
+  contactName    String?
+  contactPhone   String?
+  contactEmail   String?
+  address        String?
+  contractStart  DateTime?
+  contractEnd    DateTime?
+  monthlyBudget  Int?
+  status         CustomerStatus @default(ACTIVE)
+  memo           String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  stores         Store[]
+  quotations     Quotation[]
+  salesOrders    SalesOrder[]
+  statements     Statement[]
+}
+
+enum CustomerStatus {
+  ACTIVE
+  PAUSED
+  TERMINATED
+}
+
+// 매장
+model Store {
+  id             String      @id @default(cuid())
+  tenantId       String?
+  tenant         Tenant?     @relation(fields: [tenantId], references: [id])
+  customerId     String?
+  customer       Customer?   @relation(fields: [customerId], references: [id])
+  name           String
+  mid            String      @unique
+  placeUrl       String?
+  businessNo     String?
+  representative String?
+  contactName    String?
+  contactPhone   String?
+  contactEmail   String?
+  address        String?
+  category       String?
+  status         StoreStatus @default(ACTIVE)
+  memo           String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  salesOrderItems    SalesOrderItem[]
+  purchaseOrderItems PurchaseOrderItem[]
+  keywords           StoreKeyword[]
+  settlements        Settlement[]
+  workLogs           WorkLog[]
+}
+
+enum StoreStatus {
+  ACTIVE
+  PAUSED
+  TERMINATED
+}
+
+// 상품 (서비스)
+model Product {
+  id            String        @id @default(cuid())
+  code          String        @unique
+  name          String
+  type          ProductType
+  description   String?
+
+  // 판매 단가 (고객에게)
+  saleUnitPrice Int           @default(0)
+
+  // 매입 단가 (채널에)
+  costUnitPrice Int           @default(0)
+
+  channelId     String?
+  channel       Channel?      @relation(fields: [channelId], references: [id])
+
+  isActive      Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  quotationItems     QuotationItem[]
+  salesOrderItems    SalesOrderItem[]
+  purchaseOrderItems PurchaseOrderItem[]
+  statementItems     StatementItem[]
+}
+
+enum ProductType {
+  TRAFFIC
+  SAVE
+  REVIEW
+  DIRECTION
+}
+
+// 채널 (공급업체)
+model Channel {
+  id               String        @id @default(cuid())
+  name             String
+  code             String        @unique
+  type             ChannelType
+  baseUnitPrice    Int
+  minQty           Int?
+  minDays          Int?
+  maxDays          Int?
+  sameDayDeadline  String?
+  nextDayDeadline  String?
+  weekendAvailable Boolean       @default(false)
+  status           ChannelStatus @default(ACTIVE)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  products         Product[]
+  sheets           ChannelSheet[]
+  purchaseOrders   PurchaseOrder[]
+  settlements      Settlement[]
+  partnerPrices    PartnerPrice[]
+}
+
+enum ChannelType {
+  REVIEW
+  SAVE
+  DIRECTION
+  TRAFFIC
+}
+
+enum ChannelStatus {
+  ACTIVE
+  INACTIVE
+}
+
+// 채널별 시트 설정
+model ChannelSheet {
+  id             String    @id @default(cuid())
+  channelId      String
+  channel        Channel   @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  sheetType      SheetType
+  sheetName      String
+  spreadsheetId  String
+  spreadsheetUrl String
+  sheetTabName   String?
+  columnMapping  Json?
+  headerRow      Int       @default(1)
+  dataStartRow   Int       @default(2)
+  syncSchedule   String?
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  purchaseOrderExports PurchaseOrderExport[]
+}
+
+enum SheetType {
+  ORDER
+  RECEIPT
+}
+
+// ===== 견적서 Quotation =====
+
+model Quotation {
+  id              String          @id @default(cuid())
+  quotationNo     String          @unique  // QT260113-0001
+
+  // 고객 정보
+  customerId      String?
+  customer        Customer?       @relation(fields: [customerId], references: [id])
+
+  // 견적 기본 정보
+  issueDate       DateTime        @default(now())
+  validUntil      DateTime?
+
+  // 공급자 정보 (당사)
+  supplierName    String
+  supplierBusinessNo String?
+  supplierCeoName String?
+  supplierAddr    String?
+  supplierPhone   String?
+  supplierEmail   String?
+
+  // 공급받는자 정보 (고객)
+  receiverName    String
+  receiverBusinessNo String?
+  receiverCeoName String?
+  receiverAddr    String?
+  receiverPhone   String?
+  receiverEmail   String?
+
+  // 금액
+  supplyAmount    Int             // 공급가액
+  taxAmount       Int             // 세액
+  totalAmount     Int             // 합계
+
+  note            String?
+  status          QuotationStatus @default(DRAFT)
+
+  // 전환된 수주
+  convertedToSalesOrderId String? @unique
+  convertedToSalesOrder   SalesOrder? @relation("QuotationToSalesOrder")
+  convertedAt     DateTime?
+
+  // 관리
+  issuedById      String?
+  issuedBy        User?           @relation("QuotationIssuer", fields: [issuedById], references: [id])
+  createdById     String
+  createdBy       User            @relation("QuotationCreator", fields: [createdById], references: [id])
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  items           QuotationItem[]
+
+  @@index([customerId])
+  @@index([issueDate])
+  @@index([status])
+}
+
+model QuotationItem {
+  id            String     @id @default(cuid())
+  quotationId   String
+  quotation     Quotation  @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  seq           Int        @default(1)
+
+  productId     String?
+  product       Product?   @relation(fields: [productId], references: [id])
+
+  itemName      String
+  itemSpec      String?
+  quantity      Int        @default(1)
+  unitPrice     Int        @default(0)
+  supplyAmount  Int        @default(0)
+  taxAmount     Int        @default(0)
+  note          String?
+  createdAt     DateTime   @default(now())
+
+  @@index([quotationId])
+}
+
+enum QuotationStatus {
+  DRAFT       // 초안
+  ISSUED      // 발행됨
+  SENT        // 전송됨
+  ACCEPTED    // 수락됨 (수주 전환)
+  REJECTED    // 거절됨
+  EXPIRED     // 만료됨
+}
+
+// ===== 수주 Sales Order =====
+
+model SalesOrder {
+  id              String           @id @default(cuid())
+  salesOrderNo    String           @unique  // SO260113-0001
+
+  tenantId        String?
+  tenant          Tenant?          @relation(fields: [tenantId], references: [id])
+
+  customerId      String?
+  customer        Customer?        @relation(fields: [customerId], references: [id])
+
+  // 원본 견적서 (있는 경우)
+  sourceQuotationId String?        @unique
+  sourceQuotation Quotation?       @relation("QuotationToSalesOrder", fields: [sourceQuotationId], references: [id])
+
+  orderDate       DateTime         @default(now())
+
+  // 금액
+  supplyAmount    Int              @default(0)
+  taxAmount       Int              @default(0)
+  totalAmount     Int              @default(0)
+
+  status          SalesOrderStatus @default(DRAFT)
+  memo            String?
+
+  // 관리
+  createdById     String
+  createdBy       User             @relation(fields: [createdById], references: [id])
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  items           SalesOrderItem[]
+  purchaseOrders  PurchaseOrder[]
+  statements      Statement[]
+
+  @@index([customerId])
+  @@index([orderDate])
+  @@index([status])
+}
+
+model SalesOrderItem {
+  id              String              @id @default(cuid())
+  salesOrderId    String
+  salesOrder      SalesOrder          @relation(fields: [salesOrderId], references: [id], onDelete: Cascade)
+  seq             Int                 @default(1)
+
+  storeId         String?
+  store           Store?              @relation(fields: [storeId], references: [id])
+
+  productId       String?
+  product         Product?            @relation(fields: [productId], references: [id])
+
+  productType     ProductType
+  keyword         String?
+
+  dailyQty        Int                 @default(0)
+  startDate       DateTime?
+  endDate         DateTime?
+  workDays        Int                 @default(0)
+  totalQty        Int                 @default(0)
+
+  unitPrice       Int                 @default(0)
+  supplyAmount    Int                 @default(0)
+  taxAmount       Int                 @default(0)
+
+  note            String?
+  status          SalesOrderItemStatus @default(PENDING)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([salesOrderId])
+  @@index([storeId])
+}
+
+enum SalesOrderStatus {
+  DRAFT        // 초안
+  CONFIRMED    // 확정
+  IN_PROGRESS  // 진행중
+  COMPLETED    // 완료
+  CANCELLED    // 취소
+}
+
+enum SalesOrderItemStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// ===== 발주 Purchase Order =====
+
+model PurchaseOrder {
+  id              String              @id @default(cuid())
+  purchaseOrderNo String              @unique  // PO260113-0001
+
+  tenantId        String?
+  tenant          Tenant?             @relation(fields: [tenantId], references: [id])
+
+  // 원본 수주 (있는 경우)
+  salesOrderId    String?
+  salesOrder      SalesOrder?         @relation(fields: [salesOrderId], references: [id])
+
+  channelId       String
+  channel         Channel             @relation(fields: [channelId], references: [id])
+
+  orderWeek       String
+  orderDate       DateTime
+
+  totalQty        Int                 @default(0)
+  totalAmount     Int                 @default(0)
+
+  status          PurchaseOrderStatus @default(DRAFT)
+  memo            String?
+
+  createdById     String
+  createdBy       User                @relation(fields: [createdById], references: [id])
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  items           PurchaseOrderItem[]
+  exports         PurchaseOrderExport[]
+  workLogs        WorkLog[]
+
+  @@index([salesOrderId])
+  @@index([channelId])
+  @@index([orderDate])
+  @@index([status])
+}
+
+model PurchaseOrderItem {
+  id              String                  @id @default(cuid())
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder           @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+
+  storeId         String
+  store           Store                   @relation(fields: [storeId], references: [id])
+
+  productId       String?
+  product         Product?                @relation(fields: [productId], references: [id])
+
+  productType     ProductType
+  keyword         String
+
+  dailyQty        Int
+  startDate       DateTime
+  endDate         DateTime
+  workDays        Int
+  totalQty        Int
+  unitPrice       Int
+  amount          Int
+
+  note            String?
+  status          PurchaseOrderItemStatus @default(PENDING)
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+
+  @@index([purchaseOrderId])
+  @@index([storeId])
+}
+
+enum PurchaseOrderStatus {
+  DRAFT
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum PurchaseOrderItemStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// 발주서 출력 이력
+model PurchaseOrderExport {
+  id               String        @id @default(cuid())
+  purchaseOrderId  String
+  purchaseOrder    PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  channelSheetId   String
+  channelSheet     ChannelSheet  @relation(fields: [channelSheetId], references: [id])
+  spreadsheetUrl   String
+  sheetTabName     String?
+  rowRange         String?
+  status           ExportStatus  @default(SUCCESS)
+  errorMessage     String?
+  exportedById     String
+  exportedBy       User          @relation(fields: [exportedById], references: [id])
+  exportedAt       DateTime      @default(now())
+
+  @@index([purchaseOrderId])
+}
+
+enum ExportStatus {
+  SUCCESS
+  FAILED
+}
+
+// ===== 거래명세서 Statement =====
+
+model Statement {
+  id              String          @id @default(cuid())
+  statementNo     String          @unique  // ST260113-0001
+
+  // 수주 연결
+  salesOrderId    String?
+  salesOrder      SalesOrder?     @relation(fields: [salesOrderId], references: [id])
+
+  customerId      String?
+  customer        Customer?       @relation(fields: [customerId], references: [id])
+
+  // 명세서 정보
+  issueDate       DateTime        @default(now())
+
+  // 공급자 정보 (당사)
+  supplierName    String
+  supplierBusinessNo String?
+  supplierCeoName String?
+  supplierAddr    String?
+  supplierPhone   String?
+  supplierEmail   String?
+
+  // 공급받는자 정보 (고객)
+  receiverName    String
+  receiverBusinessNo String?
+  receiverCeoName String?
+  receiverAddr    String?
+  receiverPhone   String?
+  receiverEmail   String?
+
+  // 금액
+  supplyAmount    Int
+  taxAmount       Int
+  totalAmount     Int
+
+  note            String?
+  status          StatementStatus @default(DRAFT)
+
+  // 관리
+  issuedById      String?
+  issuedBy        User?           @relation("StatementIssuer", fields: [issuedById], references: [id])
+  createdById     String
+  createdBy       User            @relation("StatementCreator", fields: [createdById], references: [id])
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  items           StatementItem[]
+
+  @@index([salesOrderId])
+  @@index([customerId])
+  @@index([issueDate])
+}
+
+model StatementItem {
+  id            String     @id @default(cuid())
+  statementId   String
+  statement     Statement  @relation(fields: [statementId], references: [id], onDelete: Cascade)
+  seq           Int        @default(1)
+
+  productId     String?
+  product       Product?   @relation(fields: [productId], references: [id])
+
+  itemDate      DateTime?
+  itemName      String
+  itemSpec      String?
+  quantity      Int        @default(1)
+  unitPrice     Int        @default(0)
+  supplyAmount  Int        @default(0)
+  taxAmount     Int        @default(0)
+  note          String?
+  createdAt     DateTime   @default(now())
+
+  @@index([statementId])
+}
+
+enum StatementStatus {
+  DRAFT       // 초안
+  ISSUED      // 발행됨
+  SENT        // 전송됨
+}
+
+// ===== 기타 모델들 =====
+
+// 매장 키워드
+model StoreKeyword {
+  id        String   @id @default(cuid())
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  keyword   String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  rankings  KeywordRanking[]
+}
+
+// 키워드 순위 기록
+model KeywordRanking {
+  id             String       @id @default(cuid())
+  storeKeywordId String
+  storeKeyword   StoreKeyword @relation(fields: [storeKeywordId], references: [id], onDelete: Cascade)
+  ranking        Int?
+  checkDate      DateTime
+  checkTime      String?
+  previousRank   Int?
+  rankChange     Int?
+  createdAt      DateTime     @default(now())
+
+  @@index([storeKeywordId, checkDate])
+}
+
+// 정산
+model Settlement {
+  id              String           @id @default(cuid())
+  tenantId        String?
+  tenant          Tenant?          @relation(fields: [tenantId], references: [id])
+  storeId         String
+  store           Store            @relation(fields: [storeId], references: [id])
+  channelId       String?
+  channel         Channel?         @relation(fields: [channelId], references: [id])
+  settlementMonth String
+  type            SettlementType
+  amount          Int
+  description     String?
+  status          SettlementStatus @default(PENDING)
+  taxInvoiceId    String?
+  taxInvoice      TaxInvoice?      @relation(fields: [taxInvoiceId], references: [id])
+  confirmedAt     DateTime?
+  confirmedById   String?
+  confirmedBy     User?            @relation(fields: [confirmedById], references: [id])
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([settlementMonth])
+  @@index([storeId, settlementMonth])
+  @@index([tenantId, settlementMonth])
+}
+
+enum SettlementType {
+  REVENUE
+  COST
+}
+
+enum SettlementStatus {
+  PENDING
+  CONFIRMED
+  PAID
+}
+
+// 마케팅 작업 로그
+model WorkLog {
+  id              String         @id @default(cuid())
+  storeId         String
+  store           Store          @relation(fields: [storeId], references: [id])
+  purchaseOrderId String?
+  purchaseOrder   PurchaseOrder? @relation(fields: [purchaseOrderId], references: [id])
+  workType        WorkType
+  workDate        DateTime
+  description     String
+  qty             Int?
+  result          String?
+  createdById     String
+  createdBy       User           @relation(fields: [createdById], references: [id])
+  createdAt       DateTime       @default(now())
+
+  @@index([storeId, workDate])
+}
+
+enum WorkType {
+  SALES_ORDER_CREATED
+  SALES_ORDER_CONFIRMED
+  PURCHASE_ORDER_CREATED
+  PURCHASE_ORDER_CONFIRMED
+  PURCHASE_ORDER_COMPLETED
+  MANUAL_WORK
+  KEYWORD_CHECK
+  REVIEW_CHECK
+  OTHER
+}
+
+// 사업자 상태 조회
+model BusinessCheck {
+  id               String              @id @default(cuid())
+  businessNo       String
+  corpName         String?
+  taxType          String?
+  taxTypeLabel     String?
+  closedState      String?
+  closedStateLabel String?
+  closedDate       DateTime?
+  status           BusinessCheckStatus
+  result           Json?
+  checkedAt        DateTime            @default(now())
+  checkedById      String
+  checkedBy        User                @relation(fields: [checkedById], references: [id])
+
+  @@index([businessNo])
+}
+
+enum BusinessCheckStatus {
+  ACTIVE
+  CLOSED
+  SUSPENDED
+  UNKNOWN
+}
+
+// ===== 멀티테넌시 =====
+
+model PartnerPrice {
+  id            String    @id @default(cuid())
+  tenantId      String
+  tenant        Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  channelId     String
+  channel       Channel   @relation(fields: [channelId], references: [id])
+  unitPrice     Int
+  effectiveFrom DateTime
+  effectiveTo   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([tenantId, channelId, effectiveFrom])
+  @@index([tenantId])
+  @@index([channelId])
+}
+
+model PartnerSettlement {
+  id               String                  @id @default(cuid())
+  tenantId         String
+  tenant           Tenant                  @relation(fields: [tenantId], references: [id])
+  settlementMonth  String
+  orderAmount      Int
+  revenueAmount    Int
+  commissionRate   Float
+  commissionAmount Int
+  settlementAmount Int
+  status           PartnerSettlementStatus @default(PENDING)
+  paidAt           DateTime?
+  memo             String?
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+
+  @@unique([tenantId, settlementMonth])
+  @@index([settlementMonth])
+}
+
+enum PartnerSettlementStatus {
+  PENDING
+  CONFIRMED
+  PAID
+}
+
+// ===== 세금계산서 =====
+
+model TaxInvoice {
+  id                  String           @id @default(cuid())
+  type                TaxInvoiceType
+  taxType             String           @default("TAX")
+  purposeType         String           @default("CHARGE")
+  issueDate           DateTime
+
+  supplierBusinessNo  String
+  supplierName        String
+  supplierCeoName     String?
+  supplierAddr        String?
+  supplierBizType     String?
+  supplierBizClass    String?
+  supplierEmail       String?
+
+  receiverBusinessNo  String
+  receiverName        String
+  receiverCeoName     String?
+  receiverAddr        String?
+  receiverBizType     String?
+  receiverBizClass    String?
+  receiverEmail       String?
+
+  supplyAmount        Int
+  taxAmount           Int
+  totalAmount         Int
+
+  ntsConfirmNo        String?
+  status              TaxInvoiceStatus @default(DRAFT)
+  barobillId          String?
+  errorMessage        String?
+  remark              String?
+
+  issuedAt            DateTime?
+  issuedById          String?
+  issuedBy            User?            @relation("TaxInvoiceIssuer", fields: [issuedById], references: [id])
+
+  createdById         String?
+  createdBy           User?            @relation("TaxInvoiceCreator", fields: [createdById], references: [id])
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  items               TaxInvoiceItem[]
+  settlements         Settlement[]
+
+  @@index([type, issueDate])
+  @@index([supplierBusinessNo])
+  @@index([receiverBusinessNo])
+  @@index([ntsConfirmNo])
+}
+
+model TaxInvoiceItem {
+  id            String     @id @default(cuid())
+  taxInvoiceId  String
+  taxInvoice    TaxInvoice @relation(fields: [taxInvoiceId], references: [id], onDelete: Cascade)
+  seq           Int        @default(1)
+  itemDate      DateTime?
+  itemName      String
+  itemSpec      String?
+  quantity      Int        @default(1)
+  unitPrice     Int        @default(0)
+  supplyAmount  Int        @default(0)
+  taxAmount     Int        @default(0)
+  note          String?
+  createdAt     DateTime   @default(now())
+
+  @@index([taxInvoiceId])
+}
+
+enum TaxInvoiceType {
+  SALES
+  PURCHASE
+}
+
+enum TaxInvoiceStatus {
+  DRAFT
+  ISSUED
+  SENT
+  FAILED
+}
+
+// ===== 알림 =====
+
+model Notification {
+  id          String             @id @default(cuid())
+  userId      String
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        NotificationType
+  title       String
+  message     String
+  data        Json?
+  channel     NotificationChannel
+  status      NotificationStatus @default(UNREAD)
+  sentAt      DateTime?
+  readAt      DateTime?
+  createdAt   DateTime           @default(now())
+
+  @@index([userId, status])
+  @@index([createdAt])
+}
+
+enum NotificationType {
+  QUOTATION_SENT
+  SALES_ORDER_CREATED
+  SALES_ORDER_CONFIRMED
+  PURCHASE_ORDER_DEADLINE
+  PURCHASE_ORDER_STATUS
+  PAYMENT_REQUEST
+  PAYMENT_CONFIRMED
+  TAX_INVOICE_ISSUED
+  KEYWORD_RANK_CHANGE
+  BUSINESS_STATUS
+  SYSTEM
+}
+
+enum NotificationChannel {
+  SYSTEM
+  KAKAO
+  EMAIL
+  SLACK
+}
+
+enum NotificationStatus {
+  UNREAD
+  READ
+  SENT
+  FAILED
+}
+
+model NotificationSetting {
+  id               String              @id @default(cuid())
+  userId           String
+  user             User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notificationType NotificationType
+  channel          NotificationChannel
+  enabled          Boolean             @default(true)
+  receiver         String?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  @@unique([userId, notificationType, channel])
+}
