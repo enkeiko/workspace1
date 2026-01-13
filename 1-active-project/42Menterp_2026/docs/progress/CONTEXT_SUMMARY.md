@@ -28,8 +28,12 @@
 
 ### 핵심 비즈니스
 - 네이버 플레이스에 등록된 매장(광고주)들의 리뷰/저장/길찾기/유입 마케팅 대행
-- 여러 채널(피닉스, 말차, 히든 등)에 발주
+- 여러 마케팅 서비스(피닉스, 말차, 히든 등 20개 상품)에 발주
 - Google Sheets로 발주서 전송
+
+### 용어 정의
+- **채널(Channel)**: 마케팅 플랫폼 (네이버, 인스타그램, 틱톡, 유튜브)
+- **상품(Product)**: 마케팅 서비스 (피닉스, 히든, 말차 등 20개)
 
 ---
 
@@ -122,12 +126,12 @@ User          - 사용자 (SUPER_ADMIN, PARTNER_ADMIN, ADMIN, OPERATOR, VIEWER)
 Tenant        - 고객사
 Customer      - 고객 (Tenant 소속)
 Store         - 매장 (mid, placeUrl, businessNo 등)
-Channel       - 발주 채널 (피닉스, 말차, 히든 등)
-Product       - 상품 (키워드, 리뷰, 저장 등)
+Channel       - 마케팅 플랫폼 (네이버, 인스타그램 등) *미사용
+Product       - 마케팅 서비스/상품 (피닉스, 히든, 말차 등 20개)
 
 Quotation     - 견적서
 SalesOrder    - 수주 (고객 주문)
-PurchaseOrder - 발주 (채널 발주)
+PurchaseOrder - 발주 (마케팅 서비스 발주)
 WorkStatement - 작업 명세
 Settlement    - 정산
 TaxInvoice    - 세금계산서
@@ -153,25 +157,82 @@ TaxInvoice:    DRAFT → ISSUED → SENT → FAILED
 
 ## 7. 주요 문서 위치
 
-| 문서 | 경로 |
-|------|------|
-| 문서 인덱스 | `docs/README.md` |
-| PRD v3.0 | `docs/PRD_v3.0/` |
-| 컨텍스트 요약 | `docs/progress/CONTEXT_SUMMARY.md` (이 문서) |
-| 과거 문서 | `docs/archive/` |
+| 문서 | 경로 | 필수 |
+|------|------|------|
+| 문서 인덱스 | `docs/README.md` | |
+| PRD v3.0 | `docs/PRD_v3.0/` | |
+| 컨텍스트 요약 | `docs/progress/CONTEXT_SUMMARY.md` (이 문서) | ✅ |
+| 변경 이력 | `docs/progress/CHANGELOG.md` | ✅ |
+| 작업 할당 | `docs/progress/agents/ASSIGNMENT.md` | ✅ |
+| **데이터 패턴** | `docs/progress/DATA_PATTERNS.md` | ✅ 🔴 |
+| **공용 컴포넌트** | `docs/progress/COMMON_COMPONENTS.md` | ✅ 🔴 |
+| 고객관리 상세 | `docs/progress/CUSTOMERS_ENHANCEMENT.md` | |
+| **상품/발주관리** | `docs/progress/PRODUCTS_PURCHASEORDERS_ENHANCEMENT.md` | |
+| **데이터 통합 분석** | `docs/progress/DATA_ANALYSIS_INTEGRATION.md` | |
+| **세금계산서 자동화** | `docs/progress/TAX_INVOICE_AUTOMATION.md` | |
+| **🔴 구현 로드맵** | `docs/progress/IMPLEMENTATION_ROADMAP.md` | ✅ 🔴 |
+| 과거 문서 | `docs/archive/` | |
 
 ---
 
-## 8. 다음 단계 (Phase 5 예정)
+## 8. 🔴 프로젝트 전체 필수 지침
 
-- [ ] 감사 로그 대시보드
-- [ ] 보고서 PDF 내보내기
-- [ ] Google Sheets 양방향 동기화
-- [ ] 이메일 알림 (세금계산서 발행 시)
+### 모든 목록형 데이터에 필수 적용
+
+**1. 엑셀 업로드/다운로드**
+- 양식 다운로드 (필수/선택 필드 구분)
+- 엑셀 업로드 (일괄 등록)
+- 엑셀 내보내기 (동일 양식)
+- **양식 호환성**: 다운로드 → 수정 → 재업로드 가능
+
+**2. 목록 일괄 처리**
+- 체크박스 선택 (개별/전체/Shift 범위)
+- 일괄 수정 (상태 변경 등)
+- 일괄 삭제 (제약조건 체크)
+- 플로팅 툴바
+
+**3. 필수 API**
+```
+PATCH /api/{resource}/bulk      # 일괄 수정/삭제
+POST  /api/{resource}/import    # 엑셀 업로드
+GET   /api/{resource}/export    # 엑셀 내보내기
+GET   /api/{resource}/template  # 양식 다운로드
+```
+
+**적용 대상**: 고객, 매장, 상품, 주문, 발주, 정산, 계정 (7개 메뉴)
+
+**상세 가이드**: `DATA_PATTERNS.md`, `COMMON_COMPONENTS.md` 참조
 
 ---
 
-## 9. 중요 참고사항
+## 9. 다음 단계 (5단계 로드맵)
+
+> **상세 계획**: `IMPLEMENTATION_ROADMAP.md` 참조
+
+**Phase 1: 기반 구축 (1주)**
+- [ ] 공용 컴포넌트 구현 (DataTable, BulkActions, Excel)
+- [ ] 엑셀 업로드/다운로드 전 메뉴 적용
+
+**Phase 2: 마스터 데이터 (0.5주)**
+- [ ] 상품 마스터 데이터 등록 (20개 마케팅 서비스)
+- [ ] 거래처 데이터 이관 (94건)
+
+**Phase 3: 주간 발주 시스템 - 핵심 (1.5주)**
+- [ ] 주간 발주 Smart Grid UI
+- [ ] 기간 설정 컴포넌트 (DateRange)
+- [ ] SO/PO 연동 API
+
+**Phase 4: 고객/상품관리 (1주)**
+- [ ] 고객 엑셀 업로드 (Customer-Store 동기화)
+- [ ] 간편 발주 기능 (상품별 수량 입력)
+
+**Phase 5: 세금계산서 자동화 (0.5주)**
+- [ ] 홈택스 양식 내보내기
+- [ ] 데이터 정규화 배치
+
+---
+
+## 10. 중요 참고사항
 
 - **PRD v3.0**이 최신 기획서 (docs/PRD_v3.0/)
 - **과거 문서**는 docs/archive/에 보관 (참고용)

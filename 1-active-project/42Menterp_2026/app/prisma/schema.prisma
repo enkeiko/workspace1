@@ -217,10 +217,12 @@ model Product {
 }
 
 enum ProductType {
-  TRAFFIC
-  SAVE
-  REVIEW
-  DIRECTION
+  TRAFFIC     // 트래픽
+  SAVE        // 저장
+  REVIEW      // 리뷰
+  DIRECTION   // 길찾기
+  BLOG        // 블로그
+  RECEIPT     // 영수증
 }
 
 // 채널 (공급업체)
