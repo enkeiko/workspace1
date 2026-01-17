@@ -788,7 +788,8 @@ model StoreKeyword {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 
-  rankings  KeywordRanking[]
+  rankings          KeywordRanking[]
+  rankingSnapshots  RankingSnapshot[]
 }
 
 // 키워드 순위 기록
@@ -804,6 +805,37 @@ model KeywordRanking {
   createdAt      DateTime     @default(now())
 
   @@index([storeKeywordId, checkDate])
+}
+
+// P2-2: 순위 스냅샷 (증빙용 상세 기록)
+model RankingSnapshot {
+  id              String          @id @default(cuid())
+  storeKeywordId  String
+  storeKeyword    StoreKeyword    @relation(fields: [storeKeywordId], references: [id], onDelete: Cascade)
+  ranking         Int
+  checkDate       DateTime
+  checkTime       String          @default("00:00")
+  screenshotUrl   String?
+  pageUrl         String?
+  searchEngine    String          @default("NAVER")
+  device          String          @default("MOBILE")
+  createdAt       DateTime        @default(now())
+
+  @@index([storeKeywordId, checkDate])
+  @@index([checkDate])
+}
+
+// 워크플로우 활동 로그
+model WorkflowActivity {
+  id          String   @id @default(cuid())
+  type        String
+  message     String
+  metadata    Json?
+  severity    String   @default("info")
+  createdAt   DateTime @default(now())
+
+  @@index([type])
+  @@index([createdAt])
 }
 
 // 정산

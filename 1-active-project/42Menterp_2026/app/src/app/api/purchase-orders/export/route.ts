@@ -75,11 +75,13 @@ export async function GET(request: NextRequest) {
         items: {
           select: {
             id: true,
-            quantity: true,
+            totalQty: true,
+            dailyQty: true,
             unitPrice: true,
             amount: true,
             startDate: true,
             endDate: true,
+            keyword: true,
             store: {
               select: { mid: true, name: true },
             },
@@ -124,9 +126,10 @@ export async function GET(request: NextRequest) {
           채널코드: order.channel.code,
           매장MID: item.store?.mid || "",
           매장명: item.store?.name || "",
+          키워드: item.keyword || "",
           상품코드: item.product?.code || "",
           상품명: item.product?.name || "",
-          수량: item.quantity,
+          수량: item.totalQty,
           단가: item.unitPrice,
           금액: item.amount,
           시작일: item.startDate ? format(new Date(item.startDate), "yyyy-MM-dd") : "",
@@ -162,6 +165,7 @@ export async function GET(request: NextRequest) {
       { wch: 10 }, // 채널코드
       { wch: 15 }, // 매장MID
       { wch: 20 }, // 매장명
+      { wch: 15 }, // 키워드
       { wch: 15 }, // 상품코드
       { wch: 15 }, // 상품명
       { wch: 10 }, // 수량
