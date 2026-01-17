@@ -35,7 +35,7 @@ export function CustomerTaxStatus({
   return (
     <div className={compact ? "flex items-center gap-2" : "flex flex-col gap-1"}>
       <Badge variant={ready ? "default" : "secondary"}>
-        {ready ? "준비 완료" : 미완료 ()}
+        {ready ? "준비 완료" : `미완료 (${missing.length})`}
       </Badge>
       {!ready && !compact && (
         <span className="text-xs text-muted-foreground">

@@ -53,7 +53,10 @@ export async function GET(request: NextRequest) {
         orderBy: { createdAt: "desc" },
         skip: (page - 1) * limit,
         take: limit,
-        include: includeKeywords ? { keywords: { where: { isActive: true } } } : undefined,
+        include: {
+          keywords: includeKeywords ? { where: { isActive: true } } : false,
+          customer: { select: { name: true } },
+        },
       }),
       prisma.store.count({ where }),
     ]);

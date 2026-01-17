@@ -152,8 +152,7 @@ export function DataTable<T extends Record<string, unknown>>({
               {selectable && (
                 <TableHead className="w-[50px]">
                   <Checkbox
-                    checked={isAllSelected}
-                    indeterminate={isSomeSelected}
+                    checked={isAllSelected ? true : isSomeSelected ? "indeterminate" : false}
                     onCheckedChange={handleSelectAll}
                     aria-label="전체 선택"
                   />

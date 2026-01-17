@@ -83,7 +83,7 @@ export function CustomerTable({
             </TableCell>
             <TableCell>
               <Link
-                href={/customers/}
+                href={`/customers/${customer.id}`}
                 className="font-medium hover:underline"
               >
                 {customer.name}
@@ -96,7 +96,7 @@ export function CustomerTable({
             <TableCell>{customer.contactPhone || "-"}</TableCell>
             <TableCell className="text-sm">
               {customer.contractStart && customer.contractEnd
-                ? ${format(new Date(customer.contractStart), "yy.MM.dd")} ~ 
+                ? `${format(new Date(customer.contractStart), "yy.MM.dd")} ~ ${format(new Date(customer.contractEnd), "yy.MM.dd")}`
                 : "-"}
             </TableCell>
             <TableCell>

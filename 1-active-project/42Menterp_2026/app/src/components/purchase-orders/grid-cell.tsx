@@ -4,6 +4,7 @@ import * as React from "react";
 import { format } from "date-fns";
 import { AlertTriangle, Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { KeyboardInput } from "@/components/ui/keyboard-input";
 import {
   Popover,
   PopoverContent,
@@ -22,6 +23,17 @@ interface GridCellProps {
   disabled?: boolean;
   showDateRange?: boolean;
   compact?: boolean;
+  /** 키보드 네비게이션 핸들러 */
+  onEnter?: () => void;
+  onShiftEnter?: () => void;
+  onArrowDown?: () => void;
+  onArrowUp?: () => void;
+  onArrowLeft?: () => void;
+  onArrowRight?: () => void;
+  /** 셀 ref 등록 콜백 */
+  inputRef?: (el: HTMLInputElement | null) => void;
+  /** 그리드 좌표 (디버깅용) */
+  gridPosition?: { row: number; col: number };
 }
 
 export function GridCell({
@@ -30,6 +42,14 @@ export function GridCell({
   disabled = false,
   showDateRange = true,
   compact = false,
+  onEnter,
+  onShiftEnter,
+  onArrowDown,
+  onArrowUp,
+  onArrowLeft,
+  onArrowRight,
+  inputRef,
+  gridPosition,
 }: GridCellProps) {
   const [isDateOpen, setIsDateOpen] = React.useState(false);
 
@@ -67,24 +87,50 @@ export function GridCell({
   const isLocked = data.isManualOverride || disabled;
   const statusColor = cellStatusColors[data.status];
 
+  // 키보드 네비게이션이 있는 경우 KeyboardInput 사용
+  const hasKeyboardNavigation = onEnter || onArrowDown || onArrowUp;
+
   if (compact) {
     return (
       <div
         className={cn(
           "flex items-center justify-center h-8 px-1 border rounded",
+          "transition-all duration-100",
           statusColor
         )}
       >
         {isLocked && <Lock className="h-3 w-3 mr-1 text-muted-foreground" />}
-        <Input
-          type="number"
-          min={0}
-          value={data.qty || ""}
-          onChange={handleQtyChange}
-          disabled={isLocked}
-          className="h-6 w-16 text-center text-sm p-0 border-0 bg-transparent"
-          placeholder="-"
-        />
+        {hasKeyboardNavigation ? (
+          <KeyboardInput
+            ref={inputRef}
+            type="number"
+            min={0}
+            value={data.qty || ""}
+            onChange={handleQtyChange}
+            disabled={isLocked}
+            className="h-6 w-16 text-center text-sm p-0 border-0 bg-transparent"
+            placeholder="-"
+            onEnter={onEnter}
+            onShiftEnter={onShiftEnter}
+            onArrowDown={onArrowDown}
+            onArrowUp={onArrowUp}
+            onArrowLeft={onArrowLeft}
+            onArrowRight={onArrowRight}
+            selectOnFocus
+            enableArrowNavigation
+            gridPosition={gridPosition}
+          />
+        ) : (
+          <Input
+            type="number"
+            min={0}
+            value={data.qty || ""}
+            onChange={handleQtyChange}
+            disabled={isLocked}
+            className="h-6 w-16 text-center text-sm p-0 border-0 bg-transparent"
+            placeholder="-"
+          />
+        )}
       </div>
     );
   }
@@ -128,17 +174,39 @@ export function GridCell({
       {/* 수량 입력 */}
       <div className="flex items-center gap-1">
         {data.isManualOverride && (
-          <AlertTriangle className="h-3 w-3 text-yellow-500" title="수동 수정됨" />
+          <AlertTriangle className="h-3 w-3 text-yellow-500" aria-label="수동 수정됨" />
         )}
-        <Input
-          type="number"
-          min={0}
-          value={data.qty || ""}
-          onChange={handleQtyChange}
-          disabled={isLocked}
-          className="h-7 text-center text-sm"
-          placeholder="-"
-        />
+        {hasKeyboardNavigation ? (
+          <KeyboardInput
+            ref={inputRef}
+            type="number"
+            min={0}
+            value={data.qty || ""}
+            onChange={handleQtyChange}
+            disabled={isLocked}
+            className="h-7 text-center text-sm"
+            placeholder="-"
+            onEnter={onEnter}
+            onShiftEnter={onShiftEnter}
+            onArrowDown={onArrowDown}
+            onArrowUp={onArrowUp}
+            onArrowLeft={onArrowLeft}
+            onArrowRight={onArrowRight}
+            selectOnFocus
+            enableArrowNavigation
+            gridPosition={gridPosition}
+          />
+        ) : (
+          <Input
+            type="number"
+            min={0}
+            value={data.qty || ""}
+            onChange={handleQtyChange}
+            disabled={isLocked}
+            className="h-7 text-center text-sm"
+            placeholder="-"
+          />
+        )}
       </div>
     </div>
   );

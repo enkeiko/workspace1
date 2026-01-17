@@ -34,8 +34,12 @@ import {
   Store,
   FileText,
   Shield,
+  FileDown,
+  Download,
 } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface User {
   id: string;
@@ -116,6 +120,8 @@ export default function AccountsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(new Set());
+  const [selectedTenantIds, setSelectedTenantIds] = useState<Set<string>>(new Set());
 
   const handleTabChange = (value: string) => {
     router.push(`/accounts?tab=${value}`);
@@ -123,6 +129,148 @@ export default function AccountsPage() {
     setStatusFilter("all");
     setRoleFilter("all");
     setPagination((prev) => ({ ...prev, page: 1 }));
+    setSelectedUserIds(new Set());
+    setSelectedTenantIds(new Set());
+  };
+
+  // 선택 함수들
+  const toggleSelectAllUsers = () => {
+    if (selectedUserIds.size === users.length) {
+      setSelectedUserIds(new Set());
+    } else {
+      setSelectedUserIds(new Set(users.map((u) => u.id)));
+    }
+  };
+
+  const toggleSelectUser = (id: string) => {
+    const newSet = new Set(selectedUserIds);
+    if (newSet.has(id)) {
+      newSet.delete(id);
+    } else {
+      newSet.add(id);
+    }
+    setSelectedUserIds(newSet);
+  };
+
+  const toggleSelectAllTenants = () => {
+    if (selectedTenantIds.size === tenants.length) {
+      setSelectedTenantIds(new Set());
+    } else {
+      setSelectedTenantIds(new Set(tenants.map((t) => t.id)));
+    }
+  };
+
+  const toggleSelectTenant = (id: string) => {
+    const newSet = new Set(selectedTenantIds);
+    if (newSet.has(id)) {
+      newSet.delete(id);
+    } else {
+      newSet.add(id);
+    }
+    setSelectedTenantIds(newSet);
+  };
+
+  // 파일 다운로드 헬퍼
+  const getFilenameFromHeader = (header: string | null) => {
+    if (!header) return null;
+    const utfMatch = header.match(/filename\*=UTF-8''([^;]+)/i);
+    if (utfMatch?.[1]) return decodeURIComponent(utfMatch[1]);
+    const asciiMatch = header.match(/filename="?([^";]+)"?/i);
+    return asciiMatch?.[1] || null;
+  };
+
+  const downloadBlob = async (response: Response, fallbackName: string) => {
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = getFilenameFromHeader(response.headers.get("content-disposition")) || fallbackName;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  // 관리자 엑셀 양식 다운로드
+  const handleUserTemplateDownload = async () => {
+    try {
+      const res = await fetch("/api/users/template");
+      if (!res.ok) {
+        const data = await res.json();
+        toast.error(data.error || "양식 다운로드에 실패했습니다");
+        return;
+      }
+      await downloadBlob(res, "관리자_엑셀_양식.xlsx");
+      toast.success("양식이 다운로드되었습니다");
+    } catch (error) {
+      console.error("Failed to download template:", error);
+      toast.error("양식 다운로드 중 오류가 발생했습니다");
+    }
+  };
+
+  // 관리자 엑셀 내보내기
+  const handleUserExport = async () => {
+    if (selectedUserIds.size === 0) {
+      toast.error("내보낼 관리자를 선택하세요");
+      return;
+    }
+    try {
+      const params = new URLSearchParams({
+        ids: Array.from(selectedUserIds).join(","),
+      });
+      const res = await fetch(`/api/users/export?${params}`);
+      if (!res.ok) {
+        const data = await res.json();
+        toast.error(data.error || "엑셀 내보내기에 실패했습니다");
+        return;
+      }
+      await downloadBlob(res, "관리자_내보내기.xlsx");
+      toast.success("엑셀 내보내기가 완료되었습니다");
+    } catch (error) {
+      console.error("Failed to export:", error);
+      toast.error("엑셀 내보내기 중 오류가 발생했습니다");
+    }
+  };
+
+  // 파트너사 엑셀 양식 다운로드
+  const handleTenantTemplateDownload = async () => {
+    try {
+      const res = await fetch("/api/tenants/template");
+      if (!res.ok) {
+        const data = await res.json();
+        toast.error(data.error || "양식 다운로드에 실패했습니다");
+        return;
+      }
+      await downloadBlob(res, "파트너사_엑셀_양식.xlsx");
+      toast.success("양식이 다운로드되었습니다");
+    } catch (error) {
+      console.error("Failed to download template:", error);
+      toast.error("양식 다운로드 중 오류가 발생했습니다");
+    }
+  };
+
+  // 파트너사 엑셀 내보내기
+  const handleTenantExport = async () => {
+    if (selectedTenantIds.size === 0) {
+      toast.error("내보낼 파트너사를 선택하세요");
+      return;
+    }
+    try {
+      const params = new URLSearchParams({
+        ids: Array.from(selectedTenantIds).join(","),
+      });
+      const res = await fetch(`/api/tenants/export?${params}`);
+      if (!res.ok) {
+        const data = await res.json();
+        toast.error(data.error || "엑셀 내보내기에 실패했습니다");
+        return;
+      }
+      await downloadBlob(res, "파트너사_내보내기.xlsx");
+      toast.success("엑셀 내보내기가 완료되었습니다");
+    } catch (error) {
+      console.error("Failed to export:", error);
+      toast.error("엑셀 내보내기 중 오류가 발생했습니다");
+    }
   };
 
   const fetchUsers = useCallback(async () => {
@@ -185,24 +333,48 @@ export default function AccountsPage() {
     return () => clearTimeout(timer);
   }, [currentTab, fetchUsers, fetchTenants]);
 
-  const getAddButton = () => {
+  const getActionButtons = () => {
     if (currentTab === "users") {
       return (
-        <Button asChild>
-          <Link href="/accounts/users/new">
-            <Plus className="h-4 w-4 mr-2" />
-            관리자 등록
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          {selectedUserIds.size > 0 && (
+            <Button variant="outline" onClick={handleUserExport}>
+              <Download className="h-4 w-4 mr-2" />
+              엑셀 내보내기 ({selectedUserIds.size})
+            </Button>
+          )}
+          <Button variant="outline" onClick={handleUserTemplateDownload}>
+            <FileDown className="h-4 w-4 mr-2" />
+            엑셀 양식
+          </Button>
+          <Button asChild>
+            <Link href="/accounts/users/new">
+              <Plus className="h-4 w-4 mr-2" />
+              관리자 등록
+            </Link>
+          </Button>
+        </div>
       );
     }
     return (
-      <Button asChild>
-        <Link href="/tenants/new">
-          <Plus className="h-4 w-4 mr-2" />
-          파트너사 등록
-        </Link>
-      </Button>
+      <div className="flex items-center gap-2">
+        {selectedTenantIds.size > 0 && (
+          <Button variant="outline" onClick={handleTenantExport}>
+            <Download className="h-4 w-4 mr-2" />
+            엑셀 내보내기 ({selectedTenantIds.size})
+          </Button>
+        )}
+        <Button variant="outline" onClick={handleTenantTemplateDownload}>
+          <FileDown className="h-4 w-4 mr-2" />
+          엑셀 양식
+        </Button>
+        <Button asChild>
+          <Link href="/tenants/new">
+            <Plus className="h-4 w-4 mr-2" />
+            파트너사 등록
+          </Link>
+        </Button>
+      </div>
     );
   };
 
@@ -215,7 +387,7 @@ export default function AccountsPage() {
             관리자 계정과 파트너사를 통합 관리합니다.
           </p>
         </div>
-        {getAddButton()}
+        {getActionButtons()}
       </div>
 
       <Tabs value={currentTab} onValueChange={handleTabChange}>
@@ -307,6 +479,15 @@ export default function AccountsPage() {
                     <Table>
                       <TableHeader>
                         <TableRow>
+                          <TableHead className="w-[40px]">
+                            <Checkbox
+                              checked={
+                                users.length > 0 &&
+                                selectedUserIds.size === users.length
+                              }
+                              onCheckedChange={toggleSelectAllUsers}
+                            />
+                          </TableHead>
                           <TableHead>이름</TableHead>
                           <TableHead>이메일</TableHead>
                           <TableHead>역할</TableHead>
@@ -317,7 +498,16 @@ export default function AccountsPage() {
                       </TableHeader>
                       <TableBody>
                         {users.map((user) => (
-                          <TableRow key={user.id}>
+                          <TableRow
+                            key={user.id}
+                            className={selectedUserIds.has(user.id) ? "bg-muted/50" : ""}
+                          >
+                            <TableCell>
+                              <Checkbox
+                                checked={selectedUserIds.has(user.id)}
+                                onCheckedChange={() => toggleSelectUser(user.id)}
+                              />
+                            </TableCell>
                             <TableCell className="font-medium">
                               {user.name}
                             </TableCell>
@@ -362,6 +552,15 @@ export default function AccountsPage() {
                     <Table>
                       <TableHeader>
                         <TableRow>
+                          <TableHead className="w-[40px]">
+                            <Checkbox
+                              checked={
+                                tenants.length > 0 &&
+                                selectedTenantIds.size === tenants.length
+                              }
+                              onCheckedChange={toggleSelectAllTenants}
+                            />
+                          </TableHead>
                           <TableHead>파트너사</TableHead>
                           <TableHead>사업자번호</TableHead>
                           <TableHead>담당자</TableHead>
@@ -375,7 +574,16 @@ export default function AccountsPage() {
                       </TableHeader>
                       <TableBody>
                         {tenants.map((tenant) => (
-                          <TableRow key={tenant.id}>
+                          <TableRow
+                            key={tenant.id}
+                            className={selectedTenantIds.has(tenant.id) ? "bg-muted/50" : ""}
+                          >
+                            <TableCell>
+                              <Checkbox
+                                checked={selectedTenantIds.has(tenant.id)}
+                                onCheckedChange={() => toggleSelectTenant(tenant.id)}
+                              />
+                            </TableCell>
                             <TableCell>
                               <Link
                                 href={`/tenants/${tenant.id}`}

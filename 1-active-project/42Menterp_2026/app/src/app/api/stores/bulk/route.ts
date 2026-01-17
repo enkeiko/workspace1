@@ -22,6 +22,128 @@ interface ExcelRow {
   비고?: string;
 }
 
+/**
+ * 매장 일괄 수정/삭제 API
+ *
+ * PATCH /api/stores/bulk
+ *
+ * Body:
+ * - ids: 대상 매장 ID 배열
+ * - action: "update" | "delete"
+ * - data: 수정할 데이터 (action이 "update"인 경우)
+ */
+export async function PATCH(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { ids, action, data } = body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return NextResponse.json(
+        { error: "대상 ID가 필요합니다" },
+        { status: 400 }
+      );
+    }
+
+    if (!action || !["update", "delete"].includes(action)) {
+      return NextResponse.json(
+        { error: "유효한 action이 필요합니다 (update | delete)" },
+        { status: 400 }
+      );
+    }
+
+    const summary = {
+      updated: 0,
+      deleted: 0,
+      failed: 0,
+    };
+    const errors: { id: string; error: string }[] = [];
+
+    if (action === "update") {
+      if (!data || typeof data !== "object") {
+        return NextResponse.json(
+          { error: "수정할 데이터가 필요합니다" },
+          { status: 400 }
+        );
+      }
+
+      for (const id of ids) {
+        try {
+          await prisma.store.update({
+            where: { id },
+            data,
+          });
+          summary.updated++;
+        } catch (error) {
+          summary.failed++;
+          errors.push({ id, error: (error as Error).message });
+        }
+      }
+    } else if (action === "delete") {
+      for (const id of ids) {
+        try {
+          // 연결된 발주/정산 등이 있으면 삭제 불가
+          const store = await prisma.store.findUnique({
+            where: { id },
+            select: {
+              _count: {
+                select: {
+                  purchaseOrderItems: true,
+                  settlements: true,
+                  salesOrderItems: true,
+                },
+              },
+            },
+          });
+
+          if (
+            store &&
+            (store._count.purchaseOrderItems > 0 ||
+              store._count.settlements > 0 ||
+              store._count.salesOrderItems > 0)
+          ) {
+            summary.failed++;
+            errors.push({
+              id,
+              error: "연결된 발주/정산/수주 데이터가 있어 삭제할 수 없습니다",
+            });
+            continue;
+          }
+
+          await prisma.store.delete({
+            where: { id },
+          });
+          summary.deleted++;
+        } catch (error) {
+          summary.failed++;
+          errors.push({ id, error: (error as Error).message });
+        }
+      }
+    }
+
+    return NextResponse.json({
+      message: `처리 완료: ${action === "update" ? `수정 ${summary.updated}건` : `삭제 ${summary.deleted}건`}${summary.failed > 0 ? `, 실패 ${summary.failed}건` : ""}`,
+      summary,
+      errors: errors.length > 0 ? errors : undefined,
+    });
+  } catch (error) {
+    console.error("Failed to bulk update stores:", error);
+    return NextResponse.json(
+      { error: "일괄 처리에 실패했습니다" },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * 매장 엑셀 일괄 등록 API
+ *
+ * POST /api/stores/bulk
+ */
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

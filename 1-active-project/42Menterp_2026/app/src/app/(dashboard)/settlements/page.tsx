@@ -50,7 +50,10 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
+  FileDown,
+  FileUp,
 } from "lucide-react";
+import { toast } from "sonner";
 import { format, subMonths } from "date-fns";
 import { ko } from "date-fns/locale";
 import {
@@ -341,6 +344,72 @@ export default function SettlementsPage() {
     .filter((i) => i.type === "PURCHASE")
     .reduce((sum, i) => sum + i.totalAmount, 0);
 
+  const getFilenameFromHeader = (header: string | null) => {
+    if (!header) return null;
+    const utfMatch = header.match(/filename\*=UTF-8''([^;]+)/i);
+    if (utfMatch?.[1]) return decodeURIComponent(utfMatch[1]);
+    const asciiMatch = header.match(/filename="?([^";]+)"?/i);
+    return asciiMatch?.[1] || null;
+  };
+
+  const downloadBlob = async (response: Response, fallbackName: string) => {
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = getFilenameFromHeader(response.headers.get("content-disposition")) || fallbackName;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleTemplateDownload = async () => {
+    try {
+      const res = await fetch("/api/settlements/template");
+      if (!res.ok) {
+        const data = await res.json();
+        toast.error(data.error || "양식 다운로드에 실패했습니다");
+        return;
+      }
+      await downloadBlob(res, "정산_엑셀_양식.xlsx");
+    } catch (error) {
+      console.error("Failed to download template:", error);
+      toast.error("양식 다운로드 중 오류가 발생했습니다");
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/settlements/import", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success(data.message);
+        if (data.results.errors?.length > 0) {
+          console.warn("Import errors:", data.results.errors);
+        }
+        fetchData();
+      } else {
+        toast.error(data.error || "업로드에 실패했습니다");
+      }
+    } catch (error) {
+      console.error("Failed to upload:", error);
+      toast.error("업로드 중 오류가 발생했습니다");
+    } finally {
+      e.target.value = "";
+    }
+  };
+
   const getAddButton = () => {
     if (currentTab === "tax-invoices") {
       return (
@@ -354,6 +423,22 @@ export default function SettlementsPage() {
     }
     return (
       <div className="flex items-center gap-2">
+        <Button variant="outline" onClick={handleTemplateDownload}>
+          <FileDown className="h-4 w-4 mr-2" />
+          엑셀 양식
+        </Button>
+        <Button variant="outline" asChild className="cursor-pointer">
+          <label>
+            <FileUp className="h-4 w-4 mr-2" />
+            엑셀 업로드
+            <input
+              type="file"
+              accept=".xlsx,.xls"
+              className="hidden"
+              onChange={handleFileUpload}
+            />
+          </label>
+        </Button>
         <Button
           variant="outline"
           onClick={() => {
@@ -361,7 +446,7 @@ export default function SettlementsPage() {
           }}
         >
           <FileSpreadsheet className="h-4 w-4 mr-2" />
-          Excel 다운로드
+          Excel 내보내기
         </Button>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>

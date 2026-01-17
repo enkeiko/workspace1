@@ -39,6 +39,9 @@ import {
   PlayCircle,
   XCircle,
   Zap,
+  FileDown,
+  FileUp,
+  Download,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -152,6 +155,63 @@ export default function PurchaseOrdersPage() {
     setSelectedIds(newSet);
   };
 
+  const getFilenameFromHeader = (header: string | null) => {
+    if (!header) return null;
+    const utfMatch = header.match(/filename\*=UTF-8''([^;]+)/i);
+    if (utfMatch?.[1]) return decodeURIComponent(utfMatch[1]);
+    const asciiMatch = header.match(/filename="?([^";]+)"?/i);
+    return asciiMatch?.[1] || null;
+  };
+
+  const downloadBlob = async (response: Response, fallbackName: string) => {
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = getFilenameFromHeader(response.headers.get("content-disposition")) || fallbackName;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleTemplateDownload = async () => {
+    try {
+      const res = await fetch("/api/purchase-orders/template");
+      if (!res.ok) {
+        const data = await res.json();
+        toast.error(data.error || "양식 다운로드에 실패했습니다");
+        return;
+      }
+      await downloadBlob(res, "발주_엑셀_양식.xlsx");
+    } catch (error) {
+      console.error("Failed to download template:", error);
+      toast.error("양식 다운로드 중 오류가 발생했습니다");
+    }
+  };
+
+  const handleExport = async () => {
+    if (selectedIds.size === 0) {
+      toast.error("내보낼 발주를 선택하세요");
+      return;
+    }
+    try {
+      const params = new URLSearchParams({
+        ids: Array.from(selectedIds).join(","),
+      });
+      const res = await fetch(`/api/purchase-orders/export?${params}`);
+      if (!res.ok) {
+        const data = await res.json();
+        toast.error(data.error || "엑셀 내보내기에 실패했습니다");
+        return;
+      }
+      await downloadBlob(res, "발주_내보내기.xlsx");
+    } catch (error) {
+      console.error("Failed to export:", error);
+      toast.error("엑셀 내보내기 중 오류가 발생했습니다");
+    }
+  };
+
   const handleBatchAction = async (action: "confirm" | "start" | "complete" | "cancel") => {
     if (selectedIds.size === 0) {
       toast.error("선택된 발주가 없습니다");
@@ -209,40 +269,50 @@ export default function PurchaseOrdersPage() {
         </div>
         <div className="flex items-center gap-2">
           {selectedIds.size > 0 && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" disabled={batchProcessing}>
-                  {batchProcessing ? (
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  ) : (
-                    <Zap className="h-4 w-4 mr-2" />
-                  )}
-                  일괄 처리 ({selectedIds.size})
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => handleBatchAction("confirm")}>
-                  <CheckCircle className="h-4 w-4 mr-2 text-blue-600" />
-                  확정 처리
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleBatchAction("start")}>
-                  <PlayCircle className="h-4 w-4 mr-2 text-purple-600" />
-                  진행 시작
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleBatchAction("complete")}>
-                  <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
-                  완료 처리
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => handleBatchAction("cancel")}
-                  className="text-red-600"
-                >
-                  <XCircle className="h-4 w-4 mr-2" />
-                  취소 처리
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <>
+              <Button variant="outline" onClick={handleExport}>
+                <Download className="h-4 w-4 mr-2" />
+                엑셀 내보내기
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" disabled={batchProcessing}>
+                    {batchProcessing ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Zap className="h-4 w-4 mr-2" />
+                    )}
+                    일괄 처리 ({selectedIds.size})
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => handleBatchAction("confirm")}>
+                    <CheckCircle className="h-4 w-4 mr-2 text-blue-600" />
+                    확정 처리
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleBatchAction("start")}>
+                    <PlayCircle className="h-4 w-4 mr-2 text-purple-600" />
+                    진행 시작
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleBatchAction("complete")}>
+                    <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
+                    완료 처리
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleBatchAction("cancel")}
+                    className="text-red-600"
+                  >
+                    <XCircle className="h-4 w-4 mr-2" />
+                    취소 처리
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
           )}
+          <Button variant="outline" onClick={handleTemplateDownload}>
+            <FileDown className="h-4 w-4 mr-2" />
+            엑셀 양식
+          </Button>
           <Button asChild>
             <Link href="/purchase-orders/new">
               <Plus className="h-4 w-4 mr-2" />

@@ -23,6 +23,7 @@ import { CustomerTaxStatus } from "./components/customer-tax-status";
 import { TaxInvoiceSummary } from "./components/tax-invoice-summary";
 
 interface CustomerRow {
+  [key: string]: unknown;
   id: string;
   name: string;
   businessNo: string | null;
@@ -421,9 +422,14 @@ export default function CustomersPage() {
       {/* 일괄 작업 바 */}
       <BulkActionBar selectedCount={selectedCount} onClear={clear}>
         <BulkStatusChange
+          selectedIds={selectedIds}
+          resource="customers"
           options={statusOptions}
-          onStatusChange={handleBulkStatusChange}
-          loading={bulkLoading}
+          onSuccess={() => {
+            fetchCustomers();
+            clear();
+          }}
+          disabled={bulkLoading}
         />
         <Button
           variant="outline"
@@ -435,10 +441,14 @@ export default function CustomersPage() {
           엑셀 내보내기
         </Button>
         <BulkDelete
-          onDelete={handleBulkDelete}
-          loading={bulkLoading}
-          confirmTitle="선택한 고객을 삭제하시겠습니까?"
-          confirmDescription="연결된 매장이나 진행 중 문서가 있는 고객은 삭제할 수 없습니다."
+          selectedIds={selectedIds}
+          resource="customers"
+          onSuccess={() => {
+            fetchCustomers();
+            clear();
+          }}
+          confirmMessage="선택한 고객을 삭제하시겠습니까? 연결된 매장이나 진행 중 문서가 있는 고객은 삭제할 수 없습니다."
+          disabled={bulkLoading}
         />
       </BulkActionBar>
     </div>

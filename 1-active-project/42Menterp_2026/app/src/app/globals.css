@@ -123,3 +123,28 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* 그리드 셀 키보드 네비게이션 스타일 */
+@layer components {
+  /* Number input spinner 제거 (키보드 UX 개선) */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  /* 그리드 셀 포커스 강조 */
+  .grid-cell-focused {
+    @apply ring-2 ring-blue-500 ring-offset-1;
+  }
+
+  /* 키보드 네비게이션 셀 하이라이트 */
+  [data-grid-row][data-grid-col]:focus-within {
+    @apply outline-2 outline-blue-500 outline-offset-1;
+  }
+}

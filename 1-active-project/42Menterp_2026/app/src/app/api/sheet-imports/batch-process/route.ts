@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { ImportStatus, Prisma } from "@prisma/client";
 
 const batchProcessSchema = z.object({
   channelSheetId: z.string().optional(),
@@ -23,8 +24,8 @@ export async function POST(request: NextRequest) {
     const { channelSheetId, ids } = batchProcessSchema.parse(body);
 
     // 처리할 로그 조회
-    const where: any = {
-      status: "VALIDATED",
+    const where: Prisma.SheetImportLogWhereInput = {
+      status: ImportStatus.VALIDATED,
     };
 
     if (ids && ids.length > 0) {

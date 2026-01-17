@@ -7,12 +7,10 @@ import {
   FileSpreadsheet,
   Loader2,
   AlertTriangle,
-  Plus,
-  Trash2,
+  Keyboard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -22,10 +20,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { WeekSelector, type WeekRange, getCurrentWeek } from "./week-selector";
 import { GridCell, BulkDateCell } from "./grid-cell";
+import { useGridKeyboardNavigation } from "@/hooks/use-grid-keyboard-navigation";
 import type {
   GridCellData,
   GridStoreRow,
@@ -34,7 +40,7 @@ import type {
   GridSaveRequest,
   GridSaveResponse,
 } from "./types";
-import { createEmptyCell, cellStatusLabels } from "./types";
+import { createEmptyCell } from "./types";
 
 interface WeeklyOrderGridProps {
   onSave?: (data: GridSaveRequest) => Promise<GridSaveResponse>;
@@ -50,6 +56,7 @@ export function WeeklyOrderGrid({
   const [selectedWeek, setSelectedWeek] = React.useState<WeekRange>(getCurrentWeek);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
+  const [showKeyboardGuide, setShowKeyboardGuide] = React.useState(false);
 
   // 그리드 데이터
   const [gridData, setGridData] = React.useState<WeeklyGridData | null>(null);
@@ -67,6 +74,12 @@ export function WeeklyOrderGrid({
 
   // 선택된 행
   const [selectedRows, setSelectedRows] = React.useState<Set<string>>(new Set());
+
+  // 키보드 네비게이션 Hook
+  const gridNavigation = useGridKeyboardNavigation(
+    stores.length,
+    products.length
+  );
 
   // 데이터 로드
   const loadGridData = React.useCallback(async () => {
@@ -134,6 +147,17 @@ export function WeeklyOrderGrid({
   React.useEffect(() => {
     loadGridData();
   }, [loadGridData]);
+
+  // 데이터 로드 후 첫 셀에 자동 포커스
+  React.useEffect(() => {
+    if (!isLoading && stores.length > 0 && products.length > 0) {
+      // 렌더링 완료 후 포커스
+      const timer = setTimeout(() => {
+        gridNavigation.focusFirstCell();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, stores.length, products.length, gridNavigation]);
 
   // 셀 데이터 변경
   const handleCellChange = (
@@ -280,6 +304,46 @@ export function WeeklyOrderGrid({
         </div>
 
         <div className="flex items-center gap-2">
+          {/* 키보드 단축키 가이드 */}
+          <Dialog open={showKeyboardGuide} onOpenChange={setShowKeyboardGuide}>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="sm">
+                <Keyboard className="h-4 w-4 mr-2" />
+                단축키
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>키보드 단축키</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-3">
+                <div className="flex items-center gap-4">
+                  <kbd className="px-2 py-1 bg-muted rounded text-sm font-mono">Enter</kbd>
+                  <span className="text-sm">다음 셀로 이동</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <kbd className="px-2 py-1 bg-muted rounded text-sm font-mono">Shift+Enter</kbd>
+                  <span className="text-sm">이전 셀로 이동</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <kbd className="px-2 py-1 bg-muted rounded text-sm font-mono">↑ ↓ ← →</kbd>
+                  <span className="text-sm">방향키로 셀 이동</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <kbd className="px-2 py-1 bg-muted rounded text-sm font-mono">Esc</kbd>
+                  <span className="text-sm">편집 취소 및 포커스 해제</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <kbd className="px-2 py-1 bg-muted rounded text-sm font-mono">Tab</kbd>
+                  <span className="text-sm">다음 요소로 이동 (기본 동작)</span>
+                </div>
+              </div>
+              <div className="pt-4 text-xs text-muted-foreground">
+                <p>셀을 클릭하거나 포커스하면 기존 값이 자동 선택되어 바로 입력할 수 있습니다.</p>
+              </div>
+            </DialogContent>
+          </Dialog>
+
           <Button
             variant="outline"
             onClick={() => onExport?.(selectedWeek.weekKey)}
@@ -370,7 +434,7 @@ export function WeeklyOrderGrid({
                 </TableCell>
               </TableRow>
             ) : (
-              stores.map((store) => (
+              stores.map((store, rowIndex) => (
                 <TableRow
                   key={store.storeId}
                   className={cn(
@@ -403,7 +467,7 @@ export function WeeklyOrderGrid({
                       )}
                     </div>
                   </TableCell>
-                  {products.map((product) => {
+                  {products.map((product, colIndex) => {
                     const cellData = getCellData(store, product.productCode);
                     return (
                       <TableCell
@@ -416,6 +480,15 @@ export function WeeklyOrderGrid({
                             handleCellChange(store.storeId, product.productCode, data)
                           }
                           compact
+                          // 키보드 네비게이션 props
+                          inputRef={(el) => gridNavigation.registerCell(rowIndex, colIndex, el)}
+                          onEnter={() => gridNavigation.moveNext()}
+                          onShiftEnter={() => gridNavigation.movePrevious()}
+                          onArrowDown={() => gridNavigation.moveDown()}
+                          onArrowUp={() => gridNavigation.moveUp()}
+                          onArrowLeft={() => gridNavigation.moveLeft()}
+                          onArrowRight={() => gridNavigation.moveRight()}
+                          gridPosition={{ row: rowIndex, col: colIndex }}
                         />
                       </TableCell>
                     );
@@ -444,6 +517,11 @@ export function WeeklyOrderGrid({
         <span className="flex items-center gap-1">
           <AlertTriangle className="h-3 w-3 text-yellow-500" />
           수동 수정됨 (보호)
+        </span>
+        <span>|</span>
+        <span className="flex items-center gap-1">
+          <Keyboard className="h-3 w-3" />
+          Enter/화살표 키로 셀 이동
         </span>
         <span>|</span>
         <span>

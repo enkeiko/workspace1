@@ -11,15 +11,32 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Users,
   Wallet,
   ShoppingCart,
   UsersRound,
+  List,
+  Grid3X3,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
-const menuItems = [
+interface SubMenuItem {
+  title: string;
+  href: string;
+  icon?: typeof List;
+}
+
+interface MenuItem {
+  title: string;
+  subtitle: string;
+  href: string;
+  icon: typeof LayoutDashboard;
+  subItems?: SubMenuItem[];
+}
+
+const menuItems: MenuItem[] = [
   {
     title: "대시보드",
     subtitle: "Dashboard",
@@ -55,6 +72,10 @@ const menuItems = [
     subtitle: "Purchase Orders",
     href: "/purchase-orders",
     icon: FileText,
+    subItems: [
+      { title: "발주 목록", href: "/purchase-orders", icon: List },
+      { title: "일괄발주", href: "/purchase-orders/bulk", icon: Grid3X3 },
+    ],
   },
   {
     title: "정산 관리",
@@ -79,6 +100,26 @@ const menuItems = [
 export function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
+
+  // 현재 경로가 하위메뉴에 해당하면 자동 확장
+  useEffect(() => {
+    menuItems.forEach((item) => {
+      if (item.subItems && pathname.startsWith(item.href)) {
+        setExpandedMenus((prev) =>
+          prev.includes(item.href) ? prev : [...prev, item.href]
+        );
+      }
+    });
+  }, [pathname]);
+
+  const toggleMenu = (href: string) => {
+    setExpandedMenus((prev) =>
+      prev.includes(href)
+        ? prev.filter((h) => h !== href)
+        : [...prev, href]
+    );
+  };
 
   return (
     <aside
@@ -108,7 +149,69 @@ export function Sidebar() {
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {menuItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+          const hasSubItems = item.subItems && item.subItems.length > 0;
+          const isExpanded = expandedMenus.includes(item.href);
 
+          // 하위메뉴가 있는 경우
+          if (hasSubItems) {
+            return (
+              <div key={item.href}>
+                <button
+                  onClick={() => toggleMenu(item.href)}
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors w-full",
+                    isActive
+                      ? "bg-blue-600/50 text-white"
+                      : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                  )}
+                >
+                  <item.icon size={20} className="flex-shrink-0" />
+                  {!collapsed && (
+                    <>
+                      <div className="flex items-baseline gap-1.5 min-w-0 flex-1">
+                        <span className="truncate">{item.title}</span>
+                        <span className="text-[10px] text-slate-400 flex-shrink-0">
+                          {item.subtitle}
+                        </span>
+                      </div>
+                      <ChevronDown
+                        size={16}
+                        className={cn(
+                          "transition-transform flex-shrink-0",
+                          isExpanded && "rotate-180"
+                        )}
+                      />
+                    </>
+                  )}
+                </button>
+                {/* 하위메뉴 */}
+                {!collapsed && isExpanded && (
+                  <div className="ml-4 mt-1 space-y-1 border-l border-slate-700 pl-3">
+                    {item.subItems!.map((subItem) => {
+                      const isSubActive = pathname === subItem.href;
+                      return (
+                        <Link
+                          key={subItem.href}
+                          href={subItem.href}
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors text-sm",
+                            isSubActive
+                              ? "bg-blue-600 text-white"
+                              : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                          )}
+                        >
+                          {subItem.icon && <subItem.icon size={16} />}
+                          <span>{subItem.title}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          }
+
+          // 하위메뉴가 없는 일반 메뉴
           return (
             <Link
               key={item.href}
